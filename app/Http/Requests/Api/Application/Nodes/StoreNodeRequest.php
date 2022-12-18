@@ -31,8 +31,13 @@ class StoreNodeRequest extends ApplicationApiRequest
             'disk_overallocate',
             'upload_size',
             'daemonListen',
-            'daemonSFTP',
             'daemonBase',
+            'host',
+            'bearer_token',
+            'insecure',
+            'service_type',
+            'storage_class',
+            'ns',
         ])->mapWithKeys(function ($value, $key) {
             $key = ($key === 'daemonSFTP') ? 'daemonSftp' : $key;
 
