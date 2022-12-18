@@ -66,7 +66,7 @@
 
                 <div class="box-body row">
                     <div class="form-group col-sm-4">
-                        <label for="pNodeId">Node</label>
+                        <label for="pNodeId">Cluster</label>
                         <select name="node_id" id="pNodeId" class="form-control">
                             @foreach($locations as $location)
                                 <optgroup label="{{ $location->long }} ({{ $location->short }})">
@@ -81,10 +81,24 @@
                             @endforeach
                         </select>
 
-                        <p class="small text-muted no-margin">The node which this server will be deployed to.</p>
+                        <p class="small text-muted no-margin">The cluster which this server will be deployed to.</p>
                     </div>
 
                     <div class="form-group col-sm-4">
+                        <label for="pDefaultPort">Default Port</label>
+                        <input type="text" id="pDefaultPort" name="default_port" class="form-control" value="{{ old('default_port') }}"></input>
+                        <p class="small text-muted no-margin">The main port that will be assigned to this server.</p>
+                    </div>
+
+                    <div class="form-group col-sm-4">
+                        <label for="pAdditionalPorts" class="control-label">Additional Port(s)</label>
+                        <div>
+                            <select class="form-control" name="additional_ports[]" id="pAdditionalPorts" multiple></select>
+                            <p class="text-muted small">Enter individual ports or port ranges here separated by commas or spaces. <b>Restrictions will apply</b>, please see <a href="https://kubernetes.io/docs/reference/networking/ports-and-protocols/" target="_blank">kubernetes.io/docs/reference/networking/ports-and-protocols</a> for more info.</p>
+                        </div>
+                    </div>
+
+                    <!-- <div class="form-group col-sm-4">
                         <label for="pAllocation">Default Allocation</label>
                         <select id="pAllocation" name="allocation_id" class="form-control"></select>
                         <p class="small text-muted no-margin">The main allocation that will be assigned to this server.</p>
@@ -94,7 +108,7 @@
                         <label for="pAllocationAdditional">Additional Allocation(s)</label>
                         <select id="pAllocationAdditional" name="allocation_additional[]" class="form-control" multiple></select>
                         <p class="small text-muted no-margin">Additional allocations to assign to this server on creation.</p>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -390,6 +404,12 @@
                 // END Persist 'Egg' select2
             @endif
             // END Persist 'Nest' select2
+        });
+
+        $('#pAdditionalPorts').select2({
+            tags: true,
+            selectOnClose: true,
+            tokenSeparators: [',', ' '],
         });
     </script>
 @endsection

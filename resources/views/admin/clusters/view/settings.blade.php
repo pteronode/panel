@@ -5,11 +5,11 @@
 @endsection
 
 @section('content-header')
-    <h1>{{ $node->name }}<small>Configure your node settings.</small></h1>
+    <h1>{{ $node->name }}<small>Configure your cluster settings.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.nodes') }}">Nodes</a></li>
-        <li><a href="{{ route('admin.nodes.view', $node->id) }}">{{ $node->name }}</a></li>
+        <li><a href="{{ route('admin.clusters') }}">Clusters</a></li>
+        <li><a href="{{ route('admin.clusters.view', $node->id) }}">{{ $node->name }}</a></li>
         <li class="active">Settings</li>
     </ol>
 @endsection
@@ -19,16 +19,15 @@
     <div class="col-xs-12">
         <div class="nav-tabs-custom nav-tabs-floating">
             <ul class="nav nav-tabs">
-                <li><a href="{{ route('admin.nodes.view', $node->id) }}">About</a></li>
-                <li class="active"><a href="{{ route('admin.nodes.view.settings', $node->id) }}">Settings</a></li>
-                <li><a href="{{ route('admin.nodes.view.configuration', $node->id) }}">Configuration</a></li>
-                <li><a href="{{ route('admin.nodes.view.allocation', $node->id) }}">Allocation</a></li>
-                <li><a href="{{ route('admin.nodes.view.servers', $node->id) }}">Servers</a></li>
+                <li><a href="{{ route('admin.clusters.view', $node->id) }}">About</a></li>
+                <li class="active"><a href="{{ route('admin.clusters.view.settings', $node->id) }}">Settings</a></li>
+                <li><a href="{{ route('admin.clusters.view.configuration', $node->id) }}">Configuration</a></li>
+                <li><a href="{{ route('admin.clusters.view.servers', $node->id) }}">Servers</a></li>
             </ul>
         </div>
     </div>
 </div>
-<form action="{{ route('admin.nodes.view.settings', $node->id) }}" method="POST">
+<form action="{{ route('admin.clusters.view.settings', $node->id) }}" method="POST">
     <div class="row">
         <div class="col-sm-6">
             <div class="box">
@@ -117,6 +116,29 @@
                         </div>
                         <p class="text-muted small">If the node is marked as 'Under Maintenance' users won't be able to access servers that are on this node.</p>
                     </div>
+                    <div class="form-group col-xs-12">
+                        <label for="disk_overallocate" class="control-label">Maximum Web Upload Filesize</label>
+                        <div class="input-group">
+                            <input type="text" name="upload_size" class="form-control" value="{{ old('upload_size', $node->upload_size) }}"/>
+                            <span class="input-group-addon">MiB</span>
+                        </div>
+                        <p class="text-muted"><small>Enter the maximum size of files that can be uploaded through the web-based file manager.</small></p>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label for="daemonListen" class="control-label"><span class="label label-warning"><i class="fa fa-power-off"></i></span> Daemon Port</label>
+                                <div>
+                                    <input type="text" name="daemonListen" class="form-control" value="{{ old('daemonListen', $node->daemonListen) }}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p class="text-muted small">If you will be running the daemon behind CloudFlare® you should set the daemon port to <code>8443</code> to allow websocket proxying over SSL.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -170,36 +192,51 @@
         <div class="col-sm-6">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">General Configuration</h3>
+                    <h3 class="box-title">Cluster Configuration</h3>
                 </div>
-                <div class="box-body row">
-                    <div class="form-group col-xs-12">
-                        <label for="disk_overallocate" class="control-label">Maximum Web Upload Filesize</label>
-                        <div class="input-group">
-                            <input type="text" name="upload_size" class="form-control" value="{{ old('upload_size', $node->upload_size) }}"/>
-                            <span class="input-group-addon">MiB</span>
-                        </div>
-                        <p class="text-muted"><small>Enter the maximum size of files that can be uploaded through the web-based file manager.</small></p>
+                <div class="box-body">
+                    <div class="form-group">
+                        <label for="pHost" class="form-label">Host</label>
+                        <input type="text" name="host" id="pHost" class="form-control" value="{{ old('host', $node->host) }}"/>
+                        <p class="text-muted small">Host must be a host string, a <code>host:port</code> pair, or a <em>URL</em> to the base of the apiserver.</p>
                     </div>
-                    <div class="col-xs-12">
-                        <div class="row">
-                            <div class="form-group col-md-6">
-                                <label for="daemonListen" class="control-label"><span class="label label-warning"><i class="fa fa-power-off"></i></span> Daemon Port</label>
-                                <div>
-                                    <input type="text" name="daemonListen" class="form-control" value="{{ old('daemonListen', $node->daemonListen) }}"/>
-                                </div>
+                    <div class="form-group">
+                        <label for="pBearerToken" class="form-label">Bearer Token</label>
+                        <textarea name="bearer_token" id="pBearerToken" rows="4" class="form-control"></textarea>
+                        <p class="text-muted small">Service account bearer tokens are perfectly valid to use outside the cluster and can be used to create identities for long standing jobs that wish to talk to the Kubernetes API.</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Insecure</label>
+                        <div>
+                            <div class="radio radio-success radio-inline">
+                                <input type="radio" id="pInsecureFalse" value="0" name="insecure" {{ (old('insecure', $node->insecure) == true) ? 'checked' : '' }}>
+                                <label for="pInsecureFalse"> False</label>
                             </div>
-                            <div class="form-group col-md-6">
-                                <label for="daemonSFTP" class="control-label"><span class="label label-warning"><i class="fa fa-power-off"></i></span> Daemon SFTP Port</label>
-                                <div>
-                                    <input type="text" name="daemonSFTP" class="form-control" value="{{ old('daemonSFTP', $node->daemonSFTP) }}"/>
-                                </div>
+                            <div class="radio radio-danger radio-inline">
+                                <input type="radio" id="pInsecureTrue" value="1" name="insecure" {{ (old('insecure', $node->insecure) == true) ? 'checked' : '' }}>
+                                <label for="pInsecureTrue"> True</label>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <p class="text-muted"><small>The daemon runs its own SFTP management container and does not use the SSHd process on the main physical server. <Strong>Do not use the same port that you have assigned for your physical server's SSH process.</strong></small></p>
-                            </div>
+                        <p class="text-muted small">Server should be accessed without verifying the TLS certificate. For testing only.</p>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="pServiceType" class="form-label">Service Type</label>
+                            <select name="service_type" id="pServiceType">
+                                <option value="nodeport" {{ (old('service_type', $node->service_type) == 'nodeport') ? 'selected' : '' }}>NodePort</option>
+                                <option value="loadbalancer" {{ (old('service_type', $node->service_type) == 'loadbalancer') ? 'selected' : '' }}>LoadBalancer</option>
+                            </select>
+                            <p class="text-muted small">ServiceTypes allow you to specify what kind of Service you want.</p>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="pStorageClass" class="form-label">Storage Class</label>
+                            <input type="text" name="storage_class" id="pStorageClass" class="form-control" value="{{ old('storage_class', $node->storage_class) }}"/>
+                            <p class="text-muted small">StorageClass provides a way for administrators to describe the "classes" of storage they offer.</p>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="pNamespace" class="form-label">Namespace</label>
+                            <input type="text" name="ns" data-multiplicator="true" class="form-control" id="pNamespace" value="{{ old('ns', $node->ns) }}"/>
+                            <p class="text-muted small">Namespaces provides a mechanism for isolating groups of resources within a single cluster.</p>
                         </div>
                     </div>
                 </div>
@@ -236,5 +273,6 @@
         placement: 'auto'
     });
     $('select[name="location_id"]').select2();
+    $('select[name="service_type"]').select2();
     </script>
 @endsection

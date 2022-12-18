@@ -5,10 +5,10 @@
 @endsection
 
 @section('content-header')
-    <h1>{{ $node->name }}<small>A quick overview of your node.</small></h1>
+    <h1>{{ $node->name }}<small>A quick overview of your cluster.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.nodes') }}">Nodes</a></li>
+        <li><a href="{{ route('admin.clusters') }}">Clusters</a></li>
         <li class="active">{{ $node->name }}</li>
     </ol>
 @endsection
@@ -18,11 +18,10 @@
     <div class="col-xs-12">
         <div class="nav-tabs-custom nav-tabs-floating">
             <ul class="nav nav-tabs">
-                <li class="active"><a href="{{ route('admin.nodes.view', $node->id) }}">About</a></li>
-                <li><a href="{{ route('admin.nodes.view.settings', $node->id) }}">Settings</a></li>
-                <li><a href="{{ route('admin.nodes.view.configuration', $node->id) }}">Configuration</a></li>
-                <li><a href="{{ route('admin.nodes.view.allocation', $node->id) }}">Allocation</a></li>
-                <li><a href="{{ route('admin.nodes.view.servers', $node->id) }}">Servers</a></li>
+                <li class="active"><a href="{{ route('admin.clusters.view', $node->id) }}">About</a></li>
+                <li><a href="{{ route('admin.clusters.view.settings', $node->id) }}">Settings</a></li>
+                <li><a href="{{ route('admin.clusters.view.configuration', $node->id) }}">Configuration</a></li>
+                <li><a href="{{ route('admin.clusters.view.servers', $node->id) }}">Servers</a></li>
             </ul>
         </div>
     </div>
@@ -33,21 +32,25 @@
             <div class="col-xs-12">
                 <div class="box box-primary">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Information</h3>
+                        <h3 class="box-title">Cluster Information</h3>
                     </div>
                     <div class="box-body table-responsive no-padding">
                         <table class="table table-hover">
+                            <tr>
+                                <td>Version</td>
+                                <td data-attr="info-git"><i class="fa fa-refresh fa-fw fa-spin"></i></td>
+                            </tr>
                             <tr>
                                 <td>Daemon Version</td>
                                 <td><code data-attr="info-version"><i class="fa fa-refresh fa-fw fa-spin"></i></code> (Latest: <code>{{ $version->getDaemon() }}</code>)</td>
                             </tr>
                             <tr>
-                                <td>System Information</td>
-                                <td data-attr="info-system"><i class="fa fa-refresh fa-fw fa-spin"></i></td>
+                                <td>Go Version</td>
+                                <td data-attr="info-go"><i class="fa fa-refresh fa-fw fa-spin"></i></td>
                             </tr>
                             <tr>
-                                <td>Total CPU Threads</td>
-                                <td data-attr="info-cpus"><i class="fa fa-refresh fa-fw fa-spin"></i></td>
+                                <td>Platform</td>
+                                <td data-attr="info-platform"><i class="fa fa-refresh fa-fw fa-spin"></i></td>
                             </tr>
                         </table>
                     </div>
@@ -68,16 +71,16 @@
             <div class="col-xs-12">
                 <div class="box box-danger">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Delete Node</h3>
+                        <h3 class="box-title">Delete Cluster</h3>
                     </div>
                     <div class="box-body">
-                        <p class="no-margin">Deleting a node is a irreversible action and will immediately remove this node from the panel. There must be no servers associated with this node in order to continue.</p>
+                        <p class="no-margin">Deleting a cluster is a irreversible action and will immediately remove from the panel. There must be no servers associated in order to continue.</p>
                     </div>
                     <div class="box-footer">
-                        <form action="{{ route('admin.nodes.view.delete', $node->id) }}" method="POST">
+                        <form action="{{ route('admin.clusters.view.delete', $node->id) }}" method="POST">
                             {!! csrf_field() !!}
                             {!! method_field('DELETE') !!}
-                            <button type="submit" class="btn btn-danger btn-sm pull-right" {{ ($node->servers_count < 1) ?: 'disabled' }}>Yes, Delete This Node</button>
+                            <button type="submit" class="btn btn-danger btn-sm pull-right" {{ ($node->servers_count < 1) ?: 'disabled' }}>Yes, Delete This Cluster</button>
                         </form>
                     </div>
                 </div>
@@ -148,12 +151,15 @@
     (function getInformation() {
         $.ajax({
             method: 'GET',
-            url: '/admin/nodes/view/{{ $node->id }}/system-information',
+            url: '/admin/clusters/view/{{ $node->id }}/system-information',
             timeout: 5000,
         }).done(function (data) {
             $('[data-attr="info-version"]').html(data.version);
             $('[data-attr="info-system"]').html(data.system.type + ' (' + data.system.arch + ') <code>' + data.system.release + '</code>');
             $('[data-attr="info-cpus"]').html(data.system.cpus);
+            $('[data-attr="info-git"]').html(data.system.git);
+            $('[data-attr="info-go"]').html(data.system.go);
+            $('[data-attr="info-platform"]').html(data.system.platform);
         }).fail(function (jqXHR) {
 
         }).always(function() {

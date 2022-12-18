@@ -96,9 +96,9 @@
                                 <i class="fa fa-globe"></i> <span>Locations</span>
                             </a>
                         </li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.nodes') ?: 'active' }}">
-                            <a href="{{ route('admin.nodes') }}">
-                                <i class="fa fa-sitemap"></i> <span>Nodes</span>
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.clusters') ?: 'active' }}">
+                            <a href="{{ route('admin.clusters') }}">
+                                <i class="fa fa-cubes"></i> <span>Clusters</span>
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.servers') ?: 'active' }}">

@@ -104,20 +104,6 @@
                                 <td>Block IO Weight</td>
                                 <td><code>{{ $server->io }}</code></td>
                             </tr>
-                            <tr>
-                                <td>Default Connection</td>
-                                <td><code>{{ $server->allocation->ip }}:{{ $server->allocation->port }}</code></td>
-                            </tr>
-                            <tr>
-                                <td>Connection Alias</td>
-                                <td>
-                                    @if($server->allocation->alias !== $server->allocation->ip)
-                                        <code>{{ $server->allocation->alias }}:{{ $server->allocation->port }}</code>
-                                    @else
-                                        <span class="label label-default">No Alias Assigned</span>
-                                    @endif
-                                </td>
-                            </tr>
                         </table>
                     </div>
                 </div>
@@ -165,7 +151,7 @@
                                 <p>Server Node</p>
                             </div>
                             <div class="icon"><i class="fa fa-codepen"></i></div>
-                            <a href="{{ route('admin.nodes.view', $server->node->id) }}" class="small-box-footer">
+                            <a href="{{ route('admin.clusters.view', $server->node->id) }}" class="small-box-footer">
                                 More info <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>

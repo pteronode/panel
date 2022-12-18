@@ -7,6 +7,7 @@ export enum SocketEvent {
     CONSOLE_OUTPUT = 'console output',
     STATUS = 'status',
     STATS = 'stats',
+    JSON = 'json',
     TRANSFER_LOGS = 'transfer logs',
     TRANSFER_STATUS = 'transfer status',
     BACKUP_COMPLETED = 'backup completed',
@@ -16,5 +17,6 @@ export enum SocketEvent {
 export enum SocketRequest {
     SEND_LOGS = 'send logs',
     SEND_STATS = 'send stats',
+    SEND_JSON = 'send json',
     SET_STATE = 'set state',
 }

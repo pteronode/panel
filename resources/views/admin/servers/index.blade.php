@@ -37,8 +37,7 @@
                             <th>Server Name</th>
                             <th>UUID</th>
                             <th>Owner</th>
-                            <th>Node</th>
-                            <th>Connection</th>
+                            <th>Cluster</th>
                             <th></th>
                             <th></th>
                         </tr>
@@ -47,10 +46,7 @@
                                 <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
                                 <td><code title="{{ $server->uuid }}">{{ $server->uuid }}</code></td>
                                 <td><a href="{{ route('admin.users.view', $server->user->id) }}">{{ $server->user->username }}</a></td>
-                                <td><a href="{{ route('admin.nodes.view', $server->node->id) }}">{{ $server->node->name }}</a></td>
-                                <td>
-                                    <code>{{ $server->allocation->alias }}:{{ $server->allocation->port }}</code>
-                                </td>
+                                <td><a href="{{ route('admin.clusters.view', $server->node->id) }}">{{ $server->node->name }}</a></td>
                                 <td class="text-center">
                                     @if($server->isSuspended())
                                         <span class="label bg-maroon">Suspended</span>

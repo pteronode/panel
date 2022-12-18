@@ -34,6 +34,9 @@ class SystemInformationController extends Controller
                 'arch' => $data['architecture'] ?? '--',
                 'release' => $data['kernel_version'] ?? '--',
                 'cpus' => $data['cpu_count'] ?? 0,
+                'git' => $data['git_version'] ?? '--',
+                'go' => $data['go_version'] ?? '--',
+                'platform' => $data['platform'] ?? '--',
             ],
         ]);
     }

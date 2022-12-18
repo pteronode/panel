@@ -30,8 +30,13 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property string $daemon_token_id
  * @property string $daemon_token
  * @property int $daemonListen
- * @property int $daemonSFTP
  * @property string $daemonBase
+ * @property string $host
+ * @property string $bearer_token
+ * @property bool $insecure
+ * @property string $service_type
+ * @property string $storage_class
+ * @property string $ns
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Pterodactyl\Models\Location $location
@@ -70,10 +75,10 @@ class Node extends Model
         'memory' => 'integer',
         'disk' => 'integer',
         'daemonListen' => 'integer',
-        'daemonSFTP' => 'integer',
         'behind_proxy' => 'boolean',
         'public' => 'boolean',
         'maintenance_mode' => 'boolean',
+        'insecure' => 'boolean',
     ];
 
     /**
@@ -84,8 +89,9 @@ class Node extends Model
         'fqdn', 'scheme', 'behind_proxy',
         'memory', 'memory_overallocate', 'disk',
         'disk_overallocate', 'upload_size', 'daemonBase',
-        'daemonSFTP', 'daemonListen',
-        'description', 'maintenance_mode',
+        'daemonListen', 'description', 'maintenance_mode',
+        'host', 'bearer_token', 'insecure', 'service_type',
+        'storage_class', 'ns',
     ];
 
     public static array $validationRules = [
@@ -101,10 +107,15 @@ class Node extends Model
         'disk' => 'required|numeric|min:1',
         'disk_overallocate' => 'required|numeric|min:-1',
         'daemonBase' => 'sometimes|required|regex:/^([\/][\d\w.\-\/]+)$/',
-        'daemonSFTP' => 'required|numeric|between:1,65535',
         'daemonListen' => 'required|numeric|between:1,65535',
         'maintenance_mode' => 'boolean',
         'upload_size' => 'int|between:1,1024',
+        'host' => 'required|string',
+        'bearer_token' => 'required|string',
+        'insecure' => 'boolean',
+        'service_type' => 'required|string',
+        'storage_class' => 'required|string',
+        'ns' => 'required|string',
     ];
 
     /**
@@ -116,9 +127,9 @@ class Node extends Model
         'memory_overallocate' => 0,
         'disk_overallocate' => 0,
         'daemonBase' => '/var/lib/pterodactyl/volumes',
-        'daemonSFTP' => 2022,
         'daemonListen' => 8080,
         'maintenance_mode' => false,
+        'insecure' => false,
     ];
 
     /**
@@ -151,9 +162,14 @@ class Node extends Model
             ],
             'system' => [
                 'data' => $this->daemonBase,
-                'sftp' => [
-                    'bind_port' => $this->daemonSFTP,
-                ],
+            ],
+            'cluster' => [
+                'namespace' => $this->ns,
+                'host' => $this->host,
+                'bearer_token' => $this->bearer_token,
+                'service_type' => $this->service_type,
+                'storage_class' => $this->storage_class,
+                'insecure' => $this->insecure,
             ],
             'allowed_mounts' => $this->mounts->pluck('source')->toArray(),
             'remote' => route('index'),

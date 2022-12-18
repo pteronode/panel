@@ -8,8 +8,8 @@
     <h1>{{ $node->name }}<small>Your daemon configuration file.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.nodes') }}">Nodes</a></li>
-        <li><a href="{{ route('admin.nodes.view', $node->id) }}">{{ $node->name }}</a></li>
+        <li><a href="{{ route('admin.clusters') }}">Clusters</a></li>
+        <li><a href="{{ route('admin.clusters.view', $node->id) }}">{{ $node->name }}</a></li>
         <li class="active">Configuration</li>
     </ol>
 @endsection
@@ -19,11 +19,10 @@
     <div class="col-xs-12">
         <div class="nav-tabs-custom nav-tabs-floating">
             <ul class="nav nav-tabs">
-                <li><a href="{{ route('admin.nodes.view', $node->id) }}">About</a></li>
-                <li><a href="{{ route('admin.nodes.view.settings', $node->id) }}">Settings</a></li>
-                <li class="active"><a href="{{ route('admin.nodes.view.configuration', $node->id) }}">Configuration</a></li>
-                <li><a href="{{ route('admin.nodes.view.allocation', $node->id) }}">Allocation</a></li>
-                <li><a href="{{ route('admin.nodes.view.servers', $node->id) }}">Servers</a></li>
+                <li><a href="{{ route('admin.clusters.view', $node->id) }}">About</a></li>
+                <li><a href="{{ route('admin.clusters.view.settings', $node->id) }}">Settings</a></li>
+                <li class="active"><a href="{{ route('admin.clusters.view.configuration', $node->id) }}">Configuration</a></li>
+                <li><a href="{{ route('admin.clusters.view.servers', $node->id) }}">Servers</a></li>
             </ul>
         </div>
     </div>
@@ -35,10 +34,10 @@
                 <h3 class="box-title">Configuration File</h3>
             </div>
             <div class="box-body">
-                <pre class="no-margin">{{ $node->getYamlConfiguration() }}</pre>
+                <pre class="no-margin" style="overflow: hidden; white-space: break-spaces">{{ $node->getYamlConfiguration() }}</pre>
             </div>
             <div class="box-footer">
-                <p class="no-margin">This file should be placed in your daemon's root directory (usually <code>/etc/pterodactyl</code>) in a file called <code>config.yml</code>.</p>
+                <p class="no-margin">This file should be placed in your daemon's root directory (usually <code>/etc/kubectyl</code>) in a file called <code>config.yml</code>.</p>
             </div>
         </div>
     </div>
@@ -50,7 +49,7 @@
             <div class="box-body">
                 <p class="text-muted small">
                     Use the button below to generate a custom deployment command that can be used to configure
-                    wings on the target server with a single command.
+                    daemon on the target server with a single command.
                 </p>
             </div>
             <div class="box-footer">
@@ -67,13 +66,13 @@
     $('#configTokenBtn').on('click', function (event) {
         $.ajax({
             method: 'POST',
-            url: '{{ route('admin.nodes.view.configuration.token', $node->id) }}',
+            url: '{{ route('admin.clusters.view.configuration.token', $node->id) }}',
             headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
         }).done(function (data) {
             swal({
                 type: 'success',
                 title: 'Token created.',
-                text: '<p>To auto-configure your node run the following command:<br /><small><pre>cd /etc/pterodactyl && sudo wings configure --panel-url {{ config('app.url') }} --token ' + data.token + ' --node ' + data.node + '{{ config('app.debug') ? ' --allow-insecure' : '' }}</pre></small></p>',
+                text: '<p>To auto-configure your daemon run the following command:<br /><small><pre>cd /etc/kubectyl && sudo kuber configure --panel-url {{ config('app.url') }} --token ' + data.token + ' --node ' + data.node + '{{ config('app.debug') ? ' --allow-insecure' : '' }}</pre></small></p>',
                 html: true
             })
         }).fail(function () {

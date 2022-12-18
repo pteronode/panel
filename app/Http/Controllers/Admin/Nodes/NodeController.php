@@ -30,6 +30,6 @@ class NodeController extends Controller
             ->allowedSorts(['id'])
             ->paginate(25);
 
-        return $this->view->make('admin.nodes.index', ['nodes' => $nodes]);
+        return $this->view->make('admin.clusters.index', ['nodes' => $nodes]);
     }
 }

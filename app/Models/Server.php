@@ -32,7 +32,9 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  * @property int $cpu
  * @property string|null $threads
  * @property bool $oom_disabled
- * @property int $allocation_id
+//  * @property int $allocation_id
+ * @property int $default_port
+ * @property array $additional_ports
  * @property int $nest_id
  * @property int $egg_id
  * @property string $startup
@@ -163,7 +165,9 @@ class Server extends Model
         'threads' => 'nullable|regex:/^[0-9-,]+$/',
         'oom_disabled' => 'sometimes|boolean',
         'disk' => 'required|numeric|min:0',
-        'allocation_id' => 'required|bail|unique:servers|exists:allocations,id',
+        // 'allocation_id' => 'required|bail|unique:servers|exists:allocations,id',
+        'default_port' => 'required|numeric|between:1,65535',
+        'additional_ports' => 'nullable|array',
         'nest_id' => 'required|exists:nests,id',
         'egg_id' => 'required|exists:eggs,id',
         'startup' => 'required|string',
@@ -187,7 +191,9 @@ class Server extends Model
         'io' => 'integer',
         'cpu' => 'integer',
         'oom_disabled' => 'boolean',
-        'allocation_id' => 'integer',
+        // 'allocation_id' => 'integer',
+        'default_port' => 'integer',
+        'additional_ports' => 'array',
         'nest_id' => 'integer',
         'egg_id' => 'integer',
         'database_limit' => 'integer',

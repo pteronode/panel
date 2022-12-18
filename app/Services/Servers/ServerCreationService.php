@@ -87,7 +87,7 @@ class ServerCreationService
             // Create the server and assign any additional allocations to it.
             $server = $this->createModel($data);
 
-            $this->storeAssignedAllocations($server, $data);
+            // $this->storeAssignedAllocations($server, $data);
             $this->storeEggVariables($server, $eggVariableData);
 
             return $server;
@@ -154,7 +154,9 @@ class ServerCreationService
             'cpu' => Arr::get($data, 'cpu'),
             'threads' => Arr::get($data, 'threads'),
             'oom_disabled' => Arr::get($data, 'oom_disabled') ?? true,
-            'allocation_id' => Arr::get($data, 'allocation_id'),
+            // 'allocation_id' => Arr::get($data, 'allocation_id'),
+            'default_port' => Arr::get($data, 'default_port'),
+            'additional_ports' => Arr::get($data, 'additional_ports'),
             'nest_id' => Arr::get($data, 'nest_id'),
             'egg_id' => Arr::get($data, 'egg_id'),
             'startup' => Arr::get($data, 'startup'),

@@ -69,13 +69,17 @@ class ServerConfigurationStructureService
                 'oom_disabled' => $server->oom_disabled,
                 'requires_rebuild' => false,
             ],
+            // 'allocations' => [
+            //     'force_outgoing_ip' => $server->egg->force_outgoing_ip,
+            //     'default' => [
+            //         'ip' => $server->allocation->ip,
+            //         'port' => $server->allocation->port,
+            //     ],
+            //     'mappings' => $server->getAllocationMappings(),
+            // ],
             'allocations' => [
-                'force_outgoing_ip' => $server->egg->force_outgoing_ip,
-                'default' => [
-                    'ip' => $server->allocation->ip,
-                    'port' => $server->allocation->port,
-                ],
-                'mappings' => $server->getAllocationMappings(),
+                'default_port' => $server->default_port,
+                'additional_ports' => $server->additional_ports,
             ],
             'mounts' => $server->mounts->map(function (Mount $mount) {
                 return [
@@ -102,13 +106,16 @@ class ServerConfigurationStructureService
         return [
             'uuid' => $server->uuid,
             'build' => [
+                // 'default' => [
+                //     'ip' => $server->allocation->ip,
+                //     'port' => $server->allocation->port,
+                // ],
                 'default' => [
-                    'ip' => $server->allocation->ip,
-                    'port' => $server->allocation->port,
+                    'port' => $server->default_port,
                 ],
-                'ports' => $server->allocations->groupBy('ip')->map(function ($item) {
-                    return $item->pluck('port');
-                })->toArray(),
+                // 'ports' => $server->allocations->groupBy('ip')->map(function ($item) {
+                //     return $item->pluck('port');
+                // })->toArray(),
                 'env' => $this->environment->handle($server),
                 'oom_disabled' => $server->oom_disabled,
                 'memory' => (int) $server->memory,

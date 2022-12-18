@@ -39,8 +39,17 @@ const Limit = ({ limit, children }: { limit: string | null; children: React.Reac
     </>
 );
 
+export interface Pod {
+    type: string;
+    loadbalancer: string;
+    nodeport: number;
+    ip: string;
+    port: number;
+}
+
 const ServerDetailsBlock = ({ className }: { className?: string }) => {
     const [stats, setStats] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0, tx: 0, rx: 0 });
+    const [pod, setPod] = useState<Pod>({ type: '', loadbalancer: '', nodeport: 0, ip: '', port: 0 });
 
     const status = ServerContext.useStoreState((state) => state.status.value);
     const connected = ServerContext.useStoreState((state) => state.socket.connected);
@@ -56,10 +65,36 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
         [limits]
     );
 
-    const allocation = ServerContext.useStoreState((state) => {
-        const match = state.server.data!.allocations.find((allocation) => allocation.isDefault);
+    useEffect(() => {
+        if (!connected || !instance) {
+            return;
+        }
 
-        return !match ? 'n/a' : `${match.alias || ip(match.ip)}:${match.port}`;
+        instance.send(SocketRequest.SEND_JSON);
+    }, [instance, connected]);
+
+    useWebsocketEvent(SocketEvent.JSON, (data) => {
+        let json: any = {};
+        try {
+            json = JSON.parse(data);
+        } catch (e) {
+            return;
+        }
+
+        setPod({
+            type: json.svc.spec.type,
+            nodeport: (json.svc.spec.ports ?? '')[0]?.nodePort,
+            ip: json.pod.status.hostIP,
+            port: (json.svc.spec.ports ?? '')[0]?.port,
+            loadbalancer: (json.svc.status.loadBalancer.ingress ?? '')[0]?.ip,
+        });
+    });
+
+    const allocation = ServerContext.useStoreState(() => {
+        if (pod.type === 'NodePort') {
+            return !pod.ip ? 'n/a' : `${ip(pod.ip)}:${pod.nodeport}`;
+        }
+        return !pod.loadbalancer ? 'n/a' : `${ip(pod.loadbalancer)}:${pod.port}`;
     });
 
     useEffect(() => {
