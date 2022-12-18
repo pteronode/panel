@@ -13,8 +13,9 @@ return new class () extends Migration {
     public function up()
     {
         Schema::table('servers', function (Blueprint $table) {
+            $table->integer('allocation_id')->nullable()->unsigned()->change();
             $table->string('default_port')->after('allocation_id');
-            $table->text('additional_ports')->after('default_port');
+            $table->text('additional_ports')->nullable()->after('default_port');
         });
     }
 

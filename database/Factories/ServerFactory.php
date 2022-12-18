@@ -40,6 +40,7 @@ class ServerFactory extends Factory
             'oom_disabled' => 0,
             'startup' => '/bin/bash echo "hello world"',
             'image' => 'foo/bar:latest',
+            'default_port' => '65535',
             'allocation_limit' => null,
             'database_limit' => null,
             'backup_limit' => 0,

@@ -32,7 +32,6 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  * @property int $cpu
  * @property string|null $threads
  * @property bool $oom_disabled
-//  * @property int $allocation_id
  * @property int $default_port
  * @property array $additional_ports
  * @property int $nest_id
