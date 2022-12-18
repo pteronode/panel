@@ -65,7 +65,7 @@ class Node extends Model
     /**
      * The attributes excluded from the model's JSON form.
      */
-    protected $hidden = ['daemon_token_id', 'daemon_token'];
+    protected $hidden = ['daemon_token_id', 'daemon_token', 'bearer_token'];
 
     /**
      * Cast values to correct type.

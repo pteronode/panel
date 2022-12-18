@@ -37,8 +37,13 @@ class NodeFactory extends Factory
             'daemon_token_id' => Str::random(Node::DAEMON_TOKEN_ID_LENGTH),
             'daemon_token' => Crypt::encrypt(Str::random(Node::DAEMON_TOKEN_LENGTH)),
             'daemonListen' => 8080,
-            'daemonSFTP' => 2022,
             'daemonBase' => '/var/lib/pterodactyl/volumes',
+            'host' => '127.0.0.1:6443',
+            'bearer_token' => 'test',
+            'insecure' => 'true',
+            'service_type' => 'nodeport',
+            'storage_class' => 'manual',
+            'ns' => 'default',
         ];
     }
 }
