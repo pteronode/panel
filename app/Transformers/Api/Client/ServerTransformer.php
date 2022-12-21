@@ -36,6 +36,22 @@ class ServerTransformer extends BaseClientTransformer
 
         $user = $this->request->user();
 
+        $outputArray = [];
+
+        if (!is_null($server->additional_ports)) {
+            foreach ($server->additional_ports as $v) {
+                if (strpos($v, '-') === false) {
+                    $outputArray[] = $v;
+                } else {
+                    $minMax = explode('-', $v);
+
+                    if ($minMax[0] <= $minMax[1]) {
+                        $outputArray = array_merge($outputArray, range($minMax[0], $minMax[1]));
+                    }
+                }
+            }
+        }
+
         return [
             'server_owner' => $user->id === $server->owner_id,
             'identifier' => $server->uuidShort,
@@ -45,9 +61,11 @@ class ServerTransformer extends BaseClientTransformer
             'node' => $server->node->name,
             'is_node_under_maintenance' => $server->node->isUnderMaintenance(),
             'sftp_details' => [
-                'ip' => $server->node->fqdn,
-                'port' => $server->node->daemonSFTP,
+                'ip' => null,
+                'port' => null,
             ],
+            'default_port' => $server->default_port,
+            'additional_ports' => $outputArray,
             'description' => $server->description,
             'limits' => [
                 'memory' => $server->memory,

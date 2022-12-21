@@ -47,14 +47,6 @@ class ServerTransferController extends Controller
         $allocation_id = intval($validatedData['allocation_id']);
         $additional_allocations = array_map('intval', $validatedData['allocation_additional'] ?? []);
 
-        // Check if the node is viable for the transfer.
-        $node = $this->nodeRepository->getNodeWithResourceUsage($node_id);
-        if (!$node->isViable($server->memory, $server->disk)) {
-            $this->alert->danger(trans('admin/server.alerts.transfer_not_viable'))->flash();
-
-            return redirect()->route('admin.servers.view.manage', $server->id);
-        }
-
         $server->validateTransferState();
 
         $this->connection->transaction(function () use ($server, $node_id, $allocation_id, $additional_allocations) {

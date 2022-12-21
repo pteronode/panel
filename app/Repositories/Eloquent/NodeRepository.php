@@ -19,34 +19,34 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
     /**
      * Return the usage stats for a single node.
      */
-    public function getUsageStats(Node $node): array
-    {
-        $stats = $this->getBuilder()
-            ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
-            ->join('servers', 'servers.node_id', '=', 'nodes.id')
-            ->where('node_id', '=', $node->id)
-            ->first();
+    // public function getUsageStats(Node $node): array
+    // {
+    //     $stats = $this->getBuilder()
+    //         ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
+    //         ->join('servers', 'servers.node_id', '=', 'nodes.id')
+    //         ->where('node_id', '=', $node->id)
+    //         ->first();
 
-        return Collection::make(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])
-            ->mapWithKeys(function ($value, $key) use ($node) {
-                $maxUsage = $node->{$key};
-                if ($node->{$key . '_overallocate'} > 0) {
-                    $maxUsage = $node->{$key} * (1 + ($node->{$key . '_overallocate'} / 100));
-                }
+    //     return Collection::make(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])
+    //         ->mapWithKeys(function ($value, $key) use ($node) {
+    //             $maxUsage = $node->{$key};
+    //             if ($node->{$key . '_overallocate'} > 0) {
+    //                 $maxUsage = $node->{$key} * (1 + ($node->{$key . '_overallocate'} / 100));
+    //             }
 
-                $percent = ($value / $maxUsage) * 100;
+    //             $percent = ($value / $maxUsage) * 100;
 
-                return [
-                    $key => [
-                        'value' => number_format($value),
-                        'max' => number_format($maxUsage),
-                        'percent' => $percent,
-                        'css' => ($percent <= self::THRESHOLD_PERCENTAGE_LOW) ? 'green' : (($percent > self::THRESHOLD_PERCENTAGE_MEDIUM) ? 'red' : 'yellow'),
-                    ],
-                ];
-            })
-            ->toArray();
-    }
+    //             return [
+    //                 $key => [
+    //                     'value' => number_format($value),
+    //                     'max' => number_format($maxUsage),
+    //                     'percent' => $percent,
+    //                     'css' => ($percent <= self::THRESHOLD_PERCENTAGE_LOW) ? 'green' : (($percent > self::THRESHOLD_PERCENTAGE_MEDIUM) ? 'red' : 'yellow'),
+    //                 ],
+    //             ];
+    //         })
+    //         ->toArray();
+    // }
 
     /**
      * Return the usage stats for a single node.
@@ -134,19 +134,5 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
                 'allocations' => $item->ports,
             ];
         })->values();
-    }
-
-    /**
-     * Returns a node with the given id with the Node's resource usage.
-     */
-    public function getNodeWithResourceUsage(int $node_id): Node
-    {
-        $instance = $this->getBuilder()
-            ->select(['nodes.id', 'nodes.fqdn', 'nodes.scheme', 'nodes.daemon_token', 'nodes.daemonListen', 'nodes.memory', 'nodes.disk', 'nodes.memory_overallocate', 'nodes.disk_overallocate'])
-            ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
-            ->leftJoin('servers', 'servers.node_id', '=', 'nodes.id')
-            ->where('nodes.id', $node_id);
-
-        return $instance->first();
     }
 }

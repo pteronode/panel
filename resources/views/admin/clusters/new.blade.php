@@ -106,53 +106,6 @@
         <div class="col-sm-6">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Allocation Limits</h3>
-                </div>
-                <div class="box-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <p class="text-muted small">Enter the total amount of memory available for new servers.</p>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="pMemory" class="form-label">Total Memory</label>
-                            <div class="input-group">
-                                <input type="text" name="memory" data-multiplicator="true" class="form-control" id="pMemory" value="{{ old('memory') }}"/>
-                                <span class="input-group-addon">MiB</span>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="pMemoryOverallocate" class="form-label">Memory Over-Allocation</label>
-                            <div class="input-group">
-                                <input type="text" name="memory_overallocate" class="form-control" id="pMemoryOverallocate" value="{{ old('memory_overallocate') }}"/>
-                                <span class="input-group-addon">%</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-md-6">
-                            <label for="pDisk" class="form-label">Total Disk Space</label>
-                            <div class="input-group">
-                                <input type="text" name="disk" data-multiplicator="true" class="form-control" id="pDisk" value="{{ old('disk') }}"/>
-                                <span class="input-group-addon">MiB</span>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label for="pDiskOverallocate" class="form-label">Disk Over-Allocation</label>
-                            <div class="input-group">
-                                <input type="text" name="disk_overallocate" class="form-control" id="pDiskOverallocate" value="{{ old('disk_overallocate') }}"/>
-                                <span class="input-group-addon">%</span>
-                            </div>
-                        </div>
-                        <div class="col-md-12">
-                            <p class="text-muted small">To disable checking for overallocation enter <code>-1</code> into the field. Entering <code>0</code> will prevent creating new servers if it would put the cluster over the limit.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="box box-primary">
-                <div class="box-header with-border">
                     <h3 class="box-title">Cluster Configuration</h3>
                 </div>
                 <div class="box-body">

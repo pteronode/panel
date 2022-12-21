@@ -13,12 +13,12 @@ interface NodeRepositoryInterface extends RepositoryInterface
     /**
      * Return the usage stats for a single node.
      */
-    public function getUsageStats(Node $node): array;
+    // public function getUsageStats(Node $node): array;
 
     /**
      * Return the usage stats for a single node.
      */
-    public function getUsageStatsRaw(Node $node): array;
+    // public function getUsageStatsRaw(Node $node): array;
 
     /**
      * Return a single node with location and server information.

@@ -7,7 +7,7 @@ use Pterodactyl\Services\Nodes\NodeCreationService;
 
 class MakeNodeCommand extends Command
 {
-    protected $signature = 'p:node:make
+    protected $signature = 'p:cluster:make
                             {--name= : A name to identify the node.}
                             {--description= : A description to identify the node.}
                             {--locationId= : A valid locationId.}
@@ -16,14 +16,15 @@ class MakeNodeCommand extends Command
                             {--scheme= : Which scheme should be used? (Enable SSL=https / Disable SSL=http).}
                             {--proxy= : Is the daemon behind a proxy? (Yes=1 / No=0).}
                             {--maintenance= : Should maintenance mode be enabled? (Enable Maintenance mode=1 / Disable Maintenance mode=0).}
-                            {--maxMemory= : Set the max memory amount.}
-                            {--overallocateMemory= : Enter the amount of ram to overallocate (% or -1 to overallocate the maximum).}
-                            {--maxDisk= : Set the max disk amount.}
-                            {--overallocateDisk= : Enter the amount of disk to overallocate (% or -1 to overallocate the maximum).}
                             {--uploadSize= : Enter the maximum upload filesize.}
                             {--daemonListeningPort= : Enter the wings listening port.}
-                            {--daemonSFTPPort= : Enter the wings SFTP listening port.}
-                            {--daemonBase= : Enter the base folder.}';
+                            {--daemonBase= : Enter the base folder.}
+                            {--host= : Test}
+                            {--bearer_token= : Test}
+                            {--insecure= : Test}
+                            {--service_type= : Test}
+                            {--storage_class= : Test}
+                            {--ns= : Test}';
 
     protected $description = 'Creates a new node on the system via the CLI.';
 
@@ -54,14 +55,15 @@ class MakeNodeCommand extends Command
         $data['public'] = $this->option('public') ?? $this->confirm('Should this node be public? As a note, setting a node to private you will be denying the ability to auto-deploy to this node.', true);
         $data['behind_proxy'] = $this->option('proxy') ?? $this->confirm('Is your FQDN behind a proxy?');
         $data['maintenance_mode'] = $this->option('maintenance') ?? $this->confirm('Should maintenance mode be enabled?');
-        $data['memory'] = $this->option('maxMemory') ?? $this->ask('Enter the maximum amount of memory');
-        $data['memory_overallocate'] = $this->option('overallocateMemory') ?? $this->ask('Enter the amount of memory to over allocate by, -1 will disable checking and 0 will prevent creating new servers');
-        $data['disk'] = $this->option('maxDisk') ?? $this->ask('Enter the maximum amount of disk space');
-        $data['disk_overallocate'] = $this->option('overallocateDisk') ?? $this->ask('Enter the amount of memory to over allocate by, -1 will disable checking and 0 will prevent creating new server');
         $data['upload_size'] = $this->option('uploadSize') ?? $this->ask('Enter the maximum filesize upload', '100');
         $data['daemonListen'] = $this->option('daemonListeningPort') ?? $this->ask('Enter the wings listening port', '8080');
-        $data['daemonSFTP'] = $this->option('daemonSFTPPort') ?? $this->ask('Enter the wings SFTP listening port', '2022');
         $data['daemonBase'] = $this->option('daemonBase') ?? $this->ask('Enter the base folder', '/var/lib/pterodactyl/volumes');
+        $data['host'] = $this->option('host') ?? $this->ask('Enter the host');
+        $data['bearer_token'] = $this->option('bearer_token') ?? $this->ask('Enter the bearer_token');
+        $data['insecure'] = $this->option('insecure') ?? $this->ask('Enter the insecure');
+        $data['service_type'] = $this->option('service_type') ?? $this->ask('Enter the service_type');
+        $data['storage_class'] = $this->option('storage_class') ?? $this->ask('Enter the storage_class');
+        $data['ns'] = $this->option('ns') ?? $this->ask('Enter the ns');
 
         $node = $this->creationService->handle($data);
         $this->line('Successfully created a new node on the location ' . $data['location_id'] . ' with the name ' . $data['name'] . ' and has an id of ' . $node->id . '.');

@@ -22,7 +22,6 @@
                 <li><a href="{{ route('admin.clusters.view', $node->id) }}">About</a></li>
                 <li><a href="{{ route('admin.clusters.view.settings', $node->id) }}">Settings</a></li>
                 <li class="active"><a href="{{ route('admin.clusters.view.configuration', $node->id) }}">Configuration</a></li>
-                <li><a href="{{ route('admin.clusters.view.servers', $node->id) }}">Servers</a></li>
             </ul>
         </div>
     </div>

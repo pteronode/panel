@@ -374,20 +374,20 @@
                 $('#pNodeId').val('{{ old('node_id') }}').change();
 
                 // Persist 'Default Allocation' select2
-                @if (old('allocation_id'))
-                    $('#pAllocation').val('{{ old('allocation_id') }}').change();
+                @if (old('default_port'))
+                    $('#pDefaultPort').val('{{ old('default_port') }}').change();
                 @endif
                 // END Persist 'Default Allocation' select2
 
                 // Persist 'Additional Allocations' select2
-                @if (old('allocation_additional'))
-                    const additional_allocations = [];
+                @if (old('additional_ports'))
+                    const additional_ports = [];
 
-                    @for ($i = 0; $i < count(old('allocation_additional')); $i++)
-                        additional_allocations.push('{{ old('allocation_additional.'.$i)}}');
+                    @for ($i = 0; $i < count(old('additional_ports')); $i++)
+                        additional_ports.push('{{ old('additional_ports.'.$i)}}');
                     @endfor
 
-                    $('#pAllocationAdditional').val(additional_allocations).change();
+                    $('#pAdditionalPorts').val(additional_ports).change();
                 @endif
                 // END Persist 'Additional Allocations' select2
             @endif

@@ -42,8 +42,6 @@
                             <th></th>
                             <th>Name</th>
                             <th>Location</th>
-                            <th>Memory</th>
-                            <th>Disk</th>
                             <th class="text-center">Servers</th>
                             <th class="text-center">SSL</th>
                             <th class="text-center">Public</th>
@@ -53,8 +51,6 @@
                                 <td class="text-center text-muted left-icon" data-action="ping" data-secret="{{ $node->getDecryptedKey() }}" data-location="{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/api/system"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
                                 <td>{!! $node->maintenance_mode ? '<span class="label label-warning"><i class="fa fa-wrench"></i></span> ' : '' !!}<a href="{{ route('admin.clusters.view', $node->id) }}">{{ $node->name }}</a></td>
                                 <td>{{ $node->location->short }}</td>
-                                <td>{{ $node->memory }} MiB</td>
-                                <td>{{ $node->disk }} MiB</td>
                                 <td class="text-center">{{ $node->servers_count }}</td>
                                 <td class="text-center" style="color:{{ ($node->scheme === 'https') ? '#50af51' : '#d9534f' }}"><i class="fa fa-{{ ($node->scheme === 'https') ? 'lock' : 'unlock' }}"></i></td>
                                 <td class="text-center"><i class="fa fa-{{ ($node->public) ? 'eye' : 'eye-slash' }}"></i></td>

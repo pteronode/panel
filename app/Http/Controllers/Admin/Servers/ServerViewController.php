@@ -63,8 +63,7 @@ class ServerViewController extends Controller
 
         return $this->view->make('admin.servers.view.build', [
             'server' => $server,
-            'assigned' => $allocations->where('server_id', $server->id)->sortBy('port')->sortBy('ip'),
-            'unassigned' => $allocations->where('server_id', null)->sortBy('port')->sortBy('ip'),
+            'assigned' => $server->additional_ports,
         ]);
     }
 

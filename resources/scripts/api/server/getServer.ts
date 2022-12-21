@@ -23,6 +23,13 @@ export interface Server {
         ip: string;
         port: number;
     };
+    default: {
+        ip: string;
+        port: number;
+        additional_ports: string[];
+    }
+    default_port: number;
+    additional_ports: string[];
     invocation: string;
     dockerImage: string;
     description: string;
@@ -59,6 +66,13 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
         ip: data.sftp_details.ip,
         port: data.sftp_details.port,
     },
+    default: {
+        ip: data.ip,
+        port: data.default_port,
+        additional_ports: data.additional_ports,
+    },
+    default_port: data.default_port,
+    additional_ports: data.additional_ports,
     description: data.description ? (data.description.length > 0 ? data.description : null) : null,
     limits: { ...data.limits },
     eggFeatures: data.egg_features || [],

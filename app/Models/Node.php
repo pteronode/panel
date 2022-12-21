@@ -22,10 +22,6 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property string $scheme
  * @property bool $behind_proxy
  * @property bool $maintenance_mode
- * @property int $memory
- * @property int $memory_overallocate
- * @property int $disk
- * @property int $disk_overallocate
  * @property int $upload_size
  * @property string $daemon_token_id
  * @property string $daemon_token
@@ -72,8 +68,6 @@ class Node extends Model
      */
     protected $casts = [
         'location_id' => 'integer',
-        'memory' => 'integer',
-        'disk' => 'integer',
         'daemonListen' => 'integer',
         'behind_proxy' => 'boolean',
         'public' => 'boolean',
@@ -87,10 +81,9 @@ class Node extends Model
     protected $fillable = [
         'public', 'name', 'location_id',
         'fqdn', 'scheme', 'behind_proxy',
-        'memory', 'memory_overallocate', 'disk',
-        'disk_overallocate', 'upload_size', 'daemonBase',
-        'daemonListen', 'description', 'maintenance_mode',
-        'host', 'bearer_token', 'insecure', 'service_type',
+        'upload_size', 'daemonBase', 'daemonListen',
+        'description', 'maintenance_mode', 'host',
+        'bearer_token', 'insecure', 'service_type',
         'storage_class', 'ns',
     ];
 
@@ -102,10 +95,6 @@ class Node extends Model
         'fqdn' => 'required|string',
         'scheme' => 'required',
         'behind_proxy' => 'boolean',
-        'memory' => 'required|numeric|min:1',
-        'memory_overallocate' => 'required|numeric|min:-1',
-        'disk' => 'required|numeric|min:1',
-        'disk_overallocate' => 'required|numeric|min:-1',
         'daemonBase' => 'sometimes|required|regex:/^([\/][\d\w.\-\/]+)$/',
         'daemonListen' => 'required|numeric|between:1,65535',
         'maintenance_mode' => 'boolean',
@@ -124,8 +113,6 @@ class Node extends Model
     protected $attributes = [
         'public' => true,
         'behind_proxy' => false,
-        'memory_overallocate' => 0,
-        'disk_overallocate' => 0,
         'daemonBase' => '/var/lib/pterodactyl/volumes',
         'daemonListen' => 8080,
         'maintenance_mode' => false,
@@ -234,16 +221,5 @@ class Node extends Model
     public function allocations(): HasMany
     {
         return $this->hasMany(Allocation::class);
-    }
-
-    /**
-     * Returns a boolean if the node is viable for an additional server to be placed on it.
-     */
-    public function isViable(int $memory, int $disk): bool
-    {
-        $memoryLimit = $this->memory * (1 + ($this->memory_overallocate / 100));
-        $diskLimit = $this->disk * (1 + ($this->disk_overallocate / 100));
-
-        return ($this->sum_memory + $memory) <= $memoryLimit && ($this->sum_disk + $disk) <= $diskLimit;
     }
 }

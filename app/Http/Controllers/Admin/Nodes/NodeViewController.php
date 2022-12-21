@@ -41,7 +41,7 @@ class NodeViewController extends Controller
 
         return $this->view->make('admin.clusters.view.index', [
             'node' => $node,
-            'stats' => $this->repository->getUsageStats($node),
+            'servers' => $this->serverRepository->loadAllServersForNode($node->id, 25),
             'version' => $this->versionService,
         ]);
     }

@@ -22,7 +22,6 @@
                 <li><a href="{{ route('admin.clusters.view', $node->id) }}">About</a></li>
                 <li class="active"><a href="{{ route('admin.clusters.view.settings', $node->id) }}">Settings</a></li>
                 <li><a href="{{ route('admin.clusters.view.configuration', $node->id) }}">Configuration</a></li>
-                <li><a href="{{ route('admin.clusters.view.servers', $node->id) }}">Servers</a></li>
             </ul>
         </div>
     </div>
@@ -59,11 +58,16 @@
                         </div>
                     </div>
                     <div class="form-group col-xs-12">
-                        <label for="public" class="control-label">Allow Automatic Allocation <sup><a data-toggle="tooltip" data-placement="top" title="Allow automatic allocation to this Node?">?</a></sup></label>
+                        <label for="public" class="control-label">Cluster Visibility</label>
                         <div>
-                            <input type="radio" name="public" value="1" {{ (old('public', $node->public)) ? 'checked' : '' }} id="public_1" checked> <label for="public_1" style="padding-left:5px;">Yes</label><br />
-                            <input type="radio" name="public" value="0" {{ (old('public', $node->public)) ? '' : 'checked' }} id="public_0"> <label for="public_0" style="padding-left:5px;">No</label>
+                            <div class="radio radio-success radio-inline">
+                                <input type="radio" name="public" value="1" {{ (old('public', $node->public)) ? 'checked' : '' }} id="public_1" checked> <label for="public_1" style="padding-left:5px;">Public</label>
+                            </div>
+                            <div class="radio radio-danger radio-inline">
+                                <input type="radio" name="public" value="0" {{ (old('public', $node->public)) ? '' : 'checked' }} id="public_0"> <label for="public_0" style="padding-left:5px;">Private</label>
+                            </div>
                         </div>
+                        <p class="text-muted small">By setting a cluster to <code>private</code> you will be denying the ability to auto-deploy to this cluster.
                     </div>
                     <div class="form-group col-xs-12">
                         <label for="fqdn" class="control-label">Fully Qualified Domain Name</label>
@@ -145,53 +149,6 @@
         <div class="col-sm-6">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Allocation Limits</h3>
-                </div>
-                <div class="box-body row">
-                    <div class="col-xs-12">
-                        <div class="row">
-                            <div class="form-group col-xs-6">
-                                <label for="memory" class="control-label">Total Memory</label>
-                                <div class="input-group">
-                                    <input type="text" name="memory" class="form-control" data-multiplicator="true" value="{{ old('memory', $node->memory) }}"/>
-                                    <span class="input-group-addon">MiB</span>
-                                </div>
-                            </div>
-                            <div class="form-group col-xs-6">
-                                <label for="memory_overallocate" class="control-label">Overallocate</label>
-                                <div class="input-group">
-                                    <input type="text" name="memory_overallocate" class="form-control" value="{{ old('memory_overallocate', $node->memory_overallocate) }}"/>
-                                    <span class="input-group-addon">%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <p class="text-muted small">Enter the total amount of memory available on this node for allocation to servers. You may also provide a percentage that can allow allocation of more than the defined memory.</p>
-                    </div>
-                    <div class="col-xs-12">
-                        <div class="row">
-                            <div class="form-group col-xs-6">
-                                <label for="disk" class="control-label">Disk Space</label>
-                                <div class="input-group">
-                                    <input type="text" name="disk" class="form-control" data-multiplicator="true" value="{{ old('disk', $node->disk) }}"/>
-                                    <span class="input-group-addon">MiB</span>
-                                </div>
-                            </div>
-                            <div class="form-group col-xs-6">
-                                <label for="disk_overallocate" class="control-label">Overallocate</label>
-                                <div class="input-group">
-                                    <input type="text" name="disk_overallocate" class="form-control" value="{{ old('disk_overallocate', $node->disk_overallocate) }}"/>
-                                    <span class="input-group-addon">%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <p class="text-muted small">Enter the total amount of disk space available on this node for server allocation. You may also provide a percentage that will determine the amount of disk space over the set limit to allow.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="box">
-                <div class="box-header with-border">
                     <h3 class="box-title">Cluster Configuration</h3>
                 </div>
                 <div class="box-body">
@@ -202,7 +159,7 @@
                     </div>
                     <div class="form-group">
                         <label for="pBearerToken" class="form-label">Bearer Token</label>
-                        <textarea name="bearer_token" id="pBearerToken" rows="4" class="form-control"></textarea>
+                        <textarea name="bearer_token" id="pBearerToken" rows="16" class="form-control"></textarea>
                         <p class="text-muted small">Service account bearer tokens are perfectly valid to use outside the cluster and can be used to create identities for long standing jobs that wish to talk to the Kubernetes API.</p>
                     </div>
                     <div class="form-group">
@@ -269,6 +226,8 @@
 @section('footer-scripts')
     @parent
     <script>
+        $('#pBearerToken').val('{{ old('bearer_token', $node->bearer_token) }}');
+
     $('[data-toggle="popover"]').popover({
         placement: 'auto'
     });
