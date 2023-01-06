@@ -1,11 +1,8 @@
-[![Discord](https://img.shields.io/discord/1037366848737525790?label=Discord&logo=Discord&logoColor=white&style=flat-square)](https://dsc.gg/kubectyl)
-[![Kubectyl](https://img.shields.io/website?down_message=Offline&label=Discourse&logo=Discourse&style=flat-square&up_message=Online&url=https%3A%2F%2Fdiscourse.kubectyl.org)](https://discourse.kubectyl.org/)
+# Kubectyl Panel [![Discord](https://img.shields.io/discord/1037366848737525790?label=Discord&logo=Discord&logoColor=white&style=flat-square)](https://dsc.gg/kubectyl) [![Discourse](https://img.shields.io/website?down_message=Offline&label=Discourse&logo=Discourse&style=flat-square&up_message=Online&url=https%3A%2F%2Fdiscourse.kubectyl.org)](https://discourse.kubectyl.org/) [![Last commit](https://img.shields.io/github/last-commit/kubectyl/panel?style=flat-square)](https://github.com/kubectyl/panel/commits/develop) [![Contributors](https://img.shields.io/github/contributors/kubectyl/panel?style=flat-square)](https://github.com/kubectyl/panel/graphs/contributors) [![Issues](https://img.shields.io/github/issues/kubectyl/panel?style=flat-square)](https://github.com/kubectyl/panel/issues)
+Modified version of the Pterodactyl Panel for compatibility with *Kuber*, the special controller for Kubernetes.
 
 ## Please note that this is pre-release software; it may contain bugs or corrupt data – it should not be used on a production site.
 > Please be sure to back up all files and database content prior to using this pre-release software. <b>Use at your own risk!</b>
-
-# Kubectyl
-Kubectyl is a *Kubernetes* rewritten version of Pterodactyl Panel. All servers are created as pods, almost completely imitating the behavior of docker containers from the official Pterodactyl setup.
 
 ## Sponsors
 
@@ -19,9 +16,6 @@ Thank you so very much for your support and contributions to our organization. W
 
 ## Goals of the project
 - Work done faster and more efficiently, with less skill requirements;
-- Provide more stable (than official) version of Wings;
-- Performance optimizations;
-- Self-healing servers;
 - Kubernetes multi-cluster environments;
 
 ## How can I help the project?
