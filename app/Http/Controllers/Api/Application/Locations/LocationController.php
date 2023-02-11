@@ -93,7 +93,7 @@ class LocationController extends ApplicationApiController
     /**
      * Delete a location from the Panel.
      *
-     * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveNodesException
+     * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveClustersException
      */
     public function delete(DeleteLocationRequest $request, Location $location): Response
     {

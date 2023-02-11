@@ -50,7 +50,7 @@ class MountController extends Controller
     public function view(string $id): View
     {
         $nests = Nest::query()->with('eggs')->get();
-        $locations = Location::query()->with('nodes')->get();
+        $locations = Location::query()->with('clusters')->get();
 
         return $this->view->make('admin.mounts.view', [
             'mount' => $this->repository->getWithRelations($id),
@@ -127,15 +127,15 @@ class MountController extends Controller
     }
 
     /**
-     * Adds nodes to the mount's many-to-many relation.
+     * Adds clusters to the mount's many-to-many relation.
      */
     public function addNodes(Request $request, Mount $mount): RedirectResponse
     {
-        $data = $request->validate(['nodes' => 'required|exists:nodes,id']);
+        $data = $request->validate(['clusters' => 'required|exists:clusters,id']);
 
-        $nodes = $data['nodes'] ?? [];
-        if (count($nodes) > 0) {
-            $mount->nodes()->attach($nodes);
+        $clusters = $data['clusters'] ?? [];
+        if (count($clusters) > 0) {
+            $mount->clusters()->attach($clusters);
         }
 
         $this->alert->success('Mount was updated successfully.')->flash();
@@ -154,11 +154,11 @@ class MountController extends Controller
     }
 
     /**
-     * Deletes a node from the mount's many-to-many relation.
+     * Deletes a cluster from the mount's many-to-many relation.
      */
-    public function deleteNode(Mount $mount, int $node_id): Response
+    public function deleteNode(Mount $mount, int $cluster_id): Response
     {
-        $mount->nodes()->detach($node_id);
+        $mount->clusters()->detach($cluster_id);
 
         return response('', 204);
     }

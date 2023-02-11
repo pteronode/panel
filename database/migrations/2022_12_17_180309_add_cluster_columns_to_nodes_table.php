@@ -15,7 +15,6 @@ return new class () extends Migration {
     public function up()
     {
         Schema::table('nodes', function (Blueprint $table) {
-            $table->dropColumn('daemonSFTP');
             $table->longText('host')->after('daemonBase');
             $table->text('bearer_token')->after('host');
             $table->boolean('insecure')->default(false)->after('bearer_token');

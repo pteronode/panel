@@ -87,19 +87,19 @@
                                 </p>
                             </div>
                             <div class="form-group">
-                                <div class="checkbox checkbox-primary no-margin-bottom">
-                                    <input id="pForceOutgoingIp" name="force_outgoing_ip" type="checkbox" value="1" @if($egg->force_outgoing_ip) checked @endif />
-                                    <label for="pForceOutgoingIp" class="strong">Force Outgoing IP</label>
-                                    <p class="text-muted small">
-                                        Forces all outgoing network traffic to have its Source IP NATed to the IP of the server's primary allocation IP.
-                                        Required for certain games to work properly when the Node has multiple public IP addresses.
-                                        <br>
-                                        <strong>
-                                            Enabling this option will disable internal networking for any servers using this egg,
-                                            causing them to be unable to internally access other servers on the same node.
-                                        </strong>
-                                    </p>
+                                <label for="pDefaultPort">Default Port</label>
+                                <input type="text" id="pDefaultPort" name="default_port" class="form-control" value="">
+                                <p class="small text-muted no-margin">The main port that will be assigned to this server.</p>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="pAdditionalPorts" class="control-label">Assign Additional Ports</label>
+                                <div>
+                                    <select name="additional_ports[]" class="form-control" multiple id="pAdditionalPorts">
+                                       
+                                    </select>
                                 </div>
+                                <p class="text-muted small">Please note that due to software limitations you cannot assign identical ports on different IPs to the same server.</p>
                             </div>
 
                         </div>
@@ -202,5 +202,21 @@
             $(this).val(prepend + '    ' + append);
         }
     });
+
+    $('#pAdditionalPorts').select2({
+        tags: true,
+        selectOnClose: true,
+        tokenSeparators: [',', ' '],
+    });
+
+    @if (old('additional_ports'))
+        const additional_ports = [];
+
+        @for ($i = 0; $i < count(old('additional_ports')); $i++)
+                additional_ports.push('{{ old('additional_ports.'.$i)}}');
+        @endfor
+
+        $('#pAdditionalPorts').val(additional_ports).change();
+     @endif
     </script>
 @endsection

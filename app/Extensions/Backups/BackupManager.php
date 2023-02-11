@@ -100,9 +100,9 @@ class BackupManager
     }
 
     /**
-     * Creates a new Wings adapter.
+     * Creates a new Kuber adapter.
      */
-    public function createWingsAdapter(array $config): FilesystemAdapter
+    public function createKuberAdapter(array $config): FilesystemAdapter
     {
         return new InMemoryFilesystemAdapter();
     }

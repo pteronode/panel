@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Transformers\Api\Application;
 
-use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Cluster;
 use Pterodactyl\Models\Server;
 use League\Fractal\Resource\Item;
 use Pterodactyl\Models\Allocation;
@@ -52,7 +52,7 @@ class AllocationTransformer extends BaseTransformer
 
         return $this->item(
             $allocation->node,
-            $this->makeTransformer(NodeTransformer::class),
+            $this->makeTransformer(ClusterTransformer::class),
             Node::RESOURCE_NAME
         );
     }

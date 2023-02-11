@@ -19,16 +19,14 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  * @property string|null $external_id
  * @property string $uuid
  * @property string $uuidShort
- * @property int $node_id
+ * @property int $cluster_id
  * @property string $name
  * @property string $description
  * @property string|null $status
  * @property bool $skip_scripts
  * @property int $owner_id
  * @property int $memory
- * @property int $swap
  * @property int $disk
- * @property int $io
  * @property int $cpu
  * @property string|null $threads
  * @property bool $oom_disabled
@@ -57,7 +55,7 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Mount[] $mounts
  * @property int|null $mounts_count
  * @property \Pterodactyl\Models\Nest $nest
- * @property \Pterodactyl\Models\Node $node
+ * @property \Pterodactyl\Models\Cluster $cluster
  * @property \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property int|null $notifications_count
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Schedule[] $schedules
@@ -89,7 +87,7 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereMemory($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereNestId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Server whereNodeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereClusterId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereOomDisabled($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereOwnerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereSkipScripts($value)
@@ -154,12 +152,10 @@ class Server extends Model
         'external_id' => 'sometimes|nullable|string|between:1,191|unique:servers',
         'owner_id' => 'required|integer|exists:users,id',
         'name' => 'required|string|min:1|max:191',
-        'node_id' => 'required|exists:nodes,id',
+        'cluster_id' => 'required|exists:clusters,id',
         'description' => 'string',
         'status' => 'nullable|string',
         'memory' => 'required|numeric|min:128',
-        'swap' => 'required|numeric|min:-1',
-        'io' => 'required|numeric|between:10,1000',
         'cpu' => 'required|numeric|min:0',
         'threads' => 'nullable|regex:/^[0-9-,]+$/',
         'oom_disabled' => 'sometimes|boolean',
@@ -180,13 +176,11 @@ class Server extends Model
      * Cast values to correct type.
      */
     protected $casts = [
-        'node_id' => 'integer',
+        'cluster_id' => 'integer',
         'skip_scripts' => 'boolean',
         'owner_id' => 'integer',
         'memory' => 'integer',
-        'swap' => 'integer',
         'disk' => 'integer',
-        'io' => 'integer',
         'cpu' => 'integer',
         'oom_disabled' => 'boolean',
         'default_port' => 'integer',
@@ -203,7 +197,7 @@ class Server extends Model
      */
     public function getAllocationMappings(): array
     {
-        return $this->allocations->where('node_id', $this->node_id)->groupBy('ip')->map(function ($item) {
+        return $this->allocations->where('cluster_id', $this->cluster_id)->groupBy('ip')->map(function ($item) {
             return $item->pluck('port');
         })->toArray();
     }
@@ -285,11 +279,11 @@ class Server extends Model
     }
 
     /**
-     * Gets information for the node associated with this server.
+     * Gets information for the cluster associated with this server.
      */
-    public function node(): BelongsTo
+    public function cluster(): BelongsTo
     {
-        return $this->belongsTo(Node::class);
+        return $this->belongsTo(Cluster::class);
     }
 
     /**
@@ -315,7 +309,7 @@ class Server extends Model
      */
     public function location(): \Znck\Eloquent\Relations\BelongsToThrough
     {
-        return $this->belongsToThrough(Location::class, Node::class);
+        return $this->belongsToThrough(Location::class, Cluster::class);
     }
 
     /**
@@ -358,7 +352,7 @@ class Server extends Model
     {
         if (
             $this->isSuspended() ||
-            $this->node->isUnderMaintenance() ||
+            $this->cluster->isUnderMaintenance() ||
             !$this->isInstalled() ||
             $this->status === self::STATUS_RESTORING_BACKUP ||
             !is_null($this->transfer)

@@ -51,7 +51,7 @@ class ServerController extends ApplicationApiController
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
+     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableClusterException
      */
     public function store(StoreServerRequest $request): JsonResponse
     {

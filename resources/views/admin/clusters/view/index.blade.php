@@ -1,15 +1,15 @@
 @extends('layouts.admin')
 
 @section('title')
-    {{ $node->name }}
+    {{ $cluster->name }}
 @endsection
 
 @section('content-header')
-    <h1>{{ $node->name }}<small>A quick overview of your cluster.</small></h1>
+    <h1>{{ $cluster->name }}<small>A quick overview of your cluster.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li><a href="{{ route('admin.clusters') }}">Clusters</a></li>
-        <li class="active">{{ $node->name }}</li>
+        <li class="active">{{ $cluster->name }}</li>
     </ol>
 @endsection
 
@@ -18,17 +18,19 @@
     <div class="col-xs-12">
         <div class="nav-tabs-custom nav-tabs-floating">
             <ul class="nav nav-tabs">
-                <li class="active"><a href="{{ route('admin.clusters.view', $node->id) }}">About</a></li>
-                <li><a href="{{ route('admin.clusters.view.settings', $node->id) }}">Settings</a></li>
-                <li><a href="{{ route('admin.clusters.view.configuration', $node->id) }}">Configuration</a></li>
+                <li class="active"><a href="{{ route('admin.clusters.view', $cluster->id) }}">About</a></li>
+                <li><a href="{{ route('admin.clusters.view.settings', $cluster->id) }}">Settings</a></li>
+                <li><a href="{{ route('admin.clusters.view.configuration', $cluster->id) }}">Configuration</a></li>
+                <li><a href="{{ route('admin.clusters.view.allocation', $cluster->id) }}">Allocation</a></li>
+                <li><a href="{{ route('admin.clusters.view.servers', $cluster->id) }}">Servers</a></li>
             </ul>
         </div>
     </div>
 </div>
 <div class="row">
-    <div class="col-sm-12">
+    <div class="col-sm-8">
         <div class="row">
-            <div class="col-xs-6">
+            <div class="col-xs-12">
                 <div class="box box-primary">
                     <div class="box-header with-border">
                         <h3 class="box-title">Information</h3>
@@ -55,44 +57,14 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-6">
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <h3 class="box-title">Servers</h3>
-            </div>
-            <div class="box-body table-responsive no-padding">
-                <table class="table table-hover">
-                    <tr>
-                        <th>ID</th>
-                        <th>Server Name</th>
-                        <th>Owner</th>
-                        <th>Service</th>
-                    </tr>
-                    @foreach($servers as $server)
-                        <tr data-server="{{ $server->uuid }}">
-                            <td><code>{{ $server->uuidShort }}</code></td>
-                            <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
-                            <td><a href="{{ route('admin.users.view', $server->owner_id) }}">{{ $server->user->username }}</a></td>
-                            <td>{{ $server->nest->name }} ({{ $server->egg->name }})</td>
-                        </tr>
-                    @endforeach
-                </table>
-                @if($servers->hasPages())
-                    <div class="box-footer with-border">
-                        <div class="col-md-12 text-center">{!! $servers->render() !!}</div>
-                    </div>
-                @endif
-            </div>
-        </div>
-    </div>
-            @if ($node->description)
+            @if ($cluster->description)
                 <div class="col-xs-12">
                     <div class="box box-default">
                         <div class="box-header with-border">
                             Description
                         </div>
                         <div class="box-body table-responsive">
-                            <pre>{{ $node->description }}</pre>
+                            <pre>{{ $cluster->description }}</pre>
                         </div>
                     </div>
                 </div>
@@ -106,11 +78,60 @@
                         <p class="no-margin">Deleting a cluster is a irreversible action and will immediately remove from the panel. There must be no servers associated in order to continue.</p>
                     </div>
                     <div class="box-footer">
-                        <form action="{{ route('admin.clusters.view.delete', $node->id) }}" method="POST">
+                        <form action="{{ route('admin.clusters.view.delete', $cluster->id) }}" method="POST">
                             {!! csrf_field() !!}
                             {!! method_field('DELETE') !!}
-                            <button type="submit" class="btn btn-danger btn-sm pull-right" {{ ($node->servers_count < 1) ?: 'disabled' }}>Yes, Delete This Cluster</button>
+                            <button type="submit" class="btn btn-danger btn-sm pull-right" {{ ($cluster->servers_count < 1) ?: 'disabled' }}>Yes, Delete This Cluster</button>
                         </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">At-a-Glance</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    @if($cluster->maintenance_mode)
+                    <div class="col-sm-12">
+                        <div class="info-box bg-orange">
+                            <span class="info-box-icon"><i class="ion ion-wrench"></i></span>
+                            <div class="info-box-content" style="padding: 23px 10px 0;">
+                                <span class="info-box-text">This node is under</span>
+                                <span class="info-box-number">Maintenance</span>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+                    <div class="col-sm-12">
+                        <div class="info-box bg-green">
+                            <span class="info-box-icon"><i class="ion ion-ios-folder-outline"></i></span>
+                            <div class="info-box-content" style="padding: 25px 10px 0;">
+                                <span class="info-box-text">Disk Space Used</span>
+                                <!-- <span class="info-box-number">1024 MiB</span> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="info-box bg-red">
+                            <span class="info-box-icon"><i class="ion ion-ios-barcode-outline"></i></span>
+                            <div class="info-box-content" style="padding: 15px 10px 0;">
+                                <span class="info-box-text">Memory Used</span>
+                                <!-- <span class="info-box-number">1024 / 1024 MiB</span> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="info-box bg-blue">
+                            <span class="info-box-icon"><i class="ion ion-social-buffer-outline"></i></span>
+                            <div class="info-box-content" style="padding: 23px 10px 0;">
+                                <span class="info-box-text">Total Servers</span>
+                                <span class="info-box-number">{{ $cluster->servers_count }}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -125,7 +146,7 @@
     (function getInformation() {
         $.ajax({
             method: 'GET',
-            url: '/admin/clusters/view/{{ $node->id }}/system-information',
+            url: '/admin/clusters/view/{{ $cluster->id }}/system-information',
             timeout: 5000,
         }).done(function (data) {
             $('[data-attr="info-version"]').html(data.version);

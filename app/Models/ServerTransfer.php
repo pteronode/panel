@@ -19,8 +19,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Pterodactyl\Models\Server $server
- * @property \Pterodactyl\Models\Node $oldNode
- * @property \Pterodactyl\Models\Node $newNode
+ * @property \Pterodactyl\Models\Cluster $oldNode
+ * @property \Pterodactyl\Models\Cluster $newNode
  */
 class ServerTransfer extends Model
 {

@@ -19,11 +19,11 @@ class MountRepository extends EloquentRepository
     }
 
     /**
-     * Return mounts with a count of eggs, nodes, and servers attached to it.
+     * Return mounts with a count of eggs, clusters, and servers attached to it.
      */
     public function getAllWithDetails(): Collection
     {
-        return $this->getBuilder()->withCount('eggs', 'nodes')->get($this->getColumns());
+        return $this->getBuilder()->withCount('eggs', 'clusters')->get($this->getColumns());
     }
 
     /**
@@ -34,7 +34,7 @@ class MountRepository extends EloquentRepository
     public function getWithRelations(string $id): Mount
     {
         try {
-            return $this->getBuilder()->with('eggs', 'nodes')->findOrFail($id, $this->getColumns());
+            return $this->getBuilder()->with('eggs', 'clusters')->findOrFail($id, $this->getColumns());
         } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException();
         }
@@ -49,8 +49,8 @@ class MountRepository extends EloquentRepository
             ->whereHas('eggs', function ($q) use ($server) {
                 $q->where('id', '=', $server->egg_id);
             })
-            ->whereHas('nodes', function ($q) use ($server) {
-                $q->where('id', '=', $server->node_id);
+            ->whereHas('clusters', function ($q) use ($server) {
+                $q->where('id', '=', $server->cluster_id);
             })
             ->get($this->getColumns());
     }

@@ -24,7 +24,7 @@ class ServerTransformer extends BaseTransformer
         'egg',
         'variables',
         'location',
-        'node',
+        'cluster',
         'databases',
         'transfer',
     ];
@@ -75,7 +75,7 @@ class ServerTransformer extends BaseTransformer
                 'backups' => $server->backup_limit,
             ],
             'user' => $server->owner_id,
-            'node' => $server->node_id,
+            'cluster' => $server->cluster_id,
             'allocation' => $server->allocation_id,
             'nest' => $server->nest_id,
             'egg' => $server->egg_id,
@@ -204,7 +204,7 @@ class ServerTransformer extends BaseTransformer
     }
 
     /**
-     * Return a generic array with node information for this server.
+     * Return a generic array with cluster information for this server.
      *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
@@ -214,9 +214,9 @@ class ServerTransformer extends BaseTransformer
             return $this->null();
         }
 
-        $server->loadMissing('node');
+        $server->loadMissing('cluster');
 
-        return $this->item($server->getRelation('node'), $this->makeTransformer(NodeTransformer::class), 'node');
+        return $this->item($server->getRelation('cluster'), $this->makeTransformer(ClusterTransformer::class), 'cluster');
     }
 
     /**

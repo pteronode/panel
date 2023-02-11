@@ -69,14 +69,6 @@ class ServerConfigurationStructureService
                 'oom_disabled' => $server->oom_disabled,
                 'requires_rebuild' => false,
             ],
-            // 'allocations' => [
-            //     'force_outgoing_ip' => $server->egg->force_outgoing_ip,
-            //     'default' => [
-            //         'ip' => $server->allocation->ip,
-            //         'port' => $server->allocation->port,
-            //     ],
-            //     'mappings' => $server->getAllocationMappings(),
-            // ],
             'allocations' => [
                 'default_port' => $server->default_port,
                 'additional_ports' => $server->additional_ports,

@@ -116,41 +116,119 @@
                     </div>
                     <div class="form-group">
                         <label for="pBearerToken" class="form-label">Bearer Token</label>
-                        <textarea name="bearer_token" id="pBearerToken" rows="4" class="form-control">{{ old('bearer_token') }}</textarea>
+                        <div class="input-group" id="pToggleShow">
+                            <input type="password" name="bearer_token" id="pBearerToken" class="form-control"/>
+                            <span class="input-group-addon">
+                                <a href="javascript:void(0);" style="color: inherit;"><i class="fa fa-eye-slash" aria-hidden="true"></i></a>
+                            </span>
+                        </div>
                         <p class="text-muted small">Service account bearer tokens are perfectly valid to use outside the cluster and can be used to create identities for long standing jobs that wish to talk to the Kubernetes API.</p>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Insecure</label>
-                        <div>
-                            <div class="radio radio-success radio-inline">
-                                <input type="radio" id="pInsecureFalse" value="0" name="insecure" checked>
-                                <label for="pInsecureFalse"> False</label>
-                            </div>
-                            <div class="radio radio-danger radio-inline">
-                                <input type="radio" id="pInsecureTrue" value="1" name="insecure">
-                                <label for="pInsecureTrue"> True</label>
-                            </div>
-                        </div>
-                        <p class="text-muted small">Server should be accessed without verifying the TLS certificate. For testing only.</p>
-                    </div>
+                    <h4>Security</h4>
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label for="pServiceType" class="form-label">Service Type</label>
-                            <select name="service_type" id="pServiceType">
-                                <option value="nodeport" selected>NodePort</option>
-                                <option value="loadbalancer">LoadBalancer</option>
+                            <label class="form-label">Transport Layer Security</label>
+                            <div>
+                                <div class="radio radio-success radio-inline">
+                                    <input type="radio" id="pInsecureFalse" value="0" name="insecure" checked>
+                                    <label for="pInsecureFalse"> True</label>
+                                </div>
+                                <div class="radio radio-danger radio-inline">
+                                    <input type="radio" id="pInsecureTrue" value="1" name="insecure">
+                                    <label for="pInsecureTrue"> False</label>
+                                </div>
+                            </div>
+                            <p class="text-muted small">Server should be accessed without verifying the TLS certificate. For testing only.</p>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="pCertFile" class="form-label">Cert File</label>
+                            <input type="text" name="cert_file" id="pCertFile" class="form-control" placeholder="/path/to/client.crt"/>
+                            <p class="text-muted small">Server requires TLS client certificate authentication.</p>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="pKeyFile" class="form-label">Key File</label>
+                            <input type="text" name="key_file" id="pKeyFile" class="form-control" placeholder="/path/to/client.key"/>
+                            <p class="text-muted small">Server requires TLS client certificate authentication.</p>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="pCAFile" class="form-label">CA File</label>
+                            <input type="text" name="ca_file" id="pCAFile" class="form-control" placeholder="/root/ExampleCA.crt"/>
+                            <p class="text-muted small">Trusted root certificates for server.</p>
+                        </div>
+                    </div>
+                    <h4>Pod</h4>
+                    <div class="row">
+                    <div class="form-group col-md-6">
+                            <label for="pDNSPolicy" class="form-label">DNS Policy</label>
+                            <select name="dns_policy" id="pDNSPolicy">
+                                <option value="clusterfirst" selected>ClusterFirst</option>
+                                <option value="clusterfirstwithhostnet">ClusterFirstWithHostNet</option>
+                                <option value="default">Default</option>
+                                <option value="none">None</option>
                             </select>
-                            <p class="text-muted small">ServiceTypes allow you to specify what kind of Service you want.</p>
+                            <p class="text-muted small"><em>None</em> option use the default daemon DNS config.</p>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="pImagePullPolicy" class="form-label">Image Pull Policy</label>
+                            <select name="image_pull_policy" id="pImagePullPolicy">
+                                <option value="ifnotpresent" selected>IfNotPresent</option>
+                                <option value="always">Always</option>
+                                <option value="never">Never</option>
+                            </select>
+                            <p class="text-muted small">Defaults to Always if <code>:latest</code> tag is specified, or IfNotPresent otherwise.</p>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="pStorageClass" class="form-label">Storage Class</label>
-                            <input type="text" name="storage_class" id="pStorageClass" class="form-control" value="manual"/>
+                            <input type="text" name="storage_class" id="pStorageClass" class="form-control" placeholder="e.g local-path"/>
                             <p class="text-muted small">StorageClass provides a way for administrators to describe the "classes" of storage they offer.</p>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="pNamespace" class="form-label">Namespace</label>
                             <input type="text" name="ns" data-multiplicator="true" class="form-control" id="pNamespace" value="default"/>
                             <p class="text-muted small">Namespaces provides a mechanism for isolating groups of resources within a single cluster.</p>
+                        </div>
+                    </div>
+                    <h4>Service</h4>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="pServiceType" class="form-label">Service Type</label>
+                            <select name="service_type" id="pServiceType">
+                                <option value="loadbalancer" selected>LoadBalancer</option>
+                                <option value="nodeport">NodePort</option>
+                            </select>
+                            <p class="text-muted small">ServiceTypes allow you to specify what kind of Service you want.</p>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="pMetalLBAddressPool" class="form-label">MetalLB Address Pool</label>
+                            <input type="text" name="metallb_address_pool" data-multiplicator="true" class="form-control" id="pMetalLBAddressPool" placeholder="production-public-ips"/>
+                            <p class="text-muted small">Supports requesting a specific address pool, if you want a certain kind of address but don’t care which one exactly..</p>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="form-label">Allow MetalLB Shared IP</label>
+                            <div>
+                                <div class="radio radio-success radio-inline">
+                                    <input type="radio" id="pMLBSIPTrue" value="1" name="metallb_shared_ip" checked>
+                                    <label for="pMLBSIPTrue"> True</label>
+                                </div>
+                                <div class="radio radio-danger radio-inline">
+                                    <input type="radio" id="pMLBSIPFalse" value="0" name="metallb_shared_ip">
+                                    <label for="pMLBSIPFalse"> False</label>
+                                </div>
+                            </div>
+                            <p class="text-muted small">MetalLB may colocate the two services on the same IP, but does not have to.</p>
+                        </div>
+                    </div>
+                    <h4>SFTP</h4>
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="pContainerSFTPImage" class="form-label">Container SFTP Image</label>
+                            <input type="text" name="sftp_image" id="pContainerSFTPImage" class="form-control" placeholder="ghcr.io/kubectyl/sftp-server:latest"/>
+                            <p class="text-muted small">The docker image used for the SFTP server.</p>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="pContainerSFTPPort" class="form-label">Container SFTP Port</label>
+                            <input type="text" name="sftp_port" class="form-control" id="pContainerSFTPPort" value="2022" />
+                            <p class="text-muted small">The port on which the SFTP server will run.</p>
                         </div>
                     </div>
                 </div>
@@ -168,6 +246,20 @@
     @parent
     <script>
         $('#pLocationId').select2();
+        $('#pDNSPolicy').select2();
+        $('#pImagePullPolicy').select2();
         $('#pServiceType').select2();
+        $("#pToggleShow span a").on('click', function(event) {
+            event.preventDefault();
+            if ($('#pToggleShow input').attr("type") == "text") {
+                $('#pToggleShow input').attr('type', 'password');
+                $('#pToggleShow i').addClass( "fa-eye-slash" );
+                $('#pToggleShow i').removeClass( "fa-eye" );
+            } else if ($('#pToggleShow input').attr("type") == "password") {
+                $('#pToggleShow input').attr('type', 'text');
+                $('#pToggleShow i').removeClass( "fa-eye-slash" );
+                $('#pToggleShow i').addClass( "fa-eye" );
+            }
+        });
     </script>
 @endsection

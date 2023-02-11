@@ -4,7 +4,7 @@ namespace Pterodactyl\Tests\Unit\Http\Middleware;
 
 use Mockery as m;
 use Mockery\MockInterface;
-use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Cluster;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Contracts\Routing\ResponseFactory;

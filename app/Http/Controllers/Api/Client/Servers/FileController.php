@@ -7,7 +7,7 @@ use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Services\Nodes\NodeJWTService;
+use Pterodactyl\Services\Clusters\ClusterJWTService;
 use Pterodactyl\Repositories\Wings\DaemonFileRepository;
 use Pterodactyl\Transformers\Api\Client\FileObjectTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
@@ -29,7 +29,7 @@ class FileController extends ClientApiController
      * FileController constructor.
      */
     public function __construct(
-        private NodeJWTService $jwtService,
+        private ClusterJWTService $jwtService,
         private DaemonFileRepository $fileRepository
     ) {
         parent::__construct();
@@ -83,7 +83,7 @@ class FileController extends ClientApiController
                 'file_path' => rawurldecode($request->get('file')),
                 'server_uuid' => $server->uuid,
             ])
-            ->handle($server->node, $request->user()->id . $server->uuid);
+            ->handle($server->cluster, $request->user()->id . $server->uuid);
 
         Activity::event('server:file.download')->property('file', $request->get('file'))->log();
 
@@ -92,7 +92,7 @@ class FileController extends ClientApiController
             'attributes' => [
                 'url' => sprintf(
                     '%s/download/file?token=%s',
-                    $server->node->getConnectionAddress(),
+                    $server->cluster->getConnectionAddress(),
                     $token->toString()
                 ),
             ],

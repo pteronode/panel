@@ -141,27 +141,31 @@ Route::group(['prefix' => 'servers'], function () {
 
 /*
 |--------------------------------------------------------------------------
-| Node Controller Routes
+| Cluster Controller Routes
 |--------------------------------------------------------------------------
 |
-| Endpoint: /admin/nodes
+| Endpoint: /admin/clusters
 |
 */
 Route::group(['prefix' => 'clusters'], function () {
-    Route::get('/', [Admin\Nodes\NodeController::class, 'index'])->name('admin.clusters');
-    Route::get('/new', [Admin\NodesController::class, 'create'])->name('admin.clusters.new');
-    Route::get('/view/{node:id}', [Admin\Nodes\NodeViewController::class, 'index'])->name('admin.clusters.view');
-    Route::get('/view/{node:id}/settings', [Admin\Nodes\NodeViewController::class, 'settings'])->name('admin.clusters.view.settings');
-    Route::get('/view/{node:id}/configuration', [Admin\Nodes\NodeViewController::class, 'configuration'])->name('admin.clusters.view.configuration');
-    Route::get('/view/{node:id}/servers', [Admin\Nodes\NodeViewController::class, 'servers'])->name('admin.clusters.view.servers');
-    Route::get('/view/{node:id}/system-information', Admin\Nodes\SystemInformationController::class);
+    Route::get('/', [Admin\Clusters\ClusterController::class, 'index'])->name('admin.clusters');
+    Route::get('/new', [Admin\ClustersController::class, 'create'])->name('admin.clusters.new');
+    Route::get('/view/{cluster:id}', [Admin\Clusters\ClusterViewController::class, 'index'])->name('admin.clusters.view');
+    Route::get('/view/{cluster:id}/settings', [Admin\Clusters\ClusterViewController::class, 'settings'])->name('admin.clusters.view.settings');
+    Route::get('/view/{cluster:id}/configuration', [Admin\Clusters\ClusterViewController::class, 'configuration'])->name('admin.clusters.view.configuration');
+    Route::get('/view/{cluster:id}/allocation', [Admin\Clusters\ClusterViewController::class, 'allocations'])->name('admin.clusters.view.allocation');
+    Route::get('/view/{cluster:id}/servers', [Admin\Clusters\ClusterViewController::class, 'servers'])->name('admin.clusters.view.servers');
+    Route::get('/view/{cluster:id}/system-information', Admin\Clusters\SystemInformationController::class);
 
-    Route::post('/new', [Admin\NodesController::class, 'store']);
-    Route::post('/view/{node:id}/settings/token', Admin\NodeAutoDeployController::class)->name('admin.clusters.view.configuration.token');
+    Route::post('/new', [Admin\ClustersController::class, 'store']);
+    Route::post('/view/{cluster:id}/allocation', [Admin\ClustersController::class, 'createAllocation']);
+    Route::post('/view/{cluster:id}/allocation/remove', [Admin\ClustersController::class, 'allocationRemoveBlock'])->name('admin.clusters.view.allocation.removeBlock');
+    Route::post('/view/{cluster:id}/allocation/alias', [Admin\ClustersController::class, 'allocationSetAlias'])->name('admin.clusters.view.allocation.setAlias');
+    Route::post('/view/{cluster:id}/settings/token', Admin\ClusterAutoDeployController::class)->name('admin.clusters.view.configuration.token');
 
-    Route::patch('/view/{node:id}/settings', [Admin\NodesController::class, 'updateSettings']);
+    Route::patch('/view/{cluster:id}/settings', [Admin\ClustersController::class, 'updateSettings']);
 
-    Route::delete('/view/{node:id}/delete', [Admin\NodesController::class, 'delete'])->name('admin.clusters.view.delete');
+    Route::delete('/view/{cluster:id}/delete', [Admin\ClustersController::class, 'delete'])->name('admin.clusters.view.delete');
 });
 
 /*
@@ -178,12 +182,12 @@ Route::group(['prefix' => 'mounts'], function () {
 
     Route::post('/', [Admin\MountController::class, 'create']);
     Route::post('/{mount:id}/eggs', [Admin\MountController::class, 'addEggs'])->name('admin.mounts.eggs');
-    Route::post('/{mount:id}/nodes', [Admin\MountController::class, 'addNodes'])->name('admin.mounts.nodes');
+    Route::post('/{mount:id}/clusters', [Admin\MountController::class, 'addNodes'])->name('admin.mounts.clusters');
 
     Route::patch('/view/{mount:id}', [Admin\MountController::class, 'update']);
 
     Route::delete('/{mount:id}/eggs/{egg_id}', [Admin\MountController::class, 'deleteEgg']);
-    Route::delete('/{mount:id}/nodes/{node_id}', [Admin\MountController::class, 'deleteNode']);
+    Route::delete('/{mount:id}/clusters/{cluster_id}', [Admin\MountController::class, 'deleteNode']);
 });
 
 /*

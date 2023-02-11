@@ -4,7 +4,7 @@ import { faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome
 import { Link } from 'react-router-dom';
 import { Server } from '@/api/server/getServer';
 import getServerResourceUsage, { ServerPowerState, ServerStats } from '@/api/server/getServerResourceUsage';
-import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
+import { bytesToString, mbToBytes } from '@/lib/formatters';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import Spinner from '@/components/elements/Spinner';
@@ -105,7 +105,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                 <div css={tw`flex justify-center`}>
                     <FontAwesomeIcon icon={faEthernet} css={tw`text-neutral-500`} />
                     <p css={tw`text-sm text-neutral-400 ml-2`}>
-                        192.0.2.1:{server.default_port}
+                        {!server.service.ip ? 'not available' : `${server.service.ip}:${server.service.port}`}
                     </p>
                 </div>
             </div>

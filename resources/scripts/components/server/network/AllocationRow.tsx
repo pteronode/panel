@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { memo, useState } from 'react';
 import isEqual from 'react-fast-compare';
 import tw from 'twin.macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -21,15 +21,16 @@ const Label = styled.label`
 
 interface Props {
     isDefault: boolean;
+    ip: string;
     port: string;
 }
 
-const AllocationRow = ({ isDefault, port }: Props) => {
-    const [loading, setLoading] = useState(false);
+const AllocationRow = ({ isDefault, ip, port }: Props) => {
+    const [loading] = useState(false);
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
 
     const setPrimaryAllocation = () => {
-        setPrimaryServerAllocation(uuid, 1).catch((error) => {
+        setPrimaryServerAllocation(uuid, 1).catch(() => {
             //
         });
     };
@@ -41,10 +42,11 @@ const AllocationRow = ({ isDefault, port }: Props) => {
                     <FontAwesomeIcon icon={faNetworkWired} />
                 </div>
                 <div className={'mr-4 flex-1 md:w-40'}>
-                    <CopyOnClick text={'192.0.2.1'}>
-                        <Code dark>{'192.0.2.1'}</Code>
+                    <CopyOnClick text={ip}>
+                        <Code dark>{ip}</Code>
                     </CopyOnClick>
-                    <Label>{!'description' ? 'Hostname' : 'IP Address'}</Label>
+                    {/* <Label>{!'description' ? 'Hostname' : 'IP Address'}</Label> */}
+                    <Label>IP Address</Label>
                 </div>
                 <div className={'w-16 md:w-24 overflow-hidden'}>
                     <Code dark>{port}</Code>

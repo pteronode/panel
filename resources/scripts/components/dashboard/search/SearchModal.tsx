@@ -120,7 +120,7 @@ export default ({ ...props }: Props) => {
                                     </div>
                                     <div css={tw`flex-none text-right`}>
                                         <span css={tw`text-xs py-1 px-2 bg-cyan-800 text-cyan-100 rounded`}>
-                                            {server.node}
+                                            {server.cluster}
                                         </span>
                                     </div>
                                 </ServerResult>

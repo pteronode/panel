@@ -43,7 +43,7 @@
     <div class="col-sm-6">
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">Nodes</h3>
+                <h3 class="box-title">Clusters</h3>
             </div>
             <div class="box-body table-responsive no-padding">
                 <table class="table table-hover">
@@ -53,12 +53,12 @@
                         <th>FQDN</th>
                         <th>Servers</th>
                     </tr>
-                    @foreach($location->nodes as $node)
+                    @foreach($location->clusters as $cluster)
                         <tr>
-                            <td><code>{{ $node->id }}</code></td>
-                            <td><a href="{{ route('admin.nodes.view', $node->id) }}">{{ $node->name }}</a></td>
-                            <td><code>{{ $node->fqdn }}</code></td>
-                            <td>{{ $node->servers->count() }}</td>
+                            <td><code>{{ $cluster->id }}</code></td>
+                            <td><a href="{{ route('admin.clusters.view', $cluster->id) }}">{{ $cluster->name }}</a></td>
+                            <td><code>{{ $cluster->fqdn }}</code></td>
+                            <td>{{ $cluster->servers->count() }}</td>
                         </tr>
                     @endforeach
                 </table>

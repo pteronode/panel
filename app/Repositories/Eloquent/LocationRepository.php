@@ -19,30 +19,30 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     }
 
     /**
-     * Return locations with a count of nodes and servers attached to it.
+     * Return locations with a count of clusters and servers attached to it.
      */
     public function getAllWithDetails(): Collection
     {
-        return $this->getBuilder()->withCount('nodes', 'servers')->get($this->getColumns());
+        return $this->getBuilder()->withCount('clusters', 'servers')->get($this->getColumns());
     }
 
     /**
      * Return all the available locations with the nodes as a relationship.
      */
-    public function getAllWithNodes(): Collection
+    public function getAllWithClusters(): Collection
     {
-        return $this->getBuilder()->with('nodes')->get($this->getColumns());
+        return $this->getBuilder()->with('clusters')->get($this->getColumns());
     }
 
     /**
-     * Return all the nodes and their respective count of servers for a location.
+     * Return all the clusters and their respective count of servers for a location.
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithNodes(int $id): Location
+    public function getWithClusters(int $id): Location
     {
         try {
-            return $this->getBuilder()->with('nodes.servers')->findOrFail($id, $this->getColumns());
+            return $this->getBuilder()->with('clusters.servers')->findOrFail($id, $this->getColumns());
         } catch (ModelNotFoundException) {
             throw new RecordNotFoundException();
         }

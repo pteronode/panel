@@ -1,15 +1,15 @@
 @extends('layouts.admin')
 
 @section('title')
-    {{ $node->name }}: Servers
+    {{ $cluster->name }}: Servers
 @endsection
 
 @section('content-header')
-    <h1>{{ $node->name }}<small>All servers currently assigned to this cluster.</small></h1>
+    <h1>{{ $cluster->name }}<small>All servers currently assigned to this cluster.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li><a href="{{ route('admin.clusters') }}">Clusters</a></li>
-        <li><a href="{{ route('admin.clusters.view', $node->id) }}">{{ $node->name }}</a></li>
+        <li><a href="{{ route('admin.clusters.view', $cluster->id) }}">{{ $cluster->name }}</a></li>
         <li class="active">Servers</li>
     </ol>
 @endsection
@@ -19,10 +19,12 @@
     <div class="col-xs-12">
         <div class="nav-tabs-custom nav-tabs-floating">
             <ul class="nav nav-tabs">
-                <li><a href="{{ route('admin.clusters.view', $node->id) }}">About</a></li>
-                <li><a href="{{ route('admin.clusters.view.settings', $node->id) }}">Settings</a></li>
-                <li><a href="{{ route('admin.clusters.view.configuration', $node->id) }}">Configuration</a></li>
-                <li class="active"><a href="{{ route('admin.clusters.view.servers', $node->id) }}">Servers</a></li>
+                <li><a href="{{ route('admin.clusters.view', $cluster->id) }}">About</a></li>
+                <li><a href="{{ route('admin.clusters.view.settings', $cluster->id) }}">Settings</a></li>
+                <li><a href="{{ route('admin.clusters.view.configuration', $cluster->id) }}">Configuration</a></li>
+                <li><a href="{{ route('admin.clusters.view.allocation', $cluster->id) }}">Allocation</a></li>
+                <li class="active"><a href="{{ route('admin.clusters.view.servers', $cluster->id) }}">Servers</a></li>
+                
             </ul>
         </div>
     </div>

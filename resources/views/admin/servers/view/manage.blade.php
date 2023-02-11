@@ -92,7 +92,7 @@
             </div>
         @endif
 
-        @if(is_null($server->transfer))
+        <!-- @if(is_null($server->transfer))
             <div class="col-sm-4">
                 <div class="box box-success">
                     <div class="box-header with-border">
@@ -133,7 +133,7 @@
                     </div>
                 </div>
             </div>
-        @endif
+        @endif -->
     </div>
 
     <div class="modal fade" id="transferServerModal" tabindex="-1" role="dialog">

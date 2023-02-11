@@ -15,14 +15,14 @@ interface LocationRepositoryInterface extends RepositoryInterface
     /**
      * Return all the available locations with the nodes as a relationship.
      */
-    public function getAllWithNodes(): Collection;
+    public function getAllWithClusters(): Collection;
 
     /**
      * Return all the nodes and their respective count of servers for a location.
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithNodes(int $id): Location;
+    public function getWithClusters(int $id): Location;
 
     /**
      * Return a location and the count of nodes in that location.

@@ -35,14 +35,14 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     /**
      * Return a collection of servers with their associated data for rebuild operations.
      */
-    public function getDataForRebuild(int $server = null, int $node = null): Collection
+    public function getDataForRebuild(int $server = null, int $cluster = null): Collection
     {
-        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'egg', 'node']);
+        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'egg', 'cluster']);
 
-        if (!is_null($server) && is_null($node)) {
+        if (!is_null($server) && is_null($cluster)) {
             $instance = $instance->where('id', '=', $server);
-        } elseif (is_null($server) && !is_null($node)) {
-            $instance = $instance->where('node_id', '=', $node);
+        } elseif (is_null($server) && !is_null($cluster)) {
+            $instance = $instance->where('cluster_id', '=', $cluster);
         }
 
         return $instance->get($this->getColumns());
@@ -51,14 +51,14 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     /**
      * Return a collection of servers with their associated data for reinstall operations.
      */
-    public function getDataForReinstall(int $server = null, int $node = null): Collection
+    public function getDataForReinstall(int $server = null, int $cluster = null): Collection
     {
-        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'egg', 'node']);
+        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'egg', 'cluster']);
 
-        if (!is_null($server) && is_null($node)) {
+        if (!is_null($server) && is_null($cluster)) {
             $instance = $instance->where('id', '=', $server);
-        } elseif (is_null($server) && !is_null($node)) {
-            $instance = $instance->where('node_id', '=', $node);
+        } elseif (is_null($server) && !is_null($cluster)) {
+            $instance = $instance->where('cluster_id', '=', $cluster);
         }
 
         return $instance->get($this->getColumns());
@@ -146,7 +146,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
         try {
             /** @var \Pterodactyl\Models\Server $model */
             $model = $this->getBuilder()
-                ->with('nest', 'node')
+                ->with('nest', 'cluster')
                 ->where(function (Builder $query) use ($uuid) {
                     $query->where('uuidShort', $uuid)->orWhere('uuid', $uuid);
                 })
@@ -167,13 +167,13 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * Returns all the servers that exist for a given node in a paginated response.
+     * Returns all the servers that exist for a given cluster in a paginated response.
      */
-    public function loadAllServersForNode(int $node, int $limit): LengthAwarePaginator
+    public function loadAllServersForCluster(int $cluster, int $limit): LengthAwarePaginator
     {
         return $this->getBuilder()
             ->with(['user', 'nest', 'egg'])
-            ->where('node_id', '=', $node)
+            ->where('cluster_id', '=', $cluster)
             ->paginate($limit);
     }
 }

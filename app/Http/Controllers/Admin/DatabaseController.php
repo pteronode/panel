@@ -41,7 +41,7 @@ class DatabaseController extends Controller
     public function index(): View
     {
         return $this->view->make('admin.databases.index', [
-            'locations' => $this->locationRepository->getAllWithNodes(),
+            'locations' => $this->locationRepository->getAllWithClusters(),
             'hosts' => $this->repository->getWithViewDetails(),
         ]);
     }
@@ -54,7 +54,7 @@ class DatabaseController extends Controller
     public function view(int $host): View
     {
         return $this->view->make('admin.databases.view', [
-            'locations' => $this->locationRepository->getAllWithNodes(),
+            'locations' => $this->locationRepository->getAllWithClusters(),
             'host' => $this->repository->find($host),
             'databases' => $this->databaseRepository->getDatabasesForHost($host),
         ]);

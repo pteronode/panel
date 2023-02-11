@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property bool $read_only
  * @property bool $user_mountable
  * @property \Pterodactyl\Models\Egg[]|\Illuminate\Database\Eloquent\Collection $eggs
- * @property \Pterodactyl\Models\Node[]|\Illuminate\Database\Eloquent\Collection $nodes
+ * @property \Pterodactyl\Models\Cluster[]|\Illuminate\Database\Eloquent\Collection $clusters
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  */
 class Mount extends Model
@@ -80,8 +80,8 @@ class Mount extends Model
      * Blacklisted source paths.
      */
     public static $invalidSourcePaths = [
-        '/etc/pterodactyl',
-        '/var/lib/pterodactyl/volumes',
+        '/etc/kubectyl',
+        '/var/lib/kubectyl/volumes',
         '/srv/daemon-data',
     ];
 
@@ -101,11 +101,12 @@ class Mount extends Model
     }
 
     /**
-     * Returns all nodes that have this mount assigned.
+     * Returns all clusters that have this mount assigned.
      */
-    public function nodes(): BelongsToMany
+    public function clusters(): BelongsToMany
     {
-        return $this->belongsToMany(Node::class);
+        // TODO: added table name mount_cluster, don't know if it's good
+        return $this->belongsToMany(Cluster::class, 'mount_cluster');
     }
 
     /**

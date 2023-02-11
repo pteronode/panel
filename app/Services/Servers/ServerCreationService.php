@@ -14,7 +14,7 @@ use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Models\Objects\DeploymentObject;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
-use Pterodactyl\Services\Deployment\FindViableNodesService;
+use Pterodactyl\Services\Deployment\FindViableClustersService;
 use Pterodactyl\Repositories\Eloquent\ServerVariableRepository;
 use Pterodactyl\Services\Deployment\AllocationSelectionService;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
@@ -28,7 +28,7 @@ class ServerCreationService
         private AllocationSelectionService $allocationSelectionService,
         private ConnectionInterface $connection,
         private DaemonServerRepository $daemonServerRepository,
-        private FindViableNodesService $findViableNodesService,
+        private FindViableClustersService $findViableClustersService,
         private ServerRepository $repository,
         private ServerDeletionService $serverDeletionService,
         private ServerVariableRepository $serverVariableRepository,
@@ -46,7 +46,7 @@ class ServerCreationService
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Illuminate\Validation\ValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
+     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableClusterException
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
      */
     public function handle(array $data, DeploymentObject $deployment = null): Server
@@ -111,12 +111,12 @@ class ServerCreationService
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
+     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableClusterException
      */
     private function configureDeployment(array $data, DeploymentObject $deployment): Allocation
     {
         /** @var \Illuminate\Support\Collection $nodes */
-        $nodes = $this->findViableNodesService->setLocations($deployment->getLocations())
+        $nodes = $this->findViableClustersService->setLocations($deployment->getLocations())
             ->setDisk(Arr::get($data, 'disk'))
             ->setMemory(Arr::get($data, 'memory'))
             ->handle();
@@ -154,7 +154,6 @@ class ServerCreationService
             'cpu' => Arr::get($data, 'cpu'),
             'threads' => Arr::get($data, 'threads'),
             'oom_disabled' => Arr::get($data, 'oom_disabled') ?? true,
-            // 'allocation_id' => Arr::get($data, 'allocation_id'),
             'default_port' => Arr::get($data, 'default_port'),
             'additional_ports' => Arr::get($data, 'additional_ports'),
             'nest_id' => Arr::get($data, 'nest_id'),

@@ -4,7 +4,7 @@ namespace Pterodactyl\Tests\Integration\Services\Databases;
 
 use Mockery;
 use Mockery\MockInterface;
-use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Cluster;
 use InvalidArgumentException;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;

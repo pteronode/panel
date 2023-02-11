@@ -21,10 +21,10 @@ class ActivityProcessingController extends Controller
     {
         $tz = Carbon::now()->getTimezone();
 
-        /** @var \Pterodactyl\Models\Node $node */
-        $node = $request->attributes->get('node');
+        /** @var \Pterodactyl\Models\Cluster $cluster */
+        $cluster = $request->attributes->get('cluster');
 
-        $servers = $node->servers()->whereIn('uuid', $request->servers())->get()->keyBy('uuid');
+        $servers = $cluster->servers()->whereIn('uuid', $request->servers())->get()->keyBy('uuid');
         $users = User::query()->whereIn('uuid', $request->users())->get()->keyBy('uuid');
 
         $logs = [];

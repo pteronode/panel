@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Spinner from '@/components/elements/Spinner';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import { ServerContext } from '@/state/server';
@@ -14,10 +14,10 @@ const NetworkContainer = () => {
                 <Spinner size={'large'} centered />
             ) : (
                 <>
-                    <AllocationRow isDefault={true} port={String(server.default_port)} />
+                    <AllocationRow isDefault={true} ip={String(server.service.ip)} port={String(server.default_port)} />
 
-                    {additional_ports.map((port) => (
-                        <AllocationRow isDefault={false} port={port} />
+                    {additional_ports.map((port, key) => (
+                        <AllocationRow isDefault={false} ip={String(server.service.ip)} port={port} key={key} />
                     ))}
                 </>
             )}

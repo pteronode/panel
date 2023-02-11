@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property string $long
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property \Pterodactyl\Models\Node[] $nodes
+ * @property \Pterodactyl\Models\Cluster[] $nodes
  * @property \Pterodactyl\Models\Server[] $servers
  */
 class Location extends Model
@@ -51,9 +51,9 @@ class Location extends Model
     /**
      * Gets the nodes in a specified location.
      */
-    public function nodes(): HasMany
+    public function clusters(): HasMany
     {
-        return $this->hasMany(Node::class);
+        return $this->hasMany(Cluster::class);
     }
 
     /**
@@ -61,6 +61,6 @@ class Location extends Model
      */
     public function servers(): HasManyThrough
     {
-        return $this->hasManyThrough(Server::class, Node::class);
+        return $this->hasManyThrough(Server::class, Cluster::class);
     }
 }

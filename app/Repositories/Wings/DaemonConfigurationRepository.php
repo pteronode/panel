@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Repositories\Wings;
 
-use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Cluster;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
@@ -32,12 +32,12 @@ class DaemonConfigurationRepository extends DaemonRepository
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function update(Node $node): ResponseInterface
+    public function update(Cluster $cluster): ResponseInterface
     {
         try {
             return $this->getHttpClient()->post(
                 '/api/update',
-                ['json' => $node->getConfiguration()]
+                ['json' => $cluster->getConfiguration()]
             );
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);

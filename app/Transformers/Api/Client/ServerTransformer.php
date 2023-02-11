@@ -13,9 +13,20 @@ use Pterodactyl\Models\EggVariable;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
 use Pterodactyl\Services\Servers\StartupCommandService;
+use Pterodactyl\Services\Allocations\AssignmentService;
+use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 
 class ServerTransformer extends BaseClientTransformer
 {
+    /**
+     * ServerController constructor.
+     */
+    public function __construct(
+        private DaemonServerRepository $daemonRepository
+    ) {
+        parent::__construct();
+    }
+
     protected array $defaultIncludes = ['allocations', 'variables'];
 
     protected array $availableIncludes = ['egg', 'subusers'];
@@ -23,6 +34,53 @@ class ServerTransformer extends BaseClientTransformer
     public function getResourceName(): string
     {
         return Server::RESOURCE_NAME;
+    }
+
+    /**
+     * An array of individual ports or port ranges to use when selecting an allocation. If
+     * empty, all ports will be considered when finding an allocation. If set, only ports appearing
+     * in the array or range will be used.
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
+    public function setPorts(array $ports): array
+    {
+        $stored = [];
+        if (!is_null($ports)) {
+            foreach ($ports as $port) {
+                if (is_digit($port)) {
+                    $stored[] = $port;
+                }
+
+                // Ranges are stored in the ports array as an array which can be
+                // better processed in the repository.
+                if (preg_match(AssignmentService::PORT_RANGE_REGEX, $port, $matches)) {
+                    if (abs($matches[2] - $matches[1]) > AssignmentService::PORT_RANGE_LIMIT) {
+                        throw new DisplayException(trans('exceptions.allocations.too_many_ports'));
+                    }
+
+                    foreach (range($matches[1], $matches[2]) as $n) {
+                        $stored[] = $n;
+                    }
+                }
+            }
+        }
+
+        return $stored;
+    }
+
+    /**
+     * Implementation that works on multidimensional arrays
+     * 
+     * Taken from https://github.com/NinoSkopac/array_column_recursive
+     */
+    function array_column_recursive(array $haystack, $needle) {
+        $found = [];
+        array_walk_recursive($haystack, function($value, $key) use (&$found, $needle) {
+            if ($key == $needle)
+                $found[] = $value;
+        });
+        return $found;
     }
 
     /**
@@ -36,20 +94,12 @@ class ServerTransformer extends BaseClientTransformer
 
         $user = $this->request->user();
 
-        $outputArray = [];
-
-        if (!is_null($server->additional_ports)) {
-            foreach ($server->additional_ports as $v) {
-                if (strpos($v, '-') === false) {
-                    $outputArray[] = $v;
-                } else {
-                    $minMax = explode('-', $v);
-
-                    if ($minMax[0] <= $minMax[1]) {
-                        $outputArray = array_merge($outputArray, range($minMax[0], $minMax[1]));
-                    }
-                }
-            }
+        $pod = [];
+        // Don't return any error because the servers will disappear from the list.
+        try {
+            $pod = $this->daemonRepository->setServer($server)->getDetails();
+        } catch(\Exception $error) {
+            // do nothing
         }
 
         return [
@@ -58,14 +108,19 @@ class ServerTransformer extends BaseClientTransformer
             'internal_id' => $server->id,
             'uuid' => $server->uuid,
             'name' => $server->name,
-            'node' => $server->node->name,
-            'is_node_under_maintenance' => $server->node->isUnderMaintenance(),
+            'cluster' => $server->cluster->name,
+            'is_cluster_under_maintenance' => $server->cluster->isUnderMaintenance(),
             'sftp_details' => [
-                'ip' => null,
-                'port' => null,
+                'ip' => $ip = $this->array_column_recursive($pod, 'ip') ? current($this->array_column_recursive($pod, 'ip')) : current($this->array_column_recursive($pod, 'clusterIP')),
+                'port' => 2022,
+            ],
+            'service' => [
+                'ip' => $ip = $this->array_column_recursive($pod, 'ip') ? current($this->array_column_recursive($pod, 'ip')) : current($this->array_column_recursive($pod, 'clusterIP')),
+                'port' => $server->default_port,
+                'additional_ports' => $server->additional_ports ? $this->setPorts($server->additional_ports) : [],
             ],
             'default_port' => $server->default_port,
-            'additional_ports' => $outputArray,
+            'additional_ports' => $server->additional_ports ? $this->setPorts($server->additional_ports) : [],
             'description' => $server->description,
             'limits' => [
                 'memory' => $server->memory,

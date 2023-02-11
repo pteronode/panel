@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * Pterodactyl\Models\Allocation.
  *
  * @property int $id
- * @property int $node_id
+ * @property int $cluster_id
  * @property string $ip
  * @property string|null $ip_alias
  * @property int $port
@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $alias
  * @property bool $has_alias
  * @property \Pterodactyl\Models\Server|null $server
- * @property \Pterodactyl\Models\Node $node
+ * @property \Pterodactyl\Models\Cluster $cluster
  * @property string $hashid
  *
  * @method static \Database\Factories\AllocationFactory factory(...$parameters)
@@ -60,13 +60,13 @@ class Allocation extends Model
      * Cast values to correct type.
      */
     protected $casts = [
-        'node_id' => 'integer',
+        'cluster_id' => 'integer',
         'port' => 'integer',
         'server_id' => 'integer',
     ];
 
     public static array $validationRules = [
-        'node_id' => 'required|exists:nodes,id',
+        'cluster_id' => 'required|exists:clusters,id',
         'ip' => 'required|ip',
         'port' => 'required|numeric|between:1024,65535',
         'ip_alias' => 'nullable|string',
@@ -120,10 +120,10 @@ class Allocation extends Model
     }
 
     /**
-     * Return the Node model associated with this allocation.
+     * Return the Cluster model associated with this allocation.
      */
-    public function node(): BelongsTo
+    public function cluster(): BelongsTo
     {
-        return $this->belongsTo(Node::class);
+        return $this->belongsTo(Cluster::class);
     }
 }

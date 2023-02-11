@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Remote;
 
-use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Cluster;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Permission;

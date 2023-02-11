@@ -19,17 +19,17 @@ const ServerConsoleContainer = () => {
     const isInstalling = ServerContext.useStoreState((state) => state.server.isInstalling);
     const isTransferring = ServerContext.useStoreState((state) => state.server.data!.isTransferring);
     const eggFeatures = ServerContext.useStoreState((state) => state.server.data!.eggFeatures, isEqual);
-    const isNodeUnderMaintenance = ServerContext.useStoreState((state) => state.server.data!.isNodeUnderMaintenance);
+    const isUnderMaintenance = ServerContext.useStoreState((state) => state.server.data!.isClusterUnderMaintenance);
 
     return (
         <ServerContentBlock title={'Console'}>
-            {(isNodeUnderMaintenance || isInstalling || isTransferring) && (
+            {(isUnderMaintenance || isInstalling || isTransferring) && (
                 <Alert type={'warning'} className={'mb-4'}>
-                    {isNodeUnderMaintenance
-                        ? 'The node of this server is currently under maintenance and all actions are unavailable.'
+                    {isUnderMaintenance
+                        ? 'The cluster of this server is currently under maintenance and all actions are unavailable.'
                         : isInstalling
                         ? 'This server is currently running its installation process and most actions are unavailable.'
-                        : 'This server is currently being transferred to another node and all actions are unavailable.'}
+                        : 'This server is currently being transferred to another cluster and all actions are unavailable.'}
                 </Alert>
             )}
             <div className={'grid grid-cols-4 gap-4 mb-4'}>

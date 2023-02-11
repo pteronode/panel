@@ -15,9 +15,9 @@ class BulkPowerActionCommand extends Command
     protected $signature = 'p:server:bulk-power
                             {action : The action to perform (start, stop, restart, kill)}
                             {--servers= : A comma separated list of servers.}
-                            {--nodes= : A comma separated list of nodes.}';
+                            {--clusters= : A comma separated list of clusters.}';
 
-    protected $description = 'Perform bulk power management on large groupings of servers or nodes at once.';
+    protected $description = 'Perform bulk power management on large groupings of servers or clusters at once.';
 
     /**
      * BulkPowerActionCommand constructor.
@@ -35,17 +35,17 @@ class BulkPowerActionCommand extends Command
     public function handle()
     {
         $action = $this->argument('action');
-        $nodes = empty($this->option('nodes')) ? [] : explode(',', $this->option('nodes'));
+        $clusters = empty($this->option('clusters')) ? [] : explode(',', $this->option('clusters'));
         $servers = empty($this->option('servers')) ? [] : explode(',', $this->option('servers'));
 
         $validator = $this->validator->make([
             'action' => $action,
-            'nodes' => $nodes,
+            'clusters' => $clusters,
             'servers' => $servers,
         ], [
             'action' => 'string|in:start,stop,kill,restart',
-            'nodes' => 'array',
-            'nodes.*' => 'integer|min:1',
+            'clusters' => 'array',
+            'clusters.*' => 'integer|min:1',
             'servers' => 'array',
             'servers.*' => 'integer|min:1',
         ]);
@@ -58,14 +58,14 @@ class BulkPowerActionCommand extends Command
             throw new ValidationException($validator);
         }
 
-        $count = $this->getQueryBuilder($servers, $nodes)->count();
+        $count = $this->getQueryBuilder($servers, $clusters)->count();
         if (!$this->confirm(trans('command/messages.server.power.confirm', ['action' => $action, 'count' => $count])) && $this->input->isInteractive()) {
             return;
         }
 
         $bar = $this->output->createProgressBar($count);
         $powerRepository = $this->powerRepository;
-        $this->getQueryBuilder($servers, $nodes)->each(function (Server $server) use ($action, $powerRepository, &$bar) {
+        $this->getQueryBuilder($servers, $clusters)->each(function (Server $server) use ($action, $powerRepository, &$bar) {
             $bar->clear();
 
             try {
@@ -74,7 +74,7 @@ class BulkPowerActionCommand extends Command
                 $this->output->error(trans('command/messages.server.power.action_failed', [
                     'name' => $server->name,
                     'id' => $server->id,
-                    'node' => $server->node->name,
+                    'cluster' => $server->cluster->name,
                     'message' => $exception->getMessage(),
                 ]));
             }
@@ -89,18 +89,18 @@ class BulkPowerActionCommand extends Command
     /**
      * Returns the query builder instance that will return the servers that should be affected.
      */
-    protected function getQueryBuilder(array $servers, array $nodes): Builder
+    protected function getQueryBuilder(array $servers, array $clusters): Builder
     {
         $instance = Server::query()->whereNull('status');
 
-        if (!empty($nodes) && !empty($servers)) {
-            $instance->whereIn('id', $servers)->orWhereIn('node_id', $nodes);
-        } elseif (empty($nodes) && !empty($servers)) {
+        if (!empty($clusters) && !empty($servers)) {
+            $instance->whereIn('id', $servers)->orWhereIn('cluster_id', $clusters);
+        } elseif (empty($clusters) && !empty($servers)) {
             $instance->whereIn('id', $servers);
-        } elseif (!empty($nodes) && empty($servers)) {
-            $instance->whereIn('node_id', $nodes);
+        } elseif (!empty($clusters) && empty($servers)) {
+            $instance->whereIn('cluster_id', $clusters);
         }
 
-        return $instance->with('node');
+        return $instance->with('cluster');
     }
 }

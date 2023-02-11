@@ -8,7 +8,7 @@ use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Arr;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Nest;
-use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Cluster;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Mount;
 use Pterodactyl\Models\Backup;

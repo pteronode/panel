@@ -48,7 +48,7 @@ class LocationController extends Controller
     public function view(int $id): View
     {
         return $this->view->make('admin.locations.view', [
-            'location' => $this->repository->getWithNodes($id),
+            'location' => $this->repository->getWithClusters($id),
         ]);
     }
 

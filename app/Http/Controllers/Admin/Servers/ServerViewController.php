@@ -12,7 +12,7 @@ use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Servers\EnvironmentService;
 use Illuminate\Contracts\View\Factory as ViewFactory;
 use Pterodactyl\Repositories\Eloquent\NestRepository;
-use Pterodactyl\Repositories\Eloquent\NodeRepository;
+use Pterodactyl\Repositories\Eloquent\ClusterRepository;
 use Pterodactyl\Repositories\Eloquent\MountRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
@@ -31,7 +31,7 @@ class ServerViewController extends Controller
         private LocationRepository $locationRepository,
         private MountRepository $mountRepository,
         private NestRepository $nestRepository,
-        private NodeRepository $nodeRepository,
+        private ClusterRepository $clusterRepository,
         private ServerRepository $repository,
         private EnvironmentService $environmentService,
         private ViewFactory $view
@@ -59,7 +59,7 @@ class ServerViewController extends Controller
      */
     public function build(Request $request, Server $server): View
     {
-        $allocations = $server->node->allocations->toBase();
+        $allocations = $server->cluster->allocations->toBase();
 
         return $this->view->make('admin.servers.view.build', [
             'server' => $server,
@@ -126,15 +126,15 @@ class ServerViewController extends Controller
             throw new DisplayException('This server is in a failed install state and cannot be recovered. Please delete and re-create the server.');
         }
 
-        // Check if the panel doesn't have at least 2 nodes configured.
-        $nodes = $this->nodeRepository->all();
+        // Check if the panel doesn't have at least 2 clusters configured.
+        $clusters = $this->clusterRepository->all();
         $canTransfer = false;
-        if (count($nodes) >= 2) {
+        if (count($clusters) >= 2) {
             $canTransfer = true;
         }
 
         JavaScript::put([
-            'nodeData' => $this->nodeRepository->getNodesForServerCreation(),
+            'nodeData' => $this->clusterRepository->getClustersForServerCreation(),
         ]);
 
         return $this->view->make('admin.servers.view.manage', [

@@ -1,5 +1,5 @@
 {
-  description = "Pterodactyl Panel";
+  description = "Kubectyl Panel";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";

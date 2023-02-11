@@ -4,7 +4,7 @@ namespace Pterodactyl\Tests\Traits\Integration;
 
 use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Cluster;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
@@ -39,7 +39,7 @@ trait CreatesTestModels
                 $attributes['location_id'] = $location->id;
             }
 
-            /** @var \Pterodactyl\Models\Node $node */
+            /** @var \Pterodactyl\Models\Cluster $node */
             $node = Node::factory()->create(['location_id' => $attributes['location_id']]);
             $attributes['node_id'] = $node->id;
         }

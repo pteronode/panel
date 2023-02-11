@@ -25,27 +25,27 @@ Route::group(['prefix' => '/users'], function () {
 
 /*
 |--------------------------------------------------------------------------
-| Node Controller Routes
+| Cluster Controller Routes
 |--------------------------------------------------------------------------
 |
-| Endpoint: /api/application/nodes
+| Endpoint: /api/application/clusters
 |
 */
-Route::group(['prefix' => '/nodes'], function () {
-    Route::get('/', [Application\Nodes\NodeController::class, 'index'])->name('api.application.nodes');
-    Route::get('/deployable', Application\Nodes\NodeDeploymentController::class);
-    Route::get('/{node:id}', [Application\Nodes\NodeController::class, 'view'])->name('api.application.nodes.view');
-    Route::get('/{node:id}/configuration', Application\Nodes\NodeConfigurationController::class);
+Route::group(['prefix' => '/clusters'], function () {
+    Route::get('/', [Application\Clusters\ClusterController::class, 'index'])->name('api.application.clusters');
+    Route::get('/deployable', Application\Clusters\ClusterDeploymentController::class);
+    Route::get('/{cluster:id}', [Application\Clusters\ClusterController::class, 'view'])->name('api.application.clusters.view');
+    Route::get('/{cluster:id}/configuration', Application\Clusters\ClusterConfigurationController::class);
 
-    Route::post('/', [Application\Nodes\NodeController::class, 'store']);
-    Route::patch('/{node:id}', [Application\Nodes\NodeController::class, 'update']);
+    Route::post('/', [Application\Clusters\ClusterController::class, 'store']);
+    Route::patch('/{cluster:id}', [Application\Clusters\ClusterController::class, 'update']);
 
-    Route::delete('/{node:id}', [Application\Nodes\NodeController::class, 'delete']);
+    Route::delete('/{cluster:id}', [Application\Clusters\ClusterController::class, 'delete']);
 
-    Route::group(['prefix' => '/{node:id}/allocations'], function () {
-        Route::get('/', [Application\Nodes\AllocationController::class, 'index'])->name('api.application.allocations');
-        Route::post('/', [Application\Nodes\AllocationController::class, 'store']);
-        Route::delete('/{allocation:id}', [Application\Nodes\AllocationController::class, 'delete'])->name('api.application.allocations.view');
+    Route::group(['prefix' => '/{cluster:id}/allocations'], function () {
+        Route::get('/', [Application\Cluster\AllocationController::class, 'index'])->name('api.application.allocations');
+        Route::post('/', [Application\Cluster\AllocationController::class, 'store']);
+        Route::delete('/{allocation:id}', [Application\Cluster\AllocationController::class, 'delete'])->name('api.application.allocations.view');
     });
 });
 

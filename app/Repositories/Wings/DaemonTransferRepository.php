@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Repositories\Wings;
 
-use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Cluster;
 use Lcobucci\JWT\Token\Plain;
 use GuzzleHttp\Exception\GuzzleException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;

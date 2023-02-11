@@ -3,7 +3,7 @@
 namespace Pterodactyl\Repositories\Wings;
 
 use GuzzleHttp\Client;
-use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Cluster;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Illuminate\Contracts\Foundation\Application;
@@ -12,7 +12,7 @@ abstract class DaemonRepository
 {
     protected ?Server $server;
 
-    protected ?Node $node;
+    protected ?Cluster $cluster;
 
     /**
      * DaemonRepository constructor.
@@ -28,7 +28,7 @@ abstract class DaemonRepository
     {
         $this->server = $server;
 
-        $this->setNode($this->server->node);
+        $this->setNode($this->server->cluster);
 
         return $this;
     }
@@ -36,9 +36,9 @@ abstract class DaemonRepository
     /**
      * Set the node model this request is stemming from.
      */
-    public function setNode(Node $node): self
+    public function setNode(Cluster $cluster): self
     {
-        $this->node = $node;
+        $this->cluster = $cluster;
 
         return $this;
     }
@@ -48,15 +48,15 @@ abstract class DaemonRepository
      */
     public function getHttpClient(array $headers = []): Client
     {
-        Assert::isInstanceOf($this->node, Node::class);
+        Assert::isInstanceOf($this->cluster, Cluster::class);
 
         return new Client([
             'verify' => $this->app->environment('production'),
-            'base_uri' => $this->node->getConnectionAddress(),
+            'base_uri' => $this->cluster->getConnectionAddress(),
             'timeout' => config('pterodactyl.guzzle.timeout'),
             'connect_timeout' => config('pterodactyl.guzzle.connect_timeout'),
             'headers' => array_merge($headers, [
-                'Authorization' => 'Bearer ' . $this->node->getDecryptedKey(),
+                'Authorization' => 'Bearer ' . $this->cluster->getDecryptedKey(),
                 'Accept' => 'application/json',
                 'Content-Type' => 'application/json',
             ]),

@@ -63,16 +63,6 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>CPU Pinning</td>
-                                <td>
-                                    @if($server->threads != null)
-                                        <code>{{ $server->threads }}</code>
-                                    @else
-                                        <span class="label label-default">Not Set</span>
-                                    @endif
-                                </td>
-                            </tr>
-                            <tr>
                                 <td>Memory</td>
                                 <td>
                                     @if($server->memory === 0)
@@ -99,10 +89,6 @@
                                         <code>{{ $server->disk }}MiB</code>
                                     @endif
                                 </td>
-                            </tr>
-                            <tr>
-                                <td>Block IO Weight</td>
-                                <td><code>{{ $server->io }}</code></td>
                             </tr>
                         </table>
                     </div>
@@ -147,11 +133,11 @@
                     <div class="col-sm-12">
                         <div class="small-box bg-gray">
                             <div class="inner">
-                                <h3>{{ str_limit($server->node->name, 16) }}</h3>
+                                <h3>{{ str_limit($server->cluster->name, 16) }}</h3>
                                 <p>Server Node</p>
                             </div>
                             <div class="icon"><i class="fa fa-codepen"></i></div>
-                            <a href="{{ route('admin.clusters.view', $server->node->id) }}" class="small-box-footer">
+                            <a href="{{ route('admin.clusters.view', $server->cluster->id) }}" class="small-box-footer">
                                 More info <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>

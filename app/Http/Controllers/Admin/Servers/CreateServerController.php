@@ -4,14 +4,14 @@ namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
 use JavaScript;
 use Illuminate\View\View;
-use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Cluster;
 use Pterodactyl\Models\Location;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\NestRepository;
-use Pterodactyl\Repositories\Eloquent\NodeRepository;
+use Pterodactyl\Repositories\Eloquent\ClusterRepository;
 use Pterodactyl\Http\Requests\Admin\ServerFormRequest;
 use Pterodactyl\Services\Servers\ServerCreationService;
 
@@ -23,7 +23,7 @@ class CreateServerController extends Controller
     public function __construct(
         private AlertsMessageBag $alert,
         private NestRepository $nestRepository,
-        private NodeRepository $nodeRepository,
+        private ClusterRepository $clusterRepository,
         private ServerCreationService $creationService,
         private ViewFactory $view
     ) {
@@ -36,17 +36,17 @@ class CreateServerController extends Controller
      */
     public function index(): View|RedirectResponse
     {
-        $nodes = Node::all();
-        if (count($nodes) < 1) {
+        $clusters = Cluster::all();
+        if (count($clusters) < 1) {
             $this->alert->warning(trans('admin/server.alerts.node_required'))->flash();
 
-            return redirect()->route('admin.nodes');
+            return redirect()->route('admin.clusters');
         }
 
         $nests = $this->nestRepository->getWithEggs();
 
         JavaScript::put([
-            'nodeData' => $this->nodeRepository->getNodesForServerCreation(),
+            'nodeData' => $this->clusterRepository->getClustersForServerCreation(),
             'nests' => $nests->map(function ($item) {
                 return array_merge($item->toArray(), [
                     'eggs' => $item->eggs->keyBy('id')->toArray(),
@@ -66,7 +66,7 @@ class CreateServerController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
+     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableClusterException
      * @throws \Throwable
      */
     public function store(ServerFormRequest $request): RedirectResponse

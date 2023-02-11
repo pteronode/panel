@@ -5,7 +5,7 @@ namespace Pterodactyl\Services\Backups;
 use Carbon\CarbonImmutable;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Backup;
-use Pterodactyl\Services\Nodes\NodeJWTService;
+use Pterodactyl\Services\Clusters\ClusterJWTService;
 use Pterodactyl\Extensions\Backups\BackupManager;
 
 class DownloadLinkService
@@ -13,7 +13,7 @@ class DownloadLinkService
     /**
      * DownloadLinkService constructor.
      */
-    public function __construct(private BackupManager $backupManager, private NodeJWTService $jwtService)
+    public function __construct(private BackupManager $backupManager, private ClusterJWTService $jwtService)
     {
     }
 
@@ -34,9 +34,9 @@ class DownloadLinkService
                 'backup_uuid' => $backup->uuid,
                 'server_uuid' => $backup->server->uuid,
             ])
-            ->handle($backup->server->node, $user->id . $backup->server->uuid);
+            ->handle($backup->server->cluster, $user->id . $backup->server->uuid);
 
-        return sprintf('%s/download/backup?token=%s', $backup->server->node->getConnectionAddress(), $token->toString());
+        return sprintf('%s/download/backup?token=%s', $backup->server->cluster->getConnectionAddress(), $token->toString());
     }
 
     /**

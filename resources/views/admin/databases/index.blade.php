@@ -32,7 +32,7 @@
                             <th>Port</th>
                             <th>Username</th>
                             <th class="text-center">Databases</th>
-                            <th class="text-center">Node</th>
+                            <th class="text-center">Cluster</th>
                         </tr>
                         @foreach ($hosts as $host)
                             <tr>
@@ -43,8 +43,8 @@
                                 <td>{{ $host->username }}</td>
                                 <td class="text-center">{{ $host->databases_count }}</td>
                                 <td class="text-center">
-                                    @if(! is_null($host->node))
-                                        <a href="{{ route('admin.nodes.view', $host->node->id) }}">{{ $host->node->name }}</a>
+                                    @if(! is_null($host->cluster))
+                                        <a href="{{ route('admin.clusters.view', $host->cluster->id) }}">{{ $host->cluster->name }}</a>
                                     @else
                                         <span class="label label-default">None</span>
                                     @endif
@@ -96,18 +96,18 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="pNodeId" class="form-label">Linked Node</label>
-                        <select name="node_id" id="pNodeId" class="form-control">
+                        <label for="pClusterId" class="form-label">Linked Cluster</label>
+                        <select name="cluster_id" id="pClusterId" class="form-control">
                             <option value="">None</option>
                             @foreach($locations as $location)
                                 <optgroup label="{{ $location->short }}">
-                                    @foreach($location->nodes as $node)
-                                        <option value="{{ $node->id }}">{{ $node->name }}</option>
+                                    @foreach($location->clusters as $cluster)
+                                        <option value="{{ $cluster->id }}">{{ $cluster->name }}</option>
                                     @endforeach
                                 </optgroup>
                             @endforeach
                         </select>
-                        <p class="text-muted small">This setting does nothing other than default to this database host when adding a database to a server on the selected node.</p>
+                        <p class="text-muted small">This setting does nothing other than default to this database host when adding a database to a server on the selected cluster.</p>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -125,6 +125,6 @@
 @section('footer-scripts')
     @parent
     <script>
-        $('#pNodeId').select2();
+        $('#pClusterId').select2();
     </script>
 @endsection

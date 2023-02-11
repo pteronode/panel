@@ -16,18 +16,18 @@ export interface Server {
     internalId: number | string;
     uuid: string;
     name: string;
-    node: string;
-    isNodeUnderMaintenance: boolean;
+    cluster: string;
+    isClusterUnderMaintenance: boolean;
     status: ServerStatus;
     sftpDetails: {
         ip: string;
         port: number;
     };
-    default: {
+    service: {
         ip: string;
         port: number;
         additional_ports: string[];
-    }
+    };
     default_port: number;
     additional_ports: string[];
     invocation: string;
@@ -57,8 +57,8 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
     internalId: data.internal_id,
     uuid: data.uuid,
     name: data.name,
-    node: data.node,
-    isNodeUnderMaintenance: data.is_node_under_maintenance,
+    cluster: data.cluster,
+    isClusterUnderMaintenance: data.is_cluster_under_maintenance,
     status: data.status,
     invocation: data.invocation,
     dockerImage: data.docker_image,
@@ -66,13 +66,13 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
         ip: data.sftp_details.ip,
         port: data.sftp_details.port,
     },
-    default: {
-        ip: data.ip,
-        port: data.default_port,
-        additional_ports: data.additional_ports,
+    service: {
+        ip: data.service.ip,
+        port: data.service.port,
+        additional_ports: data.service.additional_ports,
     },
-    default_port: data.default_port,
-    additional_ports: data.additional_ports,
+    default_port: data.service.port,
+    additional_ports: data.service.additional_ports,
     description: data.description ? (data.description.length > 0 ? data.description : null) : null,
     limits: { ...data.limits },
     eggFeatures: data.egg_features || [],

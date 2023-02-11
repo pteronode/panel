@@ -6,7 +6,7 @@ return [
     // The backup driver to use for this Panel instance. All client generated server backups
     // will be stored in this location by default. It is possible to change this once backups
     // have been made, without losing data.
-    'default' => env('APP_BACKUP_DRIVER', Backup::ADAPTER_WINGS),
+    'default' => env('APP_BACKUP_DRIVER', Backup::ADAPTER_KUBER),
 
     // This value is used to determine the lifespan of UploadPart presigned urls that wings
     // uses to upload backups to S3 storage.  Value is in minutes, so this would default to an hour.
@@ -34,8 +34,8 @@ return [
     'disks' => [
         // There is no configuration for the local disk for Wings. That configuration
         // is determined by the Daemon configuration, and not the Panel.
-        'wings' => [
-            'adapter' => Backup::ADAPTER_WINGS,
+        'kuber' => [
+            'adapter' => Backup::ADAPTER_KUBER,
         ],
 
         // Configuration for storing backups in Amazon S3. This uses the same credentials

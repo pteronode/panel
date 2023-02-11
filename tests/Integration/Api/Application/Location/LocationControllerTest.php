@@ -2,10 +2,10 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Application\Location;
 
-use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Cluster;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Location;
-use Pterodactyl\Transformers\Api\Application\NodeTransformer;
+use Pterodactyl\Transformers\Api\Application\ClusterTransformer;
 use Pterodactyl\Transformers\Api\Application\ServerTransformer;
 use Pterodactyl\Transformers\Api\Application\LocationTransformer;
 use Pterodactyl\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
@@ -189,7 +189,7 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
                         'data' => [
                             [
                                 'object' => 'node',
-                                'attributes' => $this->getTransformer(NodeTransformer::class)->transform($server->getRelation('node')),
+                                'attributes' => $this->getTransformer(ClusterTransformer::class)->transform($server->getRelation('node')),
                             ],
                         ],
                     ],

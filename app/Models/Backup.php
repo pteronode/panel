@@ -30,7 +30,7 @@ class Backup extends Model
 
     public const RESOURCE_NAME = 'backup';
 
-    public const ADAPTER_WINGS = 'wings';
+    public const ADAPTER_KUBER = 'kuber';
     public const ADAPTER_AWS_S3 = 's3';
 
     protected $table = 'backups';

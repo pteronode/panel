@@ -65,6 +65,6 @@ class LocationTransformer extends BaseTransformer
 
         $location->loadMissing('nodes');
 
-        return $this->collection($location->getRelation('nodes'), $this->makeTransformer(NodeTransformer::class), 'node');
+        return $this->collection($location->getRelation('nodes'), $this->makeTransformer(ClusterTransformer::class), 'node');
     }
 }

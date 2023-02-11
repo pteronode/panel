@@ -130,10 +130,10 @@
 
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Nodes</h3>
+                    <h3 class="box-title">Clusters</h3>
 
                     <div class="box-tools">
-                        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addNodesModal">Add Nodes</button>
+                        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addNodesModal">Add Clusters</button>
                     </div>
                 </div>
 
@@ -146,13 +146,13 @@
                             <th></th>
                         </tr>
 
-                        @foreach ($mount->nodes as $node)
+                        @foreach ($mount->clusters as $cluster)
                             <tr>
-                                <td class="col-sm-2 middle"><code>{{ $node->id }}</code></td>
-                                <td class="middle"><a href="{{ route('admin.nodes.view', $node->id) }}">{{ $node->name }}</a></td>
-                                <td class="middle"><code>{{ $node->fqdn }}</code></td>
+                                <td class="col-sm-2 middle"><code>{{ $cluster->id }}</code></td>
+                                <td class="middle"><a href="{{ route('admin.clusters.view', $cluster->id) }}">{{ $cluster->name }}</a></td>
+                                <td class="middle"><code>{{ $cluster->fqdn }}</code></td>
                                 <td class="col-sm-1 middle">
-                                    <button data-action="detach-node" data-id="{{ $node->id }}" class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i></button>
+                                    <button data-action="detach-cluster" data-id="{{ $cluster->id }}" class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i></button>
                                 </td>
                             </tr>
                         @endforeach
@@ -209,26 +209,26 @@
     <div class="modal fade" id="addNodesModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form action="{{ route('admin.mounts.nodes', $mount->id) }}" method="POST">
+                <form action="{{ route('admin.mounts.clusters', $mount->id) }}" method="POST">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true" style="color: #FFFFFF">&times;</span>
                         </button>
 
-                        <h4 class="modal-title">Add Nodes</h4>
+                        <h4 class="modal-title">Add Clusters</h4>
                     </div>
 
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group col-md-12">
-                                <label for="pNodes">Nodes</label>
-                                <select id="pNodes" name="nodes[]" class="form-control" multiple>
+                                <label for="pNodes">Clusters</label>
+                                <select id="pNodes" name="clusters[]" class="form-control" multiple>
                                     @foreach ($locations as $location)
                                         <optgroup label="{{ $location->long }} ({{ $location->short }})">
-                                            @foreach ($location->nodes as $node)
+                                            @foreach ($location->clusters as $cluster)
 
-                                                @if (! in_array($node->id, $mount->nodes->pluck('id')->toArray()))
-                                                    <option value="{{ $node->id }}">{{ $node->name }}</option>
+                                                @if (! in_array($cluster->id, $mount->clusters->pluck('id')->toArray()))
+                                                    <option value="{{ $cluster->id }}">{{ $cluster->name }}</option>
                                                 @endif
 
                                             @endforeach
@@ -261,7 +261,7 @@
             });
 
             $('#pNodes').select2({
-                placeholder: 'Select nodes..',
+                placeholder: 'Select clusters..',
             });
 
             $('button[data-action="detach-egg"]').click(function (event) {
@@ -287,19 +287,19 @@
                 });
             });
 
-            $('button[data-action="detach-node"]').click(function (event) {
+            $('button[data-action="detach-cluster"]').click(function (event) {
                 event.preventDefault();
 
                 const element = $(this);
-                const nodeId = $(this).data('id');
+                const clusterId = $(this).data('id');
 
                 $.ajax({
                     method: 'DELETE',
-                    url: '/admin/mounts/' + {{ $mount->id }} + '/nodes/' + nodeId,
+                    url: '/admin/mounts/' + {{ $mount->id }} + '/clusters/' + clusterId,
                     headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
                 }).done(function () {
                     element.parent().parent().addClass('warning').delay(100).fadeOut();
-                    swal({ type: 'success', title: 'Node detached.' });
+                    swal({ type: 'success', title: 'Cluster detached.' });
                 }).fail(function (jqXHR) {
                     console.error(jqXHR);
                     swal({

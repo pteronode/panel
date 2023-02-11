@@ -3,7 +3,7 @@
 namespace Pterodactyl\Tests\Integration\Api\Client;
 
 use ReflectionClass;
-use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Cluster;
 use Pterodactyl\Models\Task;
 use Pterodactyl\Models\User;
 use InvalidArgumentException;

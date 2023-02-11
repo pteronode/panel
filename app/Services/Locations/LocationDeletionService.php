@@ -4,9 +4,9 @@ namespace Pterodactyl\Services\Locations;
 
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Location;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ClusterRepositoryInterface;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Location\HasActiveNodesException;
+use Pterodactyl\Exceptions\Service\Location\HasActiveClustersException;
 
 class LocationDeletionService
 {
@@ -15,14 +15,14 @@ class LocationDeletionService
      */
     public function __construct(
         protected LocationRepositoryInterface $repository,
-        protected NodeRepositoryInterface $nodeRepository
+        protected ClusterRepositoryInterface $clusterRepository
     ) {
     }
 
     /**
      * Delete an existing location.
      *
-     * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveNodesException
+     * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveClustersException
      */
     public function handle(Location|int $location): ?int
     {
@@ -30,9 +30,9 @@ class LocationDeletionService
 
         Assert::integerish($location, 'First argument passed to handle must be numeric or an instance of ' . Location::class . ', received %s.');
 
-        $count = $this->nodeRepository->findCountWhere([['location_id', '=', $location]]);
+        $count = $this->clusterRepository->findCountWhere([['location_id', '=', $location]]);
         if ($count > 0) {
-            throw new HasActiveNodesException(trans('exceptions.locations.has_nodes'));
+            throw new HasActiveClustersException(trans('exceptions.locations.has_nodes'));
         }
 
         return $this->repository->delete($location);

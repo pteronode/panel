@@ -6,7 +6,7 @@ use Mockery;
 use Mockery\MockInterface;
 use Pterodactyl\Models\Egg;
 use GuzzleHttp\Psr7\Request;
-use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Cluster;
 use Pterodactyl\Models\User;
 use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
@@ -56,7 +56,7 @@ class ServerCreationServiceTest extends IntegrationTestCase
         /** @var \Pterodactyl\Models\Location $location */
         $location = Location::factory()->create();
 
-        /** @var \Pterodactyl\Models\Node $node */
+        /** @var \Pterodactyl\Models\Cluster $node */
         $node = Node::factory()->create([
             'location_id' => $location->id,
         ]);

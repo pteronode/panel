@@ -3,17 +3,17 @@
 namespace Pterodactyl\Tests\Integration\Services\Deployment;
 
 use Exception;
-use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Cluster;
 use InvalidArgumentException;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\Location;
 use Illuminate\Support\Collection;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
-use Pterodactyl\Services\Deployment\FindViableNodesService;
-use Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException;
+use Pterodactyl\Services\Deployment\FindViableClustersService;
+use Pterodactyl\Exceptions\Service\Deployment\NoViableClusterException;
 
-class FindViableNodesServiceTest extends IntegrationTestCase
+class FindViableClustersServiceTest extends IntegrationTestCase
 {
     public function setUp(): void
     {
@@ -73,7 +73,7 @@ class FindViableNodesServiceTest extends IntegrationTestCase
         /** @var \Pterodactyl\Models\Location[] $locations */
         $locations = Location::factory()->times(2)->create();
 
-        /** @var \Pterodactyl\Models\Node[] $nodes */
+        /** @var \Pterodactyl\Models\Cluster[] $nodes */
         $nodes = [
             // This node should never be returned once we've completed the initial test which
             // runs without a location filter.
@@ -157,7 +157,7 @@ class FindViableNodesServiceTest extends IntegrationTestCase
         // Expect that no viable node can be found when the memory limit for the given instance
         // is greater than either node can support, even with the overallocation limits taken
         // into account.
-        $this->expectException(NoViableNodeException::class);
+        $this->expectException(NoViableClusterException::class);
         $base()->setMemory(10000)->handle();
 
         // Create four servers so that the memory used for the second node is equal to the total
@@ -182,8 +182,8 @@ class FindViableNodesServiceTest extends IntegrationTestCase
         $this->assertSame($nodes[1]->id, $response[0]->id);
     }
 
-    private function getService(): FindViableNodesService
+    private function getService(): FindViableClustersService
     {
-        return $this->app->make(FindViableNodesService::class);
+        return $this->app->make(FindViableClustersService::class);
     }
 }

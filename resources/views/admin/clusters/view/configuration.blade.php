@@ -1,15 +1,15 @@
 @extends('layouts.admin')
 
 @section('title')
-    {{ $node->name }}: Configuration
+    {{ $cluster->name }}: Configuration
 @endsection
 
 @section('content-header')
-    <h1>{{ $node->name }}<small>Your daemon configuration file.</small></h1>
+    <h1>{{ $cluster->name }}<small>Your daemon configuration file.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li><a href="{{ route('admin.clusters') }}">Clusters</a></li>
-        <li><a href="{{ route('admin.clusters.view', $node->id) }}">{{ $node->name }}</a></li>
+        <li><a href="{{ route('admin.clusters.view', $cluster->id) }}">{{ $cluster->name }}</a></li>
         <li class="active">Configuration</li>
     </ol>
 @endsection
@@ -19,9 +19,11 @@
     <div class="col-xs-12">
         <div class="nav-tabs-custom nav-tabs-floating">
             <ul class="nav nav-tabs">
-                <li><a href="{{ route('admin.clusters.view', $node->id) }}">About</a></li>
-                <li><a href="{{ route('admin.clusters.view.settings', $node->id) }}">Settings</a></li>
-                <li class="active"><a href="{{ route('admin.clusters.view.configuration', $node->id) }}">Configuration</a></li>
+                <li><a href="{{ route('admin.clusters.view', $cluster->id) }}">About</a></li>
+                <li><a href="{{ route('admin.clusters.view.settings', $cluster->id) }}">Settings</a></li>
+                <li class="active"><a href="{{ route('admin.clusters.view.configuration', $cluster->id) }}">Configuration</a></li>
+                <li><a href="{{ route('admin.clusters.view.allocation', $cluster->id) }}">Allocation</a></li>
+                <li><a href="{{ route('admin.clusters.view.servers', $cluster->id) }}">Servers</a></li>
             </ul>
         </div>
     </div>
@@ -33,7 +35,7 @@
                 <h3 class="box-title">Configuration File</h3>
             </div>
             <div class="box-body">
-                <pre class="no-margin" style="overflow: hidden; white-space: break-spaces">{{ $node->getYamlConfiguration() }}</pre>
+                <pre class="no-margin" style="overflow: hidden; white-space: break-spaces">{{ $cluster->getYamlConfiguration() }}</pre>
             </div>
             <div class="box-footer">
                 <p class="no-margin">This file should be placed in your daemon's root directory (usually <code>/etc/kubectyl</code>) in a file called <code>config.yml</code>.</p>
@@ -65,7 +67,7 @@
     $('#configTokenBtn').on('click', function (event) {
         $.ajax({
             method: 'POST',
-            url: '{{ route('admin.clusters.view.configuration.token', $node->id) }}',
+            url: '{{ route('admin.clusters.view.configuration.token', $cluster->id) }}',
             headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
         }).done(function (data) {
             swal({

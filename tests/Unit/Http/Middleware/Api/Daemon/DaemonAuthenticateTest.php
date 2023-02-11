@@ -4,9 +4,9 @@ namespace Pterodactyl\Tests\Unit\Http\Middleware\Api\Daemon;
 
 use Mockery as m;
 use Mockery\MockInterface;
-use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Cluster;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Repositories\Eloquent\NodeRepository;
+use Pterodactyl\Repositories\Eloquent\ClusterRepository;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Http\Middleware\Api\Daemon\DaemonAuthenticate;
@@ -28,7 +28,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
         parent::setUp();
 
         $this->encrypter = m::mock(Encrypter::class);
-        $this->repository = m::mock(NodeRepository::class);
+        $this->repository = m::mock(ClusterRepository::class);
     }
 
     /**
@@ -85,7 +85,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
     {
         $this->expectException(AccessDeniedHttpException::class);
 
-        /** @var \Pterodactyl\Models\Node $model */
+        /** @var \Pterodactyl\Models\Cluster $model */
         $model = Node::factory()->make();
 
         $this->request->expects('route->getName')->withNoArgs()->andReturn('random.route');
@@ -118,7 +118,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
      */
     public function testSuccessfulMiddlewareProcess()
     {
-        /** @var \Pterodactyl\Models\Node $model */
+        /** @var \Pterodactyl\Models\Cluster $model */
         $model = Node::factory()->make();
 
         $this->request->expects('route->getName')->withNoArgs()->andReturn('random.route');

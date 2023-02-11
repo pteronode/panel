@@ -4,7 +4,7 @@ namespace Pterodactyl\Services\Allocations;
 
 use Exception;
 use IPTools\Network;
-use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Cluster;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
@@ -19,7 +19,7 @@ class AssignmentService
     public const CIDR_MIN_BITS = 32;
     public const PORT_FLOOR = 1024;
     public const PORT_CEIL = 65535;
-    public const PORT_RANGE_LIMIT = 1000;
+    public const PORT_RANGE_LIMIT = 250;
     public const PORT_RANGE_REGEX = '/^(\d{4,5})-(\d{4,5})$/';
 
     /**
@@ -30,7 +30,7 @@ class AssignmentService
     }
 
     /**
-     * Insert allocations into the database and link them to a specific node.
+     * Insert allocations into the database and link them to a specific cluster.
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
@@ -38,7 +38,7 @@ class AssignmentService
      * @throws \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
      */
-    public function handle(Node $node, array $data): void
+    public function handle(Cluster $cluster, array $data): void
     {
         $explode = explode('/', $data['allocation_ip']);
         if (count($explode) !== 1) {
@@ -80,7 +80,7 @@ class AssignmentService
 
                     foreach ($block as $unit) {
                         $insertData[] = [
-                            'node_id' => $node->id,
+                            'cluster_id' => $cluster->id,
                             'ip' => $ip->__toString(),
                             'port' => (int) $unit,
                             'ip_alias' => array_get($data, 'allocation_alias'),
@@ -93,7 +93,7 @@ class AssignmentService
                     }
 
                     $insertData[] = [
-                        'node_id' => $node->id,
+                        'cluster_id' => $cluster->id,
                         'ip' => $ip->__toString(),
                         'port' => (int) $port,
                         'ip_alias' => array_get($data, 'allocation_alias'),
