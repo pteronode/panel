@@ -81,7 +81,7 @@ class ServerTransfer extends Model
      */
     public function oldNode(): HasOne
     {
-        return $this->hasOne(Node::class, 'id', 'old_node');
+        return $this->hasOne(Cluster::class, 'id', 'old_node');
     }
 
     /**
@@ -89,6 +89,6 @@ class ServerTransfer extends Model
      */
     public function newNode(): HasOne
     {
-        return $this->hasOne(Node::class, 'id', 'new_node');
+        return $this->hasOne(Cluster::class, 'id', 'new_node');
     }
 }
