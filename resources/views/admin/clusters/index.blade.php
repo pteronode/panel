@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    List Nodes
+    List Clusters
 @endsection
 
 @section('scripts')

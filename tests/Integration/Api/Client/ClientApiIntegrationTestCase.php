@@ -32,7 +32,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
         DatabaseHost::query()->forceDelete();
         Backup::query()->forceDelete();
         Server::query()->forceDelete();
-        Node::query()->forceDelete();
+        Cluster::query()->forceDelete();
         Location::query()->forceDelete();
         User::query()->forceDelete();
 

@@ -33,7 +33,7 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
      */
     protected function tearDown(): void
     {
-        config()->set('pterodactyl.client_features.databases.allow_random', true);
+        config()->set('kubectyl.client_features.databases.allow_random', true);
 
         Database::query()->delete();
         DatabaseHost::query()->delete();
@@ -56,17 +56,17 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
     }
 
     /**
-     * Test that an error is thrown if there are no database hosts on the same node as the
+     * Test that an error is thrown if there are no database hosts on the same cluster as the
      * server and the allow_random config value is false.
      */
     public function testErrorIsThrownIfNoDatabaseHostsExistOnNode()
     {
         $server = $this->createServerModel();
 
-        $node = Node::factory()->create(['location_id' => $server->location->id]);
-        DatabaseHost::factory()->create(['node_id' => $node->id]);
+        $cluster = Cluster::factory()->create(['location_id' => $server->location->id]);
+        DatabaseHost::factory()->create(['cluster_id' => $cluster->id]);
 
-        config()->set('pterodactyl.client_features.databases.allow_random', false);
+        config()->set('kubectyl.client_features.databases.allow_random', false);
 
         $this->expectException(NoSuitableDatabaseHostException::class);
 
@@ -92,15 +92,15 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
     }
 
     /**
-     * Test that a database host on the same node as the server is preferred.
+     * Test that a database host on the same cluster as the server is preferred.
      */
     public function testDatabaseHostOnSameNodeIsPreferred()
     {
         $server = $this->createServerModel();
 
-        $node = Node::factory()->create(['location_id' => $server->location->id]);
-        DatabaseHost::factory()->create(['node_id' => $node->id]);
-        $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+        $cluster = Cluster::factory()->create(['location_id' => $server->location->id]);
+        DatabaseHost::factory()->create(['cluster_id' => $cluster->id]);
+        $host = DatabaseHost::factory()->create(['cluster_id' => $server->cluster_id]);
 
         $this->managementService->expects('create')->with($server, [
             'database_host_id' => $host->id,
@@ -117,16 +117,16 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
     }
 
     /**
-     * Test that a database host not assigned to the same node as the server is used if
-     * there are no same-node hosts and the allow_random configuration value is set to
+     * Test that a database host not assigned to the same cluster as the server is used if
+     * there are no same-cluster hosts and the allow_random configuration value is set to
      * true.
      */
     public function testDatabaseHostIsSelectedIfNoSuitableHostExistsOnSameNode()
     {
         $server = $this->createServerModel();
 
-        $node = Node::factory()->create(['location_id' => $server->location->id]);
-        $host = DatabaseHost::factory()->create(['node_id' => $node->id]);
+        $cluster = Cluster::factory()->create(['location_id' => $server->location->id]);
+        $host = DatabaseHost::factory()->create(['cluster_id' => $cluster->id]);
 
         $this->managementService->expects('create')->with($server, [
             'database_host_id' => $host->id,

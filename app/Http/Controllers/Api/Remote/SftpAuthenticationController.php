@@ -83,14 +83,14 @@ class SftpAuthenticationController extends Controller
     }
 
     /**
-     * Finds the server being requested and ensures that it belongs to the node this
+     * Finds the server being requested and ensures that it belongs to the cluster this
      * request stems from.
      */
     protected function getServer(Request $request, string $uuid): Server
     {
         return Server::query()
             ->where(fn ($builder) => $builder->where('uuid', $uuid)->orWhere('uuidShort', $uuid))
-            ->where('node_id', $request->attributes->get('node')->id)
+            ->where('cluster_id', $request->attributes->get('cluster')->id)
             ->firstOr(function () use ($request) {
                 $this->reject($request);
             });

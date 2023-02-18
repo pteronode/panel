@@ -53,8 +53,8 @@ abstract class DaemonRepository
         return new Client([
             'verify' => $this->app->environment('production'),
             'base_uri' => $this->cluster->getConnectionAddress(),
-            'timeout' => config('pterodactyl.guzzle.timeout'),
-            'connect_timeout' => config('pterodactyl.guzzle.connect_timeout'),
+            'timeout' => config('kubectyl.guzzle.timeout'),
+            'connect_timeout' => config('kubectyl.guzzle.connect_timeout'),
             'headers' => array_merge($headers, [
                 'Authorization' => 'Bearer ' . $this->cluster->getDecryptedKey(),
                 'Accept' => 'application/json',

@@ -24,7 +24,7 @@ class DeleteAllocationTest extends ClientApiIntegrationTestCase
         /** @var \Pterodactyl\Models\Allocation $allocation */
         $allocation = Allocation::factory()->create([
             'server_id' => $server->id,
-            'node_id' => $server->node_id,
+            'cluster_id' => $server->cluster_id,
             'notes' => 'hodor',
         ]);
 
@@ -44,7 +44,7 @@ class DeleteAllocationTest extends ClientApiIntegrationTestCase
         /** @var \Pterodactyl\Models\Allocation $allocation */
         $allocation = Allocation::factory()->create([
             'server_id' => $server->id,
-            'node_id' => $server->node_id,
+            'cluster_id' => $server->cluster_id,
             'notes' => 'hodor',
         ]);
 

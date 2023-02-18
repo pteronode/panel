@@ -37,7 +37,7 @@ class StoreServerRequest extends ApplicationApiRequest
             // Resource limitations
             'limits' => 'required|array',
             'limits.memory' => $rules['memory'],
-            'limits.swap' => $rules['swap'],
+            // 'limits.swap' => $rules['swap'],
             'limits.disk' => $rules['disk'],
             'limits.io' => $rules['io'],
             'limits.threads' => $rules['threads'],
@@ -82,7 +82,7 @@ class StoreServerRequest extends ApplicationApiRequest
             'startup' => array_get($data, 'startup'),
             'environment' => array_get($data, 'environment'),
             'memory' => array_get($data, 'limits.memory'),
-            'swap' => array_get($data, 'limits.swap'),
+            // 'swap' => array_get($data, 'limits.swap'),
             'disk' => array_get($data, 'limits.disk'),
             'io' => array_get($data, 'limits.io'),
             'cpu' => array_get($data, 'limits.cpu'),

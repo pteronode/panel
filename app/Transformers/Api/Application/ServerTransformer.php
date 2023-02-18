@@ -62,11 +62,11 @@ class ServerTransformer extends BaseTransformer
             'suspended' => $server->isSuspended(),
             'limits' => [
                 'memory' => $server->memory,
-                'swap' => $server->swap,
+                // 'swap' => $server->swap,
                 'disk' => $server->disk,
-                'io' => $server->io,
+                // 'io' => $server->io,
                 'cpu' => $server->cpu,
-                'threads' => $server->threads,
+                // 'threads' => $server->threads,
                 'oom_disabled' => $server->oom_disabled,
             ],
             'feature_limits' => [

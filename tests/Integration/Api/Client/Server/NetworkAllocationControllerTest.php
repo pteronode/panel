@@ -103,7 +103,7 @@ class NetworkAllocationControllerTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount($permissions);
         $allocation = $server->allocation;
-        $allocation2 = Allocation::factory()->create(['node_id' => $server->node_id, 'server_id' => $server->id]);
+        $allocation2 = Allocation::factory()->create(['cluster_id' => $server->cluster_id, 'server_id' => $server->id]);
 
         $server->allocation_id = $allocation->id;
         $server->save();

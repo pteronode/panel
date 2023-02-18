@@ -49,9 +49,9 @@ class WebsocketControllerTest extends ClientApiIntegrationTestCase
         /** @var \Pterodactyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount();
 
-        // Force the node to HTTPS since we want to confirm it gets transformed to wss:// in the URL.
-        $server->node->scheme = 'https';
-        $server->node->save();
+        // Force the cluster to HTTPS since we want to confirm it gets transformed to wss:// in the URL.
+        $server->cluster->scheme = 'https';
+        $server->cluster->save();
 
         $response = $this->actingAs($user)->getJson("/api/client/servers/$server->uuid/websocket");
 
@@ -62,14 +62,14 @@ class WebsocketControllerTest extends ClientApiIntegrationTestCase
         $this->assertStringStartsWith('wss://', $connection, 'Failed asserting that websocket connection address has expected "wss://" prefix.');
         $this->assertStringEndsWith("/api/servers/$server->uuid/ws", $connection, 'Failed asserting that websocket connection address uses expected Wings endpoint.');
 
-        $config = Configuration::forSymmetricSigner(new Sha256(), $key = InMemory::plainText($server->node->getDecryptedKey()));
+        $config = Configuration::forSymmetricSigner(new Sha256(), $key = InMemory::plainText($server->cluster->getDecryptedKey()));
         $config->setValidationConstraints(new SignedWith(new Sha256(), $key));
         /** @var \Lcobucci\JWT\Token\Plain $token */
         $token = $config->parser()->parse($response->json('data.token'));
 
         $this->assertTrue(
             $config->validator()->validate($token, ...$config->validationConstraints()),
-            'Failed to validate that the JWT data returned was signed using the Node\'s secret key.'
+            'Failed to validate that the JWT data returned was signed using the Cluster\'s secret key.'
         );
 
         // The way we generate times for the JWT will truncate the microseconds from the
@@ -82,7 +82,7 @@ class WebsocketControllerTest extends ClientApiIntegrationTestCase
 
         // Check that the claims are generated correctly.
         $this->assertTrue($token->hasBeenIssuedBy(config('app.url')));
-        $this->assertTrue($token->isPermittedFor($server->node->getConnectionAddress()));
+        $this->assertTrue($token->isPermittedFor($server->cluster->getConnectionAddress()));
         $this->assertEquals($expect, $token->claims()->get('iat'));
         $this->assertEquals($expect->subMinutes(5), $token->claims()->get('nbf'));
         $this->assertEquals($expect->addMinutes(10), $token->claims()->get('exp'));
@@ -107,14 +107,14 @@ class WebsocketControllerTest extends ClientApiIntegrationTestCase
         $response->assertOk();
         $response->assertJsonStructure(['data' => ['token', 'socket']]);
 
-        $config = Configuration::forSymmetricSigner(new Sha256(), $key = InMemory::plainText($server->node->getDecryptedKey()));
+        $config = Configuration::forSymmetricSigner(new Sha256(), $key = InMemory::plainText($server->cluster->getDecryptedKey()));
         $config->setValidationConstraints(new SignedWith(new Sha256(), $key));
         /** @var \Lcobucci\JWT\Token\Plain $token */
         $token = $config->parser()->parse($response->json('data.token'));
 
         $this->assertTrue(
             $config->validator()->validate($token, ...$config->validationConstraints()),
-            'Failed to validate that the JWT data returned was signed using the Node\'s secret key.'
+            'Failed to validate that the JWT data returned was signed using the Cluster\'s secret key.'
         );
 
         // Check that the claims are generated correctly.

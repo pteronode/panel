@@ -40,7 +40,7 @@ class ServerCreationService
      * Create a server on the Panel and trigger a request to the Daemon to begin the server
      * creation process. This function will attempt to set as many additional values
      * as possible given the input data. For example, if an allocation_id is passed with
-     * no node_id the node_is will be picked from the allocation.
+     * no cluster_id the cluster_is will be picked from the allocation.
      *
      * @throws \Throwable
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -52,19 +52,19 @@ class ServerCreationService
     public function handle(array $data, DeploymentObject $deployment = null): Server
     {
         // If a deployment object has been passed we need to get the allocation
-        // that the server should use, and assign the node from that allocation.
+        // that the server should use, and assign the cluster from that allocation.
         if ($deployment instanceof DeploymentObject) {
             $allocation = $this->configureDeployment($data, $deployment);
             $data['allocation_id'] = $allocation->id;
-            $data['node_id'] = $allocation->node_id;
+            $data['cluster_id'] = $allocation->cluster_id;
         }
 
-        // Auto-configure the node based on the selected allocation
-        // if no node was defined.
-        if (empty($data['node_id'])) {
+        // Auto-configure the cluster based on the selected allocation
+        // if no cluster was defined.
+        if (empty($data['cluster_id'])) {
             Assert::false(empty($data['allocation_id']), 'Expected a non-empty allocation_id in server creation data.');
 
-            $data['node_id'] = Allocation::query()->findOrFail($data['allocation_id'])->node_id;
+            $data['cluster_id'] = Allocation::query()->findOrFail($data['allocation_id'])->cluster_id;
         }
 
         if (empty($data['nest_id'])) {
@@ -115,14 +115,14 @@ class ServerCreationService
      */
     private function configureDeployment(array $data, DeploymentObject $deployment): Allocation
     {
-        /** @var \Illuminate\Support\Collection $nodes */
-        $nodes = $this->findViableClustersService->setLocations($deployment->getLocations())
+        /** @var \Illuminate\Support\Collection $clusters */
+        $clusters = $this->findViableClustersService->setLocations($deployment->getLocations())
             ->setDisk(Arr::get($data, 'disk'))
             ->setMemory(Arr::get($data, 'memory'))
             ->handle();
 
         return $this->allocationSelectionService->setDedicated($deployment->isDedicated())
-            ->setNodes($nodes->pluck('id')->toArray())
+            ->setNodes($clusters->pluck('id')->toArray())
             ->setPorts($deployment->getPorts())
             ->handle();
     }
@@ -141,19 +141,19 @@ class ServerCreationService
             'external_id' => Arr::get($data, 'external_id'),
             'uuid' => $uuid,
             'uuidShort' => substr($uuid, 0, 8),
-            'node_id' => Arr::get($data, 'node_id'),
+            'cluster_id' => Arr::get($data, 'cluster_id'),
             'name' => Arr::get($data, 'name'),
             'description' => Arr::get($data, 'description') ?? '',
             'status' => Server::STATUS_INSTALLING,
             'skip_scripts' => Arr::get($data, 'skip_scripts') ?? isset($data['skip_scripts']),
             'owner_id' => Arr::get($data, 'owner_id'),
             'memory' => Arr::get($data, 'memory'),
-            'swap' => Arr::get($data, 'swap'),
+            // 'swap' => Arr::get($data, 'swap'),
             'disk' => Arr::get($data, 'disk'),
-            'io' => Arr::get($data, 'io'),
+            // 'io' => Arr::get($data, 'io'),
             'cpu' => Arr::get($data, 'cpu'),
-            'threads' => Arr::get($data, 'threads'),
-            'oom_disabled' => Arr::get($data, 'oom_disabled') ?? true,
+            // 'threads' => Arr::get($data, 'threads'),
+            // 'oom_disabled' => Arr::get($data, 'oom_disabled') ?? true,
             'default_port' => Arr::get($data, 'default_port'),
             'additional_ports' => Arr::get($data, 'additional_ports'),
             'nest_id' => Arr::get($data, 'nest_id'),

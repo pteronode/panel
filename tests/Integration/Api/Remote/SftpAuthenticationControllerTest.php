@@ -127,15 +127,15 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
 
     /**
      * Test that a request is rejected if the credentials are valid but the username indicates
-     * a server on a different node.
+     * a server on a different cluster.
      *
      * @dataProvider authorizationTypeDataProvider
      */
     public function testRequestIsRejectedIfServerBelongsToDifferentNode(string $type)
     {
-        $node2 = $this->createServerModel()->node;
+        $cluster2 = $this->createServerModel()->cluster;
 
-        $this->setAuthorization($node2);
+        $this->setAuthorization($cluster2);
 
         $password = $type === 'public_key'
             ? UserSSHKey::factory()->for($this->user)->create()->public_key
@@ -155,7 +155,7 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
 
         $user->update(['password' => password_hash('foobar', PASSWORD_DEFAULT)]);
 
-        $this->setAuthorization($server->node);
+        $this->setAuthorization($server->cluster);
 
         $this->postJson('/api/remote/sftp/auth', [
             'username' => $user->username . '.' . $server->uuidShort,
@@ -185,7 +185,7 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
 
         $user->update(['password' => password_hash('foobar', PASSWORD_DEFAULT)]);
 
-        $this->setAuthorization($server->node);
+        $this->setAuthorization($server->cluster);
 
         $data = [
             'username' => $user->username . '.' . $server->uuidShort,
@@ -241,10 +241,10 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
     /**
      * Sets the authorization header for the rest of the test.
      */
-    protected function setAuthorization(Node $node = null): void
+    protected function setAuthorization(Cluster $cluster = null): void
     {
-        $node = $node ?? $this->server->node;
+        $cluster = $cluster ?? $this->server->cluster;
 
-        $this->withHeader('Authorization', 'Bearer ' . $node->daemon_token_id . '.' . decrypt($node->daemon_token));
+        $this->withHeader('Authorization', 'Bearer ' . $cluster->daemon_token_id . '.' . decrypt($cluster->daemon_token));
     }
 }

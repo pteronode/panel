@@ -36,10 +36,16 @@ class ClusterFactory extends Factory
             'daemonBase' => '/var/lib/kubectyl/volumes',
             'host' => '127.0.0.1:6443',
             'bearer_token' => 'test',
-            'insecure' => 'true',
+            'insecure' => true,
             'service_type' => 'nodeport',
             'storage_class' => 'manual',
             'ns' => 'default',
+            'sftp_image' => 'ghcr.io/kubectyl/sftp-server:latest',
+            'sftp_port' => 2022,
+            'maintenance_mode' => false,
+            'dns_policy' => 'clusterfirst',
+            'image_pull_policy' => 'ifnotpresent',
+            'metallb_shared_ip' => true,
         ];
     }
 }

@@ -64,14 +64,14 @@
             "app/helpers.php"
         ],
         "psr-4": {
-            "Kubectyl\\": "app/",
+            "Pterodactyl\\": "app/",
             "Database\\Factories\\": "database/Factories/",
             "Database\\Seeders\\": "database/Seeders/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Kubectyl\\Tests\\": "tests/"
+            "Pterodactyl\\Tests\\": "tests/"
         }
     },
     "scripts": {

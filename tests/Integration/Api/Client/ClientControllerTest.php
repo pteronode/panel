@@ -104,10 +104,10 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
         /** @var \Pterodactyl\Models\User $user */
         /** @var \Pterodactyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount();
-        $server2 = $this->createServerModel(['user_id' => $user->id, 'node_id' => $server->node_id]);
+        $server2 = $this->createServerModel(['user_id' => $user->id, 'cluster_id' => $server->cluster_id]);
 
-        $allocation = Allocation::factory()->create(['node_id' => $server->node_id, 'server_id' => $server->id, 'ip' => '192.168.1.1', 'port' => 25565]);
-        $allocation2 = Allocation::factory()->create(['node_id' => $server->node_id, 'server_id' => $server2->id, 'ip' => '192.168.1.1', 'port' => 25570]);
+        $allocation = Allocation::factory()->create(['cluster_id' => $server->cluster_id, 'server_id' => $server->id, 'ip' => '192.168.1.1', 'port' => 25565]);
+        $allocation2 = Allocation::factory()->create(['cluster_id' => $server->cluster_id, 'server_id' => $server2->id, 'ip' => '192.168.1.1', 'port' => 25570]);
 
         $server->update(['allocation_id' => $allocation->id]);
         $server2->update(['allocation_id' => $allocation2->id]);
@@ -315,7 +315,7 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
         $server->allocation->save();
 
         Allocation::factory()->times(2)->create([
-            'node_id' => $server->node_id,
+            'cluster_id' => $server->cluster_id,
             'server_id' => $server->id,
         ]);
 

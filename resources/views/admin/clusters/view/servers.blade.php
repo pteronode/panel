@@ -22,7 +22,7 @@
                 <li><a href="{{ route('admin.clusters.view', $cluster->id) }}">About</a></li>
                 <li><a href="{{ route('admin.clusters.view.settings', $cluster->id) }}">Settings</a></li>
                 <li><a href="{{ route('admin.clusters.view.configuration', $cluster->id) }}">Configuration</a></li>
-                <li><a href="{{ route('admin.clusters.view.allocation', $cluster->id) }}">Allocation</a></li>
+                <li class="disabled"><a href="javascript:void(0);">Allocation</a></li>
                 <li class="active"><a href="{{ route('admin.clusters.view.servers', $cluster->id) }}">Servers</a></li>
                 
             </ul>

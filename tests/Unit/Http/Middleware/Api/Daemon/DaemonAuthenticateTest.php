@@ -62,7 +62,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
     }
 
     /**
-     * Test that passing in an invalid node daemon secret will result in a bad request
+     * Test that passing in an invalid cluster daemon secret will result in a bad request
      * exception being returned.
      *
      * @dataProvider badTokenDataProvider
@@ -78,7 +78,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
     }
 
     /**
-     * Test that an access denied error is returned if the node is valid but the token
+     * Test that an access denied error is returned if the cluster is valid but the token
      * provided is not valid.
      */
     public function testResponseShouldFailIfTokenIsNotValid()
@@ -86,7 +86,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
         $this->expectException(AccessDeniedHttpException::class);
 
         /** @var \Pterodactyl\Models\Cluster $model */
-        $model = Node::factory()->make();
+        $model = Cluster::factory()->make();
 
         $this->request->expects('route->getName')->withNoArgs()->andReturn('random.route');
         $this->request->expects('bearerToken')->withNoArgs()->andReturn($model->daemon_token_id . '.random_string_123');
@@ -98,7 +98,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
     }
 
     /**
-     * Test that an access denied exception is returned if the node is not found using
+     * Test that an access denied exception is returned if the cluster is not found using
      * the token ID provided.
      */
     public function testResponseShouldFailIfNodeIsNotFound()
@@ -119,7 +119,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
     public function testSuccessfulMiddlewareProcess()
     {
         /** @var \Pterodactyl\Models\Cluster $model */
-        $model = Node::factory()->make();
+        $model = Cluster::factory()->make();
 
         $this->request->expects('route->getName')->withNoArgs()->andReturn('random.route');
         $this->request->expects('bearerToken')->withNoArgs()->andReturn($model->daemon_token_id . '.' . decrypt($model->daemon_token));
@@ -128,8 +128,8 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
         $this->encrypter->expects('decrypt')->with($model->daemon_token)->andReturns(decrypt($model->daemon_token));
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
-        $this->assertRequestHasAttribute('node');
-        $this->assertRequestAttributeEquals($model, 'node');
+        $this->assertRequestHasAttribute('cluster');
+        $this->assertRequestAttributeEquals($model, 'cluster');
     }
 
     /**

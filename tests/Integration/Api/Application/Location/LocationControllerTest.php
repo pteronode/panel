@@ -168,13 +168,13 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
         $location = Location::factory()->create();
         $server = $this->createServerModel(['user_id' => $this->getApiUser()->id, 'location_id' => $location->id]);
 
-        $response = $this->getJson('/api/application/locations/' . $location->id . '?include=servers,nodes');
+        $response = $this->getJson('/api/application/locations/' . $location->id . '?include=servers,clusters');
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCount(2)->assertJsonCount(2, 'attributes.relationships');
         $response->assertJsonStructure([
             'attributes' => [
                 'relationships' => [
-                    'nodes' => ['object', 'data' => [['attributes' => ['id']]]],
+                    'clusters' => ['object', 'data' => [['attributes' => ['id']]]],
                     'servers' => ['object', 'data' => [['attributes' => ['id']]]],
                 ],
             ],
@@ -184,12 +184,12 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
         $response->assertJson([
             'attributes' => [
                 'relationships' => [
-                    'nodes' => [
+                    'clusters' => [
                         'object' => 'list',
                         'data' => [
                             [
-                                'object' => 'node',
-                                'attributes' => $this->getTransformer(ClusterTransformer::class)->transform($server->getRelation('node')),
+                                'object' => 'cluster',
+                                'attributes' => $this->getTransformer(ClusterTransformer::class)->transform($server->getRelation('cluster')),
                             ],
                         ],
                     ],
@@ -213,18 +213,18 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testKeyWithoutPermissionCannotLoadRelationship()
     {
-        $this->createNewDefaultApiKey($this->getApiUser(), ['r_nodes' => 0]);
+        $this->createNewDefaultApiKey($this->getApiUser(), ['r_clusters' => 0]);
 
         $location = Location::factory()->create();
-        Node::factory()->create(['location_id' => $location->id]);
+        Cluster::factory()->create(['location_id' => $location->id]);
 
-        $response = $this->getJson('/api/application/locations/' . $location->id . '?include=nodes');
+        $response = $this->getJson('/api/application/locations/' . $location->id . '?include=clusters');
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCount(2)->assertJsonCount(1, 'attributes.relationships');
         $response->assertJsonStructure([
             'attributes' => [
                 'relationships' => [
-                    'nodes' => ['object', 'attributes'],
+                    'clusters' => ['object', 'attributes'],
                 ],
             ],
         ]);
@@ -233,7 +233,7 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
         $response->assertJson([
             'attributes' => [
                 'relationships' => [
-                    'nodes' => [
+                    'clusters' => [
                         'object' => 'null_resource',
                         'attributes' => null,
                     ],

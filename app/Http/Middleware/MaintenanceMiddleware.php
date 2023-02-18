@@ -22,9 +22,9 @@ class MaintenanceMiddleware
     {
         /** @var \Pterodactyl\Models\Server $server */
         $server = $request->attributes->get('server');
-        $node = $server->getRelation('node');
+        $cluster = $server->getRelation('cluster');
 
-        if ($node->maintenance_mode) {
+        if ($cluster->maintenance_mode) {
             return $this->response->view('errors.maintenance');
         }
 

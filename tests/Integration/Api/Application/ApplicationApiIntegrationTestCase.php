@@ -81,7 +81,7 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
             'user_id' => $user->id,
             'key_type' => ApiKey::TYPE_APPLICATION,
             'r_servers' => AdminAcl::READ | AdminAcl::WRITE,
-            'r_nodes' => AdminAcl::READ | AdminAcl::WRITE,
+            'r_clusters' => AdminAcl::READ | AdminAcl::WRITE,
             'r_allocations' => AdminAcl::READ | AdminAcl::WRITE,
             'r_users' => AdminAcl::READ | AdminAcl::WRITE,
             'r_locations' => AdminAcl::READ | AdminAcl::WRITE,

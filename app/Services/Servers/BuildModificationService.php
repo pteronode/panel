@@ -46,7 +46,7 @@ class BuildModificationService
 
             // If any of these values are passed through in the data array go ahead and set
             // them correctly on the server model.
-            $merge = Arr::only($data, ['oom_disabled', 'memory', 'swap', 'io', 'cpu', 'threads', 'disk', 'allocation_id']);
+            $merge = Arr::only($data, ['memory', 'cpu', 'disk', 'allocation_id']);
 
             $server->forceFill(array_merge($merge, [
                 'database_limit' => Arr::get($data, 'database_limit', 0) ?? null,
@@ -86,10 +86,10 @@ class BuildModificationService
         }
 
         // Handle the addition of allocations to this server. Only assign allocations that are not currently
-        // assigned to a different server, and only allocations on the same node as the server.
+        // assigned to a different server, and only allocations on the same cluster as the server.
         if (!empty($data['add_allocations'])) {
             $query = Allocation::query()
-                ->where('node_id', $server->node_id)
+                ->where('cluster_id', $server->cluster_id)
                 ->whereIn('id', $data['add_allocations'])
                 ->whereNull('server_id');
 
@@ -116,9 +116,9 @@ class BuildModificationService
             }
 
             // Remove any of the allocations we got that are currently assigned to this server on
-            // this node. Also set the notes to null, otherwise when re-allocated to a new server those
+            // this cluster. Also set the notes to null, otherwise when re-allocated to a new server those
             // notes will be carried over.
-            Allocation::query()->where('node_id', $server->node_id)
+            Allocation::query()->where('cluster_id', $server->cluster_id)
                 ->where('server_id', $server->id)
                 // Only remove the allocations that we didn't also attempt to add to the server...
                 ->whereIn('id', array_diff($data['remove_allocations'], $data['add_allocations'] ?? []))

@@ -16,9 +16,9 @@ class CreateNewAllocationTest extends ClientApiIntegrationTestCase
     {
         parent::setUp();
 
-        config()->set('pterodactyl.client_features.allocations.enabled', true);
-        config()->set('pterodactyl.client_features.allocations.range_start', 5000);
-        config()->set('pterodactyl.client_features.allocations.range_end', 5050);
+        config()->set('kubectyl.client_features.allocations.enabled', true);
+        config()->set('kubectyl.client_features.allocations.range_start', 5000);
+        config()->set('kubectyl.client_features.allocations.range_end', 5050);
     }
 
     /**
@@ -59,7 +59,7 @@ class CreateNewAllocationTest extends ClientApiIntegrationTestCase
      */
     public function testAllocationCannotBeCreatedIfNotEnabled()
     {
-        config()->set('pterodactyl.client_features.allocations.enabled', false);
+        config()->set('kubectyl.client_features.allocations.enabled', false);
 
         /** @var \Pterodactyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount();

@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int $r_servers
- * @property int $r_nodes
+ * @property int $r_clusters
  * @property int $r_allocations
  * @property int $r_users
  * @property int $r_locations

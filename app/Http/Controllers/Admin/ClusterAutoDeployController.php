@@ -25,17 +25,17 @@ class ClusterAutoDeployController extends Controller
 
     /**
      * Generates a new API key for the logged-in user with only permission to read
-     * nodes, and returns that as the deployment key for a node.
+     * clusters, and returns that as the deployment key for a cluster.
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function __invoke(Request $request, Node $node): JsonResponse
+    public function __invoke(Request $request, Cluster $cluster): JsonResponse
     {
         /** @var \Pterodactyl\Models\ApiKey|null $key */
         $key = $this->repository->getApplicationKeys($request->user())
             ->filter(function (ApiKey $key) {
                 foreach ($key->getAttributes() as $permission => $value) {
-                    if ($permission === 'r_nodes' && $value === 1) {
+                    if ($permission === 'r_clusters' && $value === 1) {
                         return true;
                     }
                 }
@@ -45,17 +45,17 @@ class ClusterAutoDeployController extends Controller
             ->first();
 
         // We couldn't find a key that exists for this user with only permission for
-        // reading nodes. Go ahead and create it now.
+        // reading clusters. Go ahead and create it now.
         if (!$key) {
             $key = $this->keyCreationService->setKeyType(ApiKey::TYPE_APPLICATION)->handle([
                 'user_id' => $request->user()->id,
-                'memo' => 'Automatically generated node deployment key.',
+                'memo' => 'Automatically generated cluster deployment key.',
                 'allowed_ips' => [],
-            ], ['r_nodes' => 1]);
+            ], ['r_clusters' => 1]);
         }
 
         return new JsonResponse([
-            'node' => $node->id,
+            'cluster' => $cluster->id,
             'token' => $key->identifier . $this->encrypter->decrypt($key->token),
         ]);
     }

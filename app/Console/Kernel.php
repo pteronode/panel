@@ -41,7 +41,7 @@ class Kernel extends ConsoleKernel
             $schedule->command(PruneCommand::class, ['--model' => [ActivityLog::class]])->daily();
         }
 
-        if (config('pterodactyl.telemetry.enabled')) {
+        if (config('kubectyl.telemetry.enabled')) {
             $this->registerTelemetry($schedule);
         }
     }

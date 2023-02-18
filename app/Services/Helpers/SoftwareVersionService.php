@@ -11,7 +11,7 @@ use Pterodactyl\Exceptions\Service\Helper\CdnVersionFetchingException;
 
 class SoftwareVersionService
 {
-    public const VERSION_CACHE_KEY = 'pterodactyl:versioning_data';
+    public const VERSION_CACHE_KEY = 'kubectyl:versioning_data';
 
     private static array $result;
 
@@ -38,7 +38,7 @@ class SoftwareVersionService
      */
     public function getDaemon(): string
     {
-        return Arr::get(self::$result, 'wings') ?? 'error';
+        return Arr::get(self::$result, 'kuber') ?? 'error';
     }
 
     /**
@@ -46,7 +46,7 @@ class SoftwareVersionService
      */
     public function getDiscord(): string
     {
-        return Arr::get(self::$result, 'discord') ?? 'https://pterodactyl.io/discord';
+        return Arr::get(self::$result, 'discord') ?? 'https://dsc.gg/kubectyl';
     }
 
     /**
@@ -54,7 +54,7 @@ class SoftwareVersionService
      */
     public function getDonations(): string
     {
-        return Arr::get(self::$result, 'donations') ?? 'https://github.com/sponsors/matthewpi';
+        return Arr::get(self::$result, 'donations') ?? 'https://github.com/sponsors/andrei0465';
     }
 
     /**
@@ -86,9 +86,9 @@ class SoftwareVersionService
      */
     protected function cacheVersionData(): array
     {
-        return $this->cache->remember(self::VERSION_CACHE_KEY, CarbonImmutable::now()->addMinutes(config('pterodactyl.cdn.cache_time', 60)), function () {
+        return $this->cache->remember(self::VERSION_CACHE_KEY, CarbonImmutable::now()->addMinutes(config('kubectyl.cdn.cache_time', 60)), function () {
             try {
-                $response = $this->client->request('GET', config('pterodactyl.cdn.url'));
+                $response = $this->client->request('GET', config('kubectyl.cdn.url'));
 
                 if ($response->getStatusCode() === 200) {
                     return json_decode($response->getBody(), true);

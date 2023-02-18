@@ -17,6 +17,14 @@ return new class extends Migration
             $table->string('sftp_port')->before('daemonSFTP');
             $table->renameColumn('daemonSFTP', 'sftp_image');
         });
+
+        Schema::table('api_keys', function (Blueprint $table) {
+            $table->renameColumn('r_nodes', 'r_clusters');
+        });
+
+        Schema::table('database_hosts', function (Blueprint $table) {
+            $table->renameColumn('node_id', 'cluster_id');
+        });
     }
 
     /**

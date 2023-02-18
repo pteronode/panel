@@ -31,7 +31,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
 
     /**
      * Test that allocations can be added and removed from a server. Only the allocations on the
-     * current node and belonging to this server should be modified.
+     * current cluster and belonging to this server should be modified.
      */
     public function testAllocationsCanBeModifiedForTheServer()
     {
@@ -39,7 +39,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
         $server2 = $this->createServerModel();
 
         /** @var \Pterodactyl\Models\Allocation[] $allocations */
-        $allocations = Allocation::factory()->times(4)->create(['node_id' => $server->node_id, 'notes' => 'Random notes']);
+        $allocations = Allocation::factory()->times(4)->create(['cluster_id' => $server->cluster_id, 'notes' => 'Random notes']);
 
         $initialAllocationId = $server->allocation_id;
         $allocations[0]->update(['server_id' => $server->id, 'notes' => 'Test notes']);
@@ -86,7 +86,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
         /** @var \Pterodactyl\Models\Allocation[] $allocations */
-        $allocations = Allocation::factory()->times(4)->create(['node_id' => $server->node_id]);
+        $allocations = Allocation::factory()->times(4)->create(['cluster_id' => $server->cluster_id]);
 
         $allocations[0]->update(['server_id' => $server->id]);
 
@@ -115,24 +115,24 @@ class BuildModificationServiceTest extends IntegrationTestCase
         $this->daemonServerRepository->expects('sync')->withNoArgs()->andReturnUndefined();
 
         $response = $this->getService()->handle($server, [
-            'oom_disabled' => false,
+            // 'oom_disabled' => false,
             'memory' => 256,
-            'swap' => 128,
-            'io' => 600,
+            // 'swap' => 128,
+            // 'io' => 600,
             'cpu' => 150,
-            'threads' => '1,2',
+            // 'threads' => '1,2',
             'disk' => 1024,
             'backup_limit' => null,
             'database_limit' => 10,
             'allocation_limit' => 20,
         ]);
 
-        $this->assertFalse($response->oom_disabled);
+        // $this->assertFalse($response->oom_disabled);
         $this->assertSame(256, $response->memory);
-        $this->assertSame(128, $response->swap);
-        $this->assertSame(600, $response->io);
+        // $this->assertSame(128, $response->swap);
+        // $this->assertSame(600, $response->io);
         $this->assertSame(150, $response->cpu);
-        $this->assertSame('1,2', $response->threads);
+        // $this->assertSame('1,2', $response->threads);
         $this->assertSame(1024, $response->disk);
         $this->assertSame(0, $response->backup_limit);
         $this->assertSame(10, $response->database_limit);
@@ -142,7 +142,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     /**
      * Test that an exception when connecting to the Wings instance is properly ignored
      * when making updates. This allows for a server to be modified even when the Wings
-     * node is offline.
+     * cluster is offline.
      */
     public function testConnectionExceptionIsIgnoredWhenUpdatingServerSettings()
     {
@@ -170,7 +170,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
         /** @var \Pterodactyl\Models\Allocation $allocation */
-        $allocation = Allocation::factory()->create(['node_id' => $server->node_id, 'server_id' => $server->id]);
+        $allocation = Allocation::factory()->create(['cluster_id' => $server->cluster_id, 'server_id' => $server->id]);
 
         $this->daemonServerRepository->expects('setServer->sync')->andReturnUndefined();
 
@@ -193,7 +193,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
         /** @var \Pterodactyl\Models\Allocation $allocation */
-        $allocation = Allocation::factory()->create(['node_id' => $server->node_id]);
+        $allocation = Allocation::factory()->create(['cluster_id' => $server->cluster_id]);
 
         $this->daemonServerRepository->expects('setServer->sync')->andReturnUndefined();
 
@@ -212,9 +212,9 @@ class BuildModificationServiceTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
         /** @var \Pterodactyl\Models\Allocation $allocation */
-        $allocation = Allocation::factory()->create(['node_id' => $server->node_id, 'server_id' => $server->id]);
+        $allocation = Allocation::factory()->create(['cluster_id' => $server->cluster_id, 'server_id' => $server->id]);
         /** @var \Pterodactyl\Models\Allocation $allocation2 */
-        $allocation2 = Allocation::factory()->create(['node_id' => $server->node_id]);
+        $allocation2 = Allocation::factory()->create(['cluster_id' => $server->cluster_id]);
 
         $this->daemonServerRepository->expects('setServer->sync')->andReturnUndefined();
 
@@ -237,7 +237,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
         /** @var \Pterodactyl\Models\Allocation $allocation */
-        $allocation = Allocation::factory()->create(['node_id' => $server->node_id]);
+        $allocation = Allocation::factory()->create(['cluster_id' => $server->cluster_id]);
 
         $this->daemonServerRepository->expects('setServer->sync')->andThrows(new DisplayException('Test'));
 

@@ -21,6 +21,10 @@ return new class () extends Migration {
             $table->string('service_type')->after('insecure');
             $table->string('storage_class')->after('service_type');
             $table->string('ns')->after('storage_class');
+            $table->string('dns_policy')->after('ns');
+            $table->string('image_pull_policy')->after('dns_policy');
+            $table->string('metallb_address_pool')->after('image_pull_policy');
+            $table->boolean('metallb_shared_ip')->after('metallb_address_pool');
         });
 
         // /** @var \Illuminate\Contracts\Encryption\Encrypter $encrypter */

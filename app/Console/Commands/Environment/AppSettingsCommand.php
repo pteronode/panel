@@ -71,7 +71,7 @@ class AppSettingsCommand extends Command
         $this->output->comment('Provide the email address that eggs exported by this Panel should be from. This should be a valid email address.');
         $this->variables['APP_SERVICE_AUTHOR'] = $this->option('author') ?? $this->ask(
             'Egg Author Email',
-            config('pterodactyl.service.author', 'unknown@unknown.com')
+            config('kubectyl.service.author', 'unknown@unknown.com')
         );
 
         if (!filter_var($this->variables['APP_SERVICE_AUTHOR'], FILTER_VALIDATE_EMAIL)) {
@@ -123,7 +123,7 @@ class AppSettingsCommand extends Command
         $this->output->comment('Please reference https://pterodactyl.io/panel/1.0/additional_configuration.html#telemetry for more detailed information regarding telemetry data and collection.');
         $this->variables['PTERODACTYL_TELEMETRY_ENABLED'] = $this->option('telemetry') ?? $this->confirm(
             'Enable sending anonymous telemetry data?',
-            config('pterodactyl.telemetry.enabled', true)
+            config('kubectyl.telemetry.enabled', true)
         ) ? 'true' : 'false';
 
         // Make sure session cookies are set as "secure" when using HTTPS

@@ -25,28 +25,28 @@ class MaintenanceMiddlewareTest extends MiddlewareTestCase
     }
 
     /**
-     * Test that a node not in maintenance mode continues through the request cycle.
+     * Test that a cluster not in maintenance mode continues through the request cycle.
      */
     public function testHandle()
     {
         $server = Server::factory()->make();
-        $node = Node::factory()->make(['maintenance' => 0]);
+        $cluster = Cluster::factory()->make(['maintenance' => 0]);
 
-        $server->setRelation('node', $node);
+        $server->setRelation('cluster', $cluster);
         $this->setRequestAttribute('server', $server);
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
     /**
-     * Test that a node in maintenance mode returns an error view.
+     * Test that a cluster in maintenance mode returns an error view.
      */
     public function testHandleInMaintenanceMode()
     {
         $server = Server::factory()->make();
-        $node = Node::factory()->make(['maintenance_mode' => 1]);
+        $cluster = Cluster::factory()->make(['maintenance_mode' => 1]);
 
-        $server->setRelation('node', $node);
+        $server->setRelation('cluster', $cluster);
         $this->setRequestAttribute('server', $server);
 
         $this->response->shouldReceive('view')

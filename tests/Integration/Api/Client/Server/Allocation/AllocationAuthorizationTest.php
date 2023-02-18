@@ -24,9 +24,9 @@ class AllocationAuthorizationTest extends ClientApiIntegrationTestCase
         // to do anything with the allocations for that server.
         Subuser::factory()->create(['server_id' => $server2->id, 'user_id' => $user->id]);
 
-        $allocation1 = Allocation::factory()->create(['server_id' => $server1->id, 'node_id' => $server1->node_id]);
-        $allocation2 = Allocation::factory()->create(['server_id' => $server2->id, 'node_id' => $server2->node_id]);
-        $allocation3 = Allocation::factory()->create(['server_id' => $server3->id, 'node_id' => $server3->node_id]);
+        $allocation1 = Allocation::factory()->create(['server_id' => $server1->id, 'cluster_id' => $server1->cluster_id]);
+        $allocation2 = Allocation::factory()->create(['server_id' => $server2->id, 'cluster_id' => $server2->cluster_id]);
+        $allocation3 = Allocation::factory()->create(['server_id' => $server3->id, 'cluster_id' => $server3->cluster_id]);
 
         // This is the only valid call for this test, accessing the allocation for the same
         // server that the API user is the owner of.

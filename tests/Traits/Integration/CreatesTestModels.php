@@ -32,21 +32,21 @@ trait CreatesTestModels
             $attributes['owner_id'] = $user->id;
         }
 
-        if (!isset($attributes['node_id'])) {
+        if (!isset($attributes['cluster_id'])) {
             if (!isset($attributes['location_id'])) {
                 /** @var \Pterodactyl\Models\Location $location */
                 $location = Location::factory()->create();
                 $attributes['location_id'] = $location->id;
             }
 
-            /** @var \Pterodactyl\Models\Cluster $node */
-            $node = Node::factory()->create(['location_id' => $attributes['location_id']]);
-            $attributes['node_id'] = $node->id;
+            /** @var \Pterodactyl\Models\Cluster $cluster */
+            $cluster = Cluster::factory()->create(['location_id' => $attributes['location_id']]);
+            $attributes['cluster_id'] = $cluster->id;
         }
 
         if (!isset($attributes['allocation_id'])) {
             /** @var \Pterodactyl\Models\Allocation $allocation */
-            $allocation = Allocation::factory()->create(['node_id' => $attributes['node_id']]);
+            $allocation = Allocation::factory()->create(['cluster_id' => $attributes['cluster_id']]);
             $attributes['allocation_id'] = $allocation->id;
         }
 
@@ -71,7 +71,7 @@ trait CreatesTestModels
         Allocation::query()->where('id', $server->allocation_id)->update(['server_id' => $server->id]);
 
         return $server->fresh([
-            'location', 'user', 'node', 'allocation', 'nest', 'egg',
+            'location', 'user', 'cluster', 'allocation', 'nest', 'egg',
         ]);
     }
 
