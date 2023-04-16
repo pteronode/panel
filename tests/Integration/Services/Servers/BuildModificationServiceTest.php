@@ -1,19 +1,19 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Services\Servers;
+namespace Kubectyl\Tests\Integration\Services\Servers;
 
 use Mockery;
 use Mockery\MockInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Allocation;
+use Kubectyl\Models\Server;
+use Kubectyl\Models\Allocation;
 use GuzzleHttp\Exception\RequestException;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
-use Pterodactyl\Services\Servers\BuildModificationService;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Kubectyl\Exceptions\DisplayException;
+use Kubectyl\Tests\Integration\IntegrationTestCase;
+use Kubectyl\Repositories\Kuber\DaemonServerRepository;
+use Kubectyl\Services\Servers\BuildModificationService;
+use Kubectyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class BuildModificationServiceTest extends IntegrationTestCase
 {
@@ -38,7 +38,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
         $server = $this->createServerModel();
         $server2 = $this->createServerModel();
 
-        /** @var \Pterodactyl\Models\Allocation[] $allocations */
+        /** @var \Kubectyl\Models\Allocation[] $allocations */
         $allocations = Allocation::factory()->times(4)->create(['cluster_id' => $server->cluster_id, 'notes' => 'Random notes']);
 
         $initialAllocationId = $server->allocation_id;
@@ -85,7 +85,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     public function testExceptionIsThrownIfRemovingTheDefaultAllocation()
     {
         $server = $this->createServerModel();
-        /** @var \Pterodactyl\Models\Allocation[] $allocations */
+        /** @var \Kubectyl\Models\Allocation[] $allocations */
         $allocations = Allocation::factory()->times(4)->create(['cluster_id' => $server->cluster_id]);
 
         $allocations[0]->update(['server_id' => $server->id]);
@@ -122,7 +122,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
             'cpu' => 150,
             // 'threads' => '1,2',
             'disk' => 1024,
-            'backup_limit' => null,
+            'snapshot_limit' => null,
             'database_limit' => 10,
             'allocation_limit' => 20,
         ]);
@@ -134,7 +134,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
         $this->assertSame(150, $response->cpu);
         // $this->assertSame('1,2', $response->threads);
         $this->assertSame(1024, $response->disk);
-        $this->assertSame(0, $response->backup_limit);
+        $this->assertSame(0, $response->snapshot_limit);
         $this->assertSame(10, $response->database_limit);
         $this->assertSame(20, $response->allocation_limit);
     }
@@ -169,7 +169,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     public function testNoExceptionIsThrownIfOnlyRemovingAllocation()
     {
         $server = $this->createServerModel();
-        /** @var \Pterodactyl\Models\Allocation $allocation */
+        /** @var \Kubectyl\Models\Allocation $allocation */
         $allocation = Allocation::factory()->create(['cluster_id' => $server->cluster_id, 'server_id' => $server->id]);
 
         $this->daemonServerRepository->expects('setServer->sync')->andReturnUndefined();
@@ -192,7 +192,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     public function testAllocationInBothAddAndRemoveIsAdded()
     {
         $server = $this->createServerModel();
-        /** @var \Pterodactyl\Models\Allocation $allocation */
+        /** @var \Kubectyl\Models\Allocation $allocation */
         $allocation = Allocation::factory()->create(['cluster_id' => $server->cluster_id]);
 
         $this->daemonServerRepository->expects('setServer->sync')->andReturnUndefined();
@@ -211,9 +211,9 @@ class BuildModificationServiceTest extends IntegrationTestCase
     public function testUsingSameAllocationIdMultipleTimesDoesNotError()
     {
         $server = $this->createServerModel();
-        /** @var \Pterodactyl\Models\Allocation $allocation */
+        /** @var \Kubectyl\Models\Allocation $allocation */
         $allocation = Allocation::factory()->create(['cluster_id' => $server->cluster_id, 'server_id' => $server->id]);
-        /** @var \Pterodactyl\Models\Allocation $allocation2 */
+        /** @var \Kubectyl\Models\Allocation $allocation2 */
         $allocation2 = Allocation::factory()->create(['cluster_id' => $server->cluster_id]);
 
         $this->daemonServerRepository->expects('setServer->sync')->andReturnUndefined();
@@ -236,7 +236,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     public function testThatUpdatesAreRolledBackIfExceptionIsEncountered()
     {
         $server = $this->createServerModel();
-        /** @var \Pterodactyl\Models\Allocation $allocation */
+        /** @var \Kubectyl\Models\Allocation $allocation */
         $allocation = Allocation::factory()->create(['cluster_id' => $server->cluster_id]);
 
         $this->daemonServerRepository->expects('setServer->sync')->andThrows(new DisplayException('Test'));

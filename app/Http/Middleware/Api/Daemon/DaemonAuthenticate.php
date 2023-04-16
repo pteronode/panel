@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware\Api\Daemon;
+namespace Kubectyl\Http\Middleware\Api\Daemon;
 
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Repositories\Eloquent\ClusterRepository;
+use Kubectyl\Repositories\Eloquent\ClusterRepository;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Kubectyl\Exceptions\Repository\RecordNotFoundException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -49,7 +49,7 @@ class DaemonAuthenticate
         }
 
         try {
-            /** @var \Pterodactyl\Models\Cluster $cluster */
+            /** @var \Kubectyl\Models\Cluster $cluster */
             $cluster = $this->repository->findFirstWhere([
                 'daemon_token_id' => $parts[0],
             ]);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Kubectyl\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $variable_value
  * @property \Carbon\CarbonImmutable|null $created_at
  * @property \Carbon\CarbonImmutable|null $updated_at
- * @property \Pterodactyl\Models\EggVariable $variable
- * @property \Pterodactyl\Models\Server $server
+ * @property \Kubectyl\Models\RocketVariable $variable
+ * @property \Kubectyl\Models\Server $server
  */
 class ServerVariable extends Model
 {
@@ -52,6 +52,6 @@ class ServerVariable extends Model
      */
     public function variable(): BelongsTo
     {
-        return $this->belongsTo(EggVariable::class, 'variable_id');
+        return $this->belongsTo(RocketVariable::class, 'variable_id');
     }
 }

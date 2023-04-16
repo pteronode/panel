@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware\Activity;
+namespace Kubectyl\Http\Middleware\Activity;
 
 use Closure;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\ApiKey;
-use Pterodactyl\Facades\LogTarget;
+use Kubectyl\Models\ApiKey;
+use Kubectyl\Facades\LogTarget;
 
 class TrackAPIKey
 {

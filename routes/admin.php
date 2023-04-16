@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Pterodactyl\Http\Controllers\Admin;
-use Pterodactyl\Http\Middleware\Admin\Servers\ServerInstalled;
+use Kubectyl\Http\Controllers\Admin;
+use Kubectyl\Http\Middleware\Admin\Servers\ServerInstalled;
 
 Route::get('/', [Admin\BaseController::class, 'index'])->name('admin.index');
 
@@ -166,6 +166,8 @@ Route::group(['prefix' => 'clusters'], function () {
     Route::patch('/view/{cluster:id}/settings', [Admin\ClustersController::class, 'updateSettings']);
 
     Route::delete('/view/{cluster:id}/delete', [Admin\ClustersController::class, 'delete'])->name('admin.clusters.view.delete');
+    Route::delete('/view/{cluster:id}/allocation/remove/{allocation:id}', [Admin\ClustersController::class, 'allocationRemoveSingle'])->name('admin.clusters.view.allocation.removeSingle');
+    Route::delete('/view/{cluster:id}/allocations', [Admin\ClustersController::class, 'allocationRemoveMultiple'])->name('admin.clusters.view.allocation.removeMultiple');
 });
 
 /*
@@ -181,13 +183,13 @@ Route::group(['prefix' => 'mounts'], function () {
     Route::get('/view/{mount:id}', [Admin\MountController::class, 'view'])->name('admin.mounts.view');
 
     Route::post('/', [Admin\MountController::class, 'create']);
-    Route::post('/{mount:id}/eggs', [Admin\MountController::class, 'addEggs'])->name('admin.mounts.eggs');
-    Route::post('/{mount:id}/clusters', [Admin\MountController::class, 'addNodes'])->name('admin.mounts.clusters');
+    Route::post('/{mount:id}/rockets', [Admin\MountController::class, 'addRockets'])->name('admin.mounts.rockets');
+    Route::post('/{mount:id}/clusters', [Admin\MountController::class, 'addClusters'])->name('admin.mounts.clusters');
 
     Route::patch('/view/{mount:id}', [Admin\MountController::class, 'update']);
 
-    Route::delete('/{mount:id}/eggs/{egg_id}', [Admin\MountController::class, 'deleteEgg']);
-    Route::delete('/{mount:id}/clusters/{cluster_id}', [Admin\MountController::class, 'deleteNode']);
+    Route::delete('/{mount:id}/rockets/{rocket_id}', [Admin\MountController::class, 'deleteRocket']);
+    Route::delete('/{mount:id}/clusters/{cluster_id}', [Admin\MountController::class, 'deleteCluster']);
 });
 
 /*
@@ -195,32 +197,32 @@ Route::group(['prefix' => 'mounts'], function () {
 | Nest Controller Routes
 |--------------------------------------------------------------------------
 |
-| Endpoint: /admin/nests
+| Endpoint: /admin/launchpads
 |
 */
-Route::group(['prefix' => 'nests'], function () {
-    Route::get('/', [Admin\Nests\NestController::class, 'index'])->name('admin.nests');
-    Route::get('/new', [Admin\Nests\NestController::class, 'create'])->name('admin.nests.new');
-    Route::get('/view/{nest:id}', [Admin\Nests\NestController::class, 'view'])->name('admin.nests.view');
-    Route::get('/egg/new', [Admin\Nests\EggController::class, 'create'])->name('admin.nests.egg.new');
-    Route::get('/egg/{egg:id}', [Admin\Nests\EggController::class, 'view'])->name('admin.nests.egg.view');
-    Route::get('/egg/{egg:id}/export', [Admin\Nests\EggShareController::class, 'export'])->name('admin.nests.egg.export');
-    Route::get('/egg/{egg:id}/variables', [Admin\Nests\EggVariableController::class, 'view'])->name('admin.nests.egg.variables');
-    Route::get('/egg/{egg:id}/scripts', [Admin\Nests\EggScriptController::class, 'index'])->name('admin.nests.egg.scripts');
+Route::group(['prefix' => 'launchpads'], function () {
+    Route::get('/', [Admin\Launchpads\LaunchpadController::class, 'index'])->name('admin.launchpads');
+    Route::get('/new', [Admin\Launchpads\LaunchpadController::class, 'create'])->name('admin.launchpads.new');
+    Route::get('/view/{launchpad:id}', [Admin\Launchpads\LaunchpadController::class, 'view'])->name('admin.launchpads.view');
+    Route::get('/rocket/new', [Admin\Launchpads\RocketController::class, 'create'])->name('admin.launchpads.rocket.new');
+    Route::get('/rocket/{rocket:id}', [Admin\Launchpads\RocketController::class, 'view'])->name('admin.launchpads.rocket.view');
+    Route::get('/rocket/{rocket:id}/export', [Admin\Launchpads\RocketShareController::class, 'export'])->name('admin.launchpads.rocket.export');
+    Route::get('/rocket/{rocket:id}/variables', [Admin\Launchpads\RocketVariableController::class, 'view'])->name('admin.launchpads.rocket.variables');
+    Route::get('/rocket/{rocket:id}/scripts', [Admin\Launchpads\RocketScriptController::class, 'index'])->name('admin.launchpads.rocket.scripts');
 
-    Route::post('/new', [Admin\Nests\NestController::class, 'store']);
-    Route::post('/import', [Admin\Nests\EggShareController::class, 'import'])->name('admin.nests.egg.import');
-    Route::post('/egg/new', [Admin\Nests\EggController::class, 'store']);
-    Route::post('/egg/{egg:id}/variables', [Admin\Nests\EggVariableController::class, 'store']);
+    Route::post('/new', [Admin\Launchpads\LaunchpadController::class, 'store']);
+    Route::post('/import', [Admin\Launchpads\RocketShareController::class, 'import'])->name('admin.launchpads.rocket.import');
+    Route::post('/rocket/new', [Admin\Launchpads\RocketController::class, 'store']);
+    Route::post('/rocket/{rocket:id}/variables', [Admin\Launchpads\RocketVariableController::class, 'store']);
 
-    Route::put('/egg/{egg:id}', [Admin\Nests\EggShareController::class, 'update']);
+    Route::put('/rocket/{rocket:id}', [Admin\Launchpads\RocketShareController::class, 'update']);
 
-    Route::patch('/view/{nest:id}', [Admin\Nests\NestController::class, 'update']);
-    Route::patch('/egg/{egg:id}', [Admin\Nests\EggController::class, 'update']);
-    Route::patch('/egg/{egg:id}/scripts', [Admin\Nests\EggScriptController::class, 'update']);
-    Route::patch('/egg/{egg:id}/variables/{variable:id}', [Admin\Nests\EggVariableController::class, 'update'])->name('admin.nests.egg.variables.edit');
+    Route::patch('/view/{launchpad:id}', [Admin\Launchpads\LaunchpadController::class, 'update']);
+    Route::patch('/rocket/{rocket:id}', [Admin\Launchpads\RocketController::class, 'update']);
+    Route::patch('/rocket/{rocket:id}/scripts', [Admin\Launchpads\RocketScriptController::class, 'update']);
+    Route::patch('/rocket/{rocket:id}/variables/{variable:id}', [Admin\Launchpads\RocketVariableController::class, 'update'])->name('admin.launchpads.rocket.variables.edit');
 
-    Route::delete('/view/{nest:id}', [Admin\Nests\NestController::class, 'destroy']);
-    Route::delete('/egg/{egg:id}', [Admin\Nests\EggController::class, 'destroy']);
-    Route::delete('/egg/{egg:id}/variables/{variable:id}', [Admin\Nests\EggVariableController::class, 'destroy']);
+    Route::delete('/view/{launchpad:id}', [Admin\Launchpads\LaunchpadController::class, 'destroy']);
+    Route::delete('/rocket/{rocket:id}', [Admin\Launchpads\RocketController::class, 'destroy']);
+    Route::delete('/rocket/{rocket:id}/variables/{variable:id}', [Admin\Launchpads\RocketVariableController::class, 'destroy']);
 });

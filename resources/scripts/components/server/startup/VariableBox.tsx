@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react';
-import { ServerEggVariable } from '@/api/server/types';
+import { ServerRocketVariable } from '@/api/server/types';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { usePermissions } from '@/plugins/usePermissions';
 import InputSpinner from '@/components/elements/InputSpinner';
@@ -16,7 +16,7 @@ import isEqual from 'react-fast-compare';
 import { ServerContext } from '@/state/server';
 
 interface Props {
-    variable: ServerEggVariable;
+    variable: ServerRocketVariable;
 }
 
 const VariableBox = ({ variable }: Props) => {

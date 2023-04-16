@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Console\Commands;
+namespace Kubectyl\Console\Commands;
 
 use Closure;
 use Illuminate\Console\Command;
-use Pterodactyl\Console\Kernel;
+use Kubectyl\Console\Kernel;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Console\Helper\ProgressBar;
 
@@ -134,7 +134,7 @@ class UpgradeCommand extends Command
 
         /** @var \Illuminate\Foundation\Application $app */
         $app = require __DIR__ . '/../../../bootstrap/app.php';
-        /** @var \Pterodactyl\Console\Kernel $kernel */
+        /** @var \Kubectyl\Console\Kernel $kernel */
         $kernel = $app->make(Kernel::class);
         $kernel->bootstrap();
         $this->setLaravel($app);

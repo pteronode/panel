@@ -1,25 +1,25 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Services\Servers;
+namespace Kubectyl\Tests\Integration\Services\Servers;
 
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\User;
+use Kubectyl\Models\Rocket;
+use Kubectyl\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
-use Pterodactyl\Services\Servers\VariableValidatorService;
+use Kubectyl\Tests\Integration\IntegrationTestCase;
+use Kubectyl\Services\Servers\VariableValidatorService;
 
 class VariableValidatorServiceTest extends IntegrationTestCase
 {
-    protected Egg $egg;
+    protected Rocket $rocket;
 
     public function setUp(): void
     {
         parent::setUp();
 
         /* @noinspection PhpFieldAssignmentTypeMismatchInspection */
-        $this->egg = Egg::query()
-            ->where('author', 'support@pterodactyl.io')
+        $this->rocket = Rocket::query()
+            ->where('author', 'support@kubectyl.org')
             ->where('name', 'Bungeecord')
             ->firstOrFail();
     }
@@ -29,10 +29,10 @@ class VariableValidatorServiceTest extends IntegrationTestCase
      */
     public function testEnvironmentVariablesCanBeValidated()
     {
-        $egg = $this->cloneEggAndVariables($this->egg);
+        $rocket = $this->cloneRocketAndVariables($this->rocket);
 
         try {
-            $this->getService()->handle($egg->id, [
+            $this->getService()->handle($rocket->id, [
                 'BUNGEE_VERSION' => '1.2.3',
             ]);
 
@@ -47,7 +47,7 @@ class VariableValidatorServiceTest extends IntegrationTestCase
             $this->assertSame('The Bungeecord Jar File variable field is required.', $errors['environment.SERVER_JARFILE'][0]);
         }
 
-        $response = $this->getService()->handle($egg->id, [
+        $response = $this->getService()->handle($rocket->id, [
             'BUNGEE_VERSION' => '1234',
             'SERVER_JARFILE' => 'server.jar',
         ]);
@@ -66,12 +66,12 @@ class VariableValidatorServiceTest extends IntegrationTestCase
      */
     public function testNormalUserCannotValidateNonUserEditableVariables()
     {
-        $egg = $this->cloneEggAndVariables($this->egg);
-        $egg->variables()->first()->update([
+        $rocket = $this->cloneRocketAndVariables($this->rocket);
+        $rocket->variables()->first()->update([
             'user_editable' => false,
         ]);
 
-        $response = $this->getService()->handle($egg->id, [
+        $response = $this->getService()->handle($rocket->id, [
             // This is an invalid value, but it shouldn't cause any issues since it should be skipped.
             'BUNGEE_VERSION' => '1.2.3',
             'SERVER_JARFILE' => 'server.jar',
@@ -85,13 +85,13 @@ class VariableValidatorServiceTest extends IntegrationTestCase
 
     public function testEnvironmentVariablesCanBeUpdatedAsAdmin()
     {
-        $egg = $this->cloneEggAndVariables($this->egg);
-        $egg->variables()->first()->update([
+        $rocket = $this->cloneRocketAndVariables($this->rocket);
+        $rocket->variables()->first()->update([
             'user_editable' => false,
         ]);
 
         try {
-            $this->getService()->setUserLevel(User::USER_LEVEL_ADMIN)->handle($egg->id, [
+            $this->getService()->setUserLevel(User::USER_LEVEL_ADMIN)->handle($rocket->id, [
                 'BUNGEE_VERSION' => '1.2.3',
                 'SERVER_JARFILE' => 'server.jar',
             ]);
@@ -102,7 +102,7 @@ class VariableValidatorServiceTest extends IntegrationTestCase
             $this->assertArrayHasKey('environment.BUNGEE_VERSION', $exception->errors());
         }
 
-        $response = $this->getService()->setUserLevel(User::USER_LEVEL_ADMIN)->handle($egg->id, [
+        $response = $this->getService()->setUserLevel(User::USER_LEVEL_ADMIN)->handle($rocket->id, [
             'BUNGEE_VERSION' => '123',
             'SERVER_JARFILE' => 'server.jar',
         ]);
@@ -117,20 +117,20 @@ class VariableValidatorServiceTest extends IntegrationTestCase
 
     public function testNullableEnvironmentVariablesCanBeUsedCorrectly()
     {
-        $egg = $this->cloneEggAndVariables($this->egg);
-        $egg->variables()->where('env_variable', '!=', 'BUNGEE_VERSION')->delete();
+        $rocket = $this->cloneRocketAndVariables($this->rocket);
+        $rocket->variables()->where('env_variable', '!=', 'BUNGEE_VERSION')->delete();
 
-        $egg->variables()->update(['rules' => 'nullable|string']);
+        $rocket->variables()->update(['rules' => 'nullable|string']);
 
-        $response = $this->getService()->handle($egg->id, []);
+        $response = $this->getService()->handle($rocket->id, []);
         $this->assertCount(1, $response);
         $this->assertNull($response->get(0)->value);
 
-        $response = $this->getService()->handle($egg->id, ['BUNGEE_VERSION' => null]);
+        $response = $this->getService()->handle($rocket->id, ['BUNGEE_VERSION' => null]);
         $this->assertCount(1, $response);
         $this->assertNull($response->get(0)->value);
 
-        $response = $this->getService()->handle($egg->id, ['BUNGEE_VERSION' => '']);
+        $response = $this->getService()->handle($rocket->id, ['BUNGEE_VERSION' => '']);
         $this->assertCount(1, $response);
         $this->assertSame('', $response->get(0)->value);
     }

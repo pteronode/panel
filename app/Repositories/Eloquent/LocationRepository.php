@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace Kubectyl\Repositories\Eloquent;
 
-use Pterodactyl\Models\Location;
+use Kubectyl\Models\Location;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use Kubectyl\Exceptions\Repository\RecordNotFoundException;
+use Kubectyl\Contracts\Repository\LocationRepositoryInterface;
 
 class LocationRepository extends EloquentRepository implements LocationRepositoryInterface
 {
@@ -27,7 +27,7 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     }
 
     /**
-     * Return all the available locations with the nodes as a relationship.
+     * Return all the available locations with the clusters as a relationship.
      */
     public function getAllWithClusters(): Collection
     {
@@ -37,7 +37,7 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     /**
      * Return all the clusters and their respective count of servers for a location.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithClusters(int $id): Location
     {
@@ -49,14 +49,14 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     }
 
     /**
-     * Return a location and the count of nodes in that location.
+     * Return a location and the count of clusters in that location.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithNodeCount(int $id): Location
+    public function getWithClusterCount(int $id): Location
     {
         try {
-            return $this->getBuilder()->withCount('nodes')->findOrFail($id, $this->getColumns());
+            return $this->getBuilder()->withCount('clusters')->findOrFail($id, $this->getColumns());
         } catch (ModelNotFoundException) {
             throw new RecordNotFoundException();
         }

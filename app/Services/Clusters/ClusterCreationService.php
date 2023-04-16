@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Services\Clusters;
+namespace Kubectyl\Services\Clusters;
 
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;
-use Pterodactyl\Models\Cluster;
+use Kubectyl\Models\Cluster;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Contracts\Repository\ClusterRepositoryInterface;
+use Kubectyl\Contracts\Repository\ClusterRepositoryInterface;
 
 class ClusterCreationService
 {
@@ -18,9 +18,9 @@ class ClusterCreationService
     }
 
     /**
-     * Create a new node on the panel.
+     * Create a new cluster on the panel.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Kubectyl\Exceptions\Model\DataValidationException
      */
     public function handle(array $data): Cluster
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Exceptions\Service\Backup;
+namespace Kubectyl\Exceptions\Service\Backup;
 
-use Pterodactyl\Exceptions\DisplayException;
+use Kubectyl\Exceptions\DisplayException;
 
 class TooManyBackupsException extends DisplayException
 {
@@ -12,7 +12,7 @@ class TooManyBackupsException extends DisplayException
     public function __construct(int $backupLimit)
     {
         parent::__construct(
-            sprintf('Cannot create a new backup, this server has reached its limit of %d backups.', $backupLimit)
+            sprintf('Cannot create a new snapshot, this server has reached its limit of %d snapshots.', $backupLimit)
         );
     }
 }

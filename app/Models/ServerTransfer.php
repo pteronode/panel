@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Kubectyl\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property int $id
  * @property int $server_id
- * @property int $old_node
- * @property int $new_node
+ * @property int $old_cluster
+ * @property int $new_cluster
  * @property int $old_allocation
  * @property int $new_allocation
  * @property array|null $old_additional_allocations
@@ -18,9 +18,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property bool $archived
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property \Pterodactyl\Models\Server $server
- * @property \Pterodactyl\Models\Cluster $oldNode
- * @property \Pterodactyl\Models\Cluster $newNode
+ * @property \Kubectyl\Models\Server $server
+ * @property \Kubectyl\Models\Cluster $oldCluster
+ * @property \Kubectyl\Models\Cluster $newCluster
  */
 class ServerTransfer extends Model
 {
@@ -45,8 +45,8 @@ class ServerTransfer extends Model
      */
     protected $casts = [
         'server_id' => 'int',
-        'old_node' => 'int',
-        'new_node' => 'int',
+        'old_cluster' => 'int',
+        'new_cluster' => 'int',
         'old_allocation' => 'int',
         'new_allocation' => 'int',
         'old_additional_allocations' => 'array',
@@ -57,8 +57,8 @@ class ServerTransfer extends Model
 
     public static array $validationRules = [
         'server_id' => 'required|numeric|exists:servers,id',
-        'old_node' => 'required|numeric',
-        'new_node' => 'required|numeric',
+        'old_cluster' => 'required|numeric',
+        'new_cluster' => 'required|numeric',
         'old_allocation' => 'required|numeric',
         'new_allocation' => 'required|numeric',
         'old_additional_allocations' => 'nullable|array',
@@ -77,18 +77,18 @@ class ServerTransfer extends Model
     }
 
     /**
-     * Gets the source node associated with a server transfer.
+     * Gets the source cluster associated with a server transfer.
      */
-    public function oldNode(): HasOne
+    public function oldCluster(): HasOne
     {
-        return $this->hasOne(Cluster::class, 'id', 'old_node');
+        return $this->hasOne(Cluster::class, 'id', 'old_cluster');
     }
 
     /**
-     * Gets the target node associated with a server transfer.
+     * Gets the target cluster associated with a server transfer.
      */
-    public function newNode(): HasOne
+    public function newCluster(): HasOne
     {
-        return $this->hasOne(Cluster::class, 'id', 'new_node');
+        return $this->hasOne(Cluster::class, 'id', 'new_cluster');
     }
 }

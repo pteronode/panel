@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Pterodactyl\Http\Controllers\Api\Remote;
+use Kubectyl\Http\Controllers\Api\Remote;
 
 // Routes for the Wings daemon.
 Route::post('/sftp/auth', Remote\SftpAuthenticationController::class);
@@ -21,8 +21,8 @@ Route::group(['prefix' => '/servers/{uuid}'], function () {
     Route::post('/transfer/success', [Remote\Servers\ServerTransferController::class, 'success']);
 });
 
-Route::group(['prefix' => '/backups'], function () {
-    Route::get('/{backup}', Remote\Backups\BackupRemoteUploadController::class);
-    Route::post('/{backup}', [Remote\Backups\BackupStatusController::class, 'index']);
-    Route::post('/{backup}/restore', [Remote\Backups\BackupStatusController::class, 'restore']);
+Route::group(['prefix' => '/snapshots'], function () {
+    Route::get('/{snapshot}', Remote\Backups\BackupRemoteUploadController::class);
+    Route::post('/{snapshot}', [Remote\Backups\BackupStatusController::class, 'index']);
+    Route::post('/{snapshot}/restore', [Remote\Backups\BackupStatusController::class, 'restore']);
 });

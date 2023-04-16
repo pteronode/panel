@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Admin\Cluster;
+namespace Kubectyl\Http\Requests\Admin\Cluster;
 
-use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
+use Kubectyl\Http\Requests\Admin\AdminFormRequest;
 
 class AllocationFormRequest extends AdminFormRequest
 {

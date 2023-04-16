@@ -22,9 +22,8 @@
                 <li><a href="{{ route('admin.clusters.view', $cluster->id) }}">About</a></li>
                 <li><a href="{{ route('admin.clusters.view.settings', $cluster->id) }}">Settings</a></li>
                 <li><a href="{{ route('admin.clusters.view.configuration', $cluster->id) }}">Configuration</a></li>
-                <li class="disabled"><a href="javascript:void(0);">Allocation</a></li>
+                <li><a href="{{ route('admin.clusters.view.allocation', $cluster->id) }}">Allocation</a></li>
                 <li class="active"><a href="{{ route('admin.clusters.view.servers', $cluster->id) }}">Servers</a></li>
-                
             </ul>
         </div>
     </div>
@@ -48,7 +47,7 @@
                             <td><code>{{ $server->uuidShort }}</code></td>
                             <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
                             <td><a href="{{ route('admin.users.view', $server->owner_id) }}">{{ $server->user->username }}</a></td>
-                            <td>{{ $server->nest->name }} ({{ $server->egg->name }})</td>
+                            <td>{{ $server->launchpad->name }} ({{ $server->rocket->name }})</td>
                         </tr>
                     @endforeach
                 </table>

@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Services\Backups;
+namespace Kubectyl\Services\Backups;
 
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Backup;
+use Kubectyl\Models\Snapshot;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Extensions\Backups\BackupManager;
-use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
-use Pterodactyl\Exceptions\Service\Backup\BackupLockedException;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Kubectyl\Extensions\Backups\BackupManager;
+use Kubectyl\Repositories\Kuber\DaemonBackupRepository;
+use Kubectyl\Exceptions\Service\Backup\BackupLockedException;
+use Kubectyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class DeleteBackupService
 {
@@ -21,61 +21,61 @@ class DeleteBackupService
     }
 
     /**
-     * Deletes a backup from the system. If the backup is stored in S3 a request
-     * will be made to delete that backup from the disk as well.
+     * Deletes a snapshot from the system. If the snapshot is stored in S3 a request
+     * will be made to delete that snapshot from the disk as well.
      *
      * @throws \Throwable
      */
-    public function handle(Backup $backup): void
+    public function handle(Snapshot $snapshot): void
     {
-        // If the backup is marked as failed it can still be deleted, even if locked
-        // since the UI doesn't allow you to unlock a failed backup in the first place.
+        // If the snapshot is marked as failed it can still be deleted, even if locked
+        // since the UI doesn't allow you to unlock a failed snapshot in the first place.
         //
-        // I also don't really see any reason you'd have a locked, failed backup to keep
-        // around. The logic that updates the backup to the failed state will also remove
+        // I also don't really see any reason you'd have a locked, failed snapshot to keep
+        // around. The logic that updates the snapshot to the failed state will also remove
         // the lock, so this condition should really never happen.
-        if ($backup->is_locked && ($backup->is_successful && !is_null($backup->completed_at))) {
+        if ($snapshot->is_locked && ($snapshot->is_successful && !is_null($snapshot->completed_at))) {
             throw new BackupLockedException();
         }
 
-        if ($backup->disk === Backup::ADAPTER_AWS_S3) {
-            $this->deleteFromS3($backup);
+        if ($snapshot->disk === Snapshot::ADAPTER_AWS_S3) {
+            $this->deleteFromS3($snapshot);
 
             return;
         }
 
-        $this->connection->transaction(function () use ($backup) {
+        $this->connection->transaction(function () use ($snapshot) {
             try {
-                $this->daemonBackupRepository->setServer($backup->server)->delete($backup);
+                $this->daemonBackupRepository->setServer($snapshot->server)->delete($snapshot);
             } catch (DaemonConnectionException $exception) {
                 $previous = $exception->getPrevious();
-                // Don't fail the request if the Daemon responds with a 404, just assume the backup
+                // Don't fail the request if the Daemon responds with a 404, just assume the snapshot
                 // doesn't actually exist and remove its reference from the Panel as well.
                 if (!$previous instanceof ClientException || $previous->getResponse()->getStatusCode() !== Response::HTTP_NOT_FOUND) {
                     throw $exception;
                 }
             }
 
-            $backup->delete();
+            $snapshot->delete();
         });
     }
 
     /**
-     * Deletes a backup from an S3 disk.
+     * Deletes a snapshot from an S3 disk.
      *
      * @throws \Throwable
      */
-    protected function deleteFromS3(Backup $backup): void
+    protected function deleteFromS3(Snapshot $snapshot): void
     {
-        $this->connection->transaction(function () use ($backup) {
-            $backup->delete();
+        $this->connection->transaction(function () use ($snapshot) {
+            $snapshot->delete();
 
-            /** @var \Pterodactyl\Extensions\Filesystem\S3Filesystem $adapter */
-            $adapter = $this->manager->adapter(Backup::ADAPTER_AWS_S3);
+            /** @var \Kubectyl\Extensions\Filesystem\S3Filesystem $adapter */
+            $adapter = $this->manager->adapter(Snapshot::ADAPTER_AWS_S3);
 
             $adapter->getClient()->deleteObject([
                 'Bucket' => $adapter->getBucket(),
-                'Key' => sprintf('%s/%s.tar.gz', $backup->server->uuid, $backup->uuid),
+                'Key' => sprintf('%s/%s.tar.gz', $snapshot->server->uuid, $snapshot->uuid),
             ]);
         });
     }

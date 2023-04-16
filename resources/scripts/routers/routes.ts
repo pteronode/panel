@@ -3,7 +3,7 @@ import ServerConsole from '@/components/server/console/ServerConsoleContainer';
 import DatabasesContainer from '@/components/server/databases/DatabasesContainer';
 import ScheduleContainer from '@/components/server/schedules/ScheduleContainer';
 import UsersContainer from '@/components/server/users/UsersContainer';
-import BackupContainer from '@/components/server/backups/BackupContainer';
+import SnapshotContainer from '@/components/server/snapshots/SnapshotContainer';
 import NetworkContainer from '@/components/server/network/NetworkContainer';
 import StartupContainer from '@/components/server/startup/StartupContainer';
 import FileManagerContainer from '@/components/server/files/FileManagerContainer';
@@ -111,10 +111,10 @@ export default {
             component: UsersContainer,
         },
         {
-            path: '/backups',
+            path: '/snapshots',
             permission: 'backup.*',
-            name: 'Backups',
-            component: BackupContainer,
+            name: 'Snapshots',
+            component: SnapshotContainer,
         },
         {
             path: '/network',

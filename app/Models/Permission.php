@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Kubectyl\Models;
 
 use Illuminate\Support\Collection;
 
@@ -96,7 +96,7 @@ class Permission extends Model
      * All the permissions available on the system. You should use self::permissions()
      * to retrieve them, and not directly access this array as it is subject to change.
      *
-     * @see \Pterodactyl\Models\Permission::permissions()
+     * @see \Kubectyl\Models\Permission::permissions()
      */
     protected static array $permissions = [
         'websocket' => [
@@ -139,8 +139,8 @@ class Permission extends Model
             ],
         ],
 
-        'backup' => [
-            'description' => 'Permissions that control a user\'s ability to generate and manage server backups.',
+        'snapshot' => [
+            'description' => 'Permissions that control a user\'s ability to generate and manage server snapshots.',
             'keys' => [
                 'create' => 'Allows a user to create new backups for this server.',
                 'read' => 'Allows a user to view all backups that exist for this server.',

@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Pterodactyl\Http\Controllers\Api\Application;
+use Kubectyl\Http\Controllers\Api\Application;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,9 +43,9 @@ Route::group(['prefix' => '/clusters'], function () {
     Route::delete('/{cluster:id}', [Application\Clusters\ClusterController::class, 'delete']);
 
     Route::group(['prefix' => '/{cluster:id}/allocations'], function () {
-        Route::get('/', [Application\Cluster\AllocationController::class, 'index'])->name('api.application.allocations');
-        Route::post('/', [Application\Cluster\AllocationController::class, 'store']);
-        Route::delete('/{allocation:id}', [Application\Cluster\AllocationController::class, 'delete'])->name('api.application.allocations.view');
+        Route::get('/', [Application\Clusters\AllocationController::class, 'index'])->name('api.application.allocations');
+        Route::post('/', [Application\Clusters\AllocationController::class, 'store']);
+        Route::delete('/{allocation:id}', [Application\Clusters\AllocationController::class, 'delete'])->name('api.application.allocations.view');
     });
 });
 
@@ -106,19 +106,19 @@ Route::group(['prefix' => '/servers'], function () {
 
 /*
 |--------------------------------------------------------------------------
-| Nest Controller Routes
+| Launchpad Controller Routes
 |--------------------------------------------------------------------------
 |
-| Endpoint: /api/application/nests
+| Endpoint: /api/application/launchpads
 |
 */
-Route::group(['prefix' => '/nests'], function () {
-    Route::get('/', [Application\Nests\NestController::class, 'index'])->name('api.application.nests');
-    Route::get('/{nest:id}', [Application\Nests\NestController::class, 'view'])->name('api.application.nests.view');
+Route::group(['prefix' => '/launchpads'], function () {
+    Route::get('/', [Application\Launchpads\LaunchpadController::class, 'index'])->name('api.application.launchpads');
+    Route::get('/{launchpad:id}', [Application\Launchpads\LaunchpadController::class, 'view'])->name('api.application.launchpads.view');
 
-    // Egg Management Endpoint
-    Route::group(['prefix' => '/{nest:id}/eggs'], function () {
-        Route::get('/', [Application\Nests\EggController::class, 'index'])->name('api.application.nests.eggs');
-        Route::get('/{egg:id}', [Application\Nests\EggController::class, 'view'])->name('api.application.nests.eggs.view');
+    // Rocket Management Endpoint
+    Route::group(['prefix' => '/{launchpad:id}/rockets'], function () {
+        Route::get('/', [Application\Launchpads\RocketController::class, 'index'])->name('api.application.launchpads.rockets');
+        Route::get('/{rocket:id}', [Application\Launchpads\RocketController::class, 'view'])->name('api.application.launchpads.rockets.view');
     });
 });

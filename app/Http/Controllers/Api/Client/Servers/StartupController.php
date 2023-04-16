@@ -1,16 +1,16 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
+namespace Kubectyl\Http\Controllers\Api\Client\Servers;
 
-use Pterodactyl\Models\Server;
-use Pterodactyl\Facades\Activity;
-use Pterodactyl\Services\Servers\StartupCommandService;
-use Pterodactyl\Repositories\Eloquent\ServerVariableRepository;
-use Pterodactyl\Transformers\Api\Client\EggVariableTransformer;
-use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
+use Kubectyl\Models\Server;
+use Kubectyl\Facades\Activity;
+use Kubectyl\Services\Servers\StartupCommandService;
+use Kubectyl\Repositories\Eloquent\ServerVariableRepository;
+use Kubectyl\Transformers\Api\Client\RocketVariableTransformer;
+use Kubectyl\Http\Controllers\Api\Client\ClientApiController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Startup\GetStartupRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Startup\UpdateStartupVariableRequest;
+use Kubectyl\Http\Requests\Api\Client\Servers\Startup\GetStartupRequest;
+use Kubectyl\Http\Requests\Api\Client\Servers\Startup\UpdateStartupVariableRequest;
 
 class StartupController extends ClientApiController
 {
@@ -34,10 +34,10 @@ class StartupController extends ClientApiController
         return $this->fractal->collection(
             $server->variables()->where('user_viewable', true)->get()
         )
-            ->transformWith($this->getTransformer(EggVariableTransformer::class))
+            ->transformWith($this->getTransformer(RocketVariableTransformer::class))
             ->addMeta([
                 'startup_command' => $startup,
-                'docker_images' => $server->egg->docker_images,
+                'docker_images' => $server->rocket->docker_images,
                 'raw_startup_command' => $server->startup,
             ])
             ->toArray();
@@ -47,12 +47,12 @@ class StartupController extends ClientApiController
      * Updates a single variable for a server.
      *
      * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\Model\DataValidationException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
     public function update(UpdateStartupVariableRequest $request, Server $server): array
     {
-        /** @var \Pterodactyl\Models\EggVariable $variable */
+        /** @var \Kubectyl\Models\RocketVariable $variable */
         $variable = $server->variables()->where('env_variable', $request->input('key'))->first();
         $original = $variable->server_value;
 
@@ -62,7 +62,7 @@ class StartupController extends ClientApiController
             throw new BadRequestHttpException('The environment variable you are trying to edit is read-only.');
         }
 
-        // Revalidate the variable value using the egg variable specific validation rules for it.
+        // Revalidate the variable value using the rocket variable specific validation rules for it.
         $this->validate($request, ['value' => $variable->rules]);
 
         $this->repository->updateOrCreate([
@@ -89,7 +89,7 @@ class StartupController extends ClientApiController
         }
 
         return $this->fractal->item($variable)
-            ->transformWith($this->getTransformer(EggVariableTransformer::class))
+            ->transformWith($this->getTransformer(RocketVariableTransformer::class))
             ->addMeta([
                 'startup_command' => $startup,
                 'raw_startup_command' => $server->startup,

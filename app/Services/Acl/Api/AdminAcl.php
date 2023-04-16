@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Services\Acl\Api;
+namespace Kubectyl\Services\Acl\Api;
 
 use ReflectionClass;
-use Pterodactyl\Models\ApiKey;
+use Kubectyl\Models\ApiKey;
 
 class AdminAcl
 {
@@ -26,12 +26,12 @@ class AdminAcl
      * set for each key. These are stored in the database as r_{resource}.
      */
     public const RESOURCE_SERVERS = 'servers';
-    public const RESOURCE_NODES = 'nodes';
+    public const RESOURCE_CLUSTERS = 'clusters';
     public const RESOURCE_ALLOCATIONS = 'allocations';
     public const RESOURCE_USERS = 'users';
     public const RESOURCE_LOCATIONS = 'locations';
-    public const RESOURCE_NESTS = 'nests';
-    public const RESOURCE_EGGS = 'eggs';
+    public const RESOURCE_LAUNCHPADS = 'launchpads';
+    public const RESOURCE_ROCKETS = 'rockets';
     public const RESOURCE_DATABASE_HOSTS = 'database_hosts';
     public const RESOURCE_SERVER_DATABASES = 'server_databases';
 

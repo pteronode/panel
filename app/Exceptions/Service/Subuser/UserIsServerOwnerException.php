@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Exceptions\Service\Subuser;
+namespace Kubectyl\Exceptions\Service\Subuser;
 
-use Pterodactyl\Exceptions\DisplayException;
+use Kubectyl\Exceptions\DisplayException;
 
 class UserIsServerOwnerException extends DisplayException
 {

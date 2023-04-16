@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Kubectyl\Models;
 
 use Ramsey\Uuid\Uuid;
 use Illuminate\Http\Request;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Exceptions\Service\Allocation;
+namespace Kubectyl\Exceptions\Service\Allocation;
 
-use Pterodactyl\Exceptions\DisplayException;
+use Kubectyl\Exceptions\DisplayException;
 
 class ServerUsingAllocationException extends DisplayException
 {

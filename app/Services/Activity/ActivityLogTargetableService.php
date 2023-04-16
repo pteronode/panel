@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Services\Activity;
+namespace Kubectyl\Services\Activity;
 
 use Illuminate\Database\Eloquent\Model;
 

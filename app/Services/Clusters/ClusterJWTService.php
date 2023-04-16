@@ -1,17 +1,17 @@
 <?php
 
-namespace Pterodactyl\Services\Clusters;
+namespace Kubectyl\Services\Clusters;
 
 use DateTimeImmutable;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
-use Pterodactyl\Models\Cluster;
-use Pterodactyl\Models\User;
+use Kubectyl\Models\Cluster;
+use Kubectyl\Models\User;
 use Lcobucci\JWT\Token\Plain;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
-use Pterodactyl\Extensions\Lcobucci\JWT\Encoding\TimestampDates;
+use Kubectyl\Extensions\Lcobucci\JWT\Encoding\TimestampDates;
 
 class ClusterJWTService
 {

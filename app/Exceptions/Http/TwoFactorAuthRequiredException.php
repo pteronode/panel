@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Exceptions\Http;
+namespace Kubectyl\Exceptions\Http;
 
 use Throwable;
 use Illuminate\Http\Response;

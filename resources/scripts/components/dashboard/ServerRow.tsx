@@ -4,7 +4,7 @@ import { faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome
 import { Link } from 'react-router-dom';
 import { Server } from '@/api/server/getServer';
 import getServerResourceUsage, { ServerPowerState, ServerStats } from '@/api/server/getServerResourceUsage';
-import { bytesToString, mbToBytes } from '@/lib/formatters';
+import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import Spinner from '@/components/elements/Spinner';
@@ -88,6 +88,8 @@ export default ({ server, className }: { server: Server; className?: string }) =
     const memoryLimit = server.limits.memory !== 0 ? bytesToString(mbToBytes(server.limits.memory)) : 'Unlimited';
     const cpuLimit = server.limits.cpu !== 0 ? server.limits.cpu + ' %' : 'Unlimited';
 
+    const defaultAllocation = server.allocations.find((alloc) => alloc.isDefault);
+
     return (
         <StatusIndicatorBox as={Link} to={`/server/${server.id}`} className={className} $status={stats?.status}>
             <div css={tw`flex items-center col-span-12 sm:col-span-5 lg:col-span-6`}>
@@ -105,7 +107,14 @@ export default ({ server, className }: { server: Server; className?: string }) =
                 <div css={tw`flex justify-center`}>
                     <FontAwesomeIcon icon={faEthernet} css={tw`text-neutral-500`} />
                     <p css={tw`text-sm text-neutral-400 ml-2`}>
-                        {!server.service.ip ? 'not available' : `${server.service.ip}:${server.service.port}`}
+                    {defaultAllocation
+                        ? <React.Fragment key={defaultAllocation.ip + defaultAllocation.port.toString()}>
+                            {defaultAllocation.alias || ip(defaultAllocation.ip)}:{defaultAllocation.port}
+                          </React.Fragment>
+                        : server.service.ip
+                           ? `${server.service.ip}:${server.service.port}`
+                           : 'not available'
+                    }
                     </p>
                 </div>
             </div>
@@ -124,8 +133,8 @@ export default ({ server, className }: { server: Server; className?: string }) =
                                     ? 'Transferring'
                                     : server.status === 'installing'
                                     ? 'Installing'
-                                    : server.status === 'restoring_backup'
-                                    ? 'Restoring Backup'
+                                    : server.status === 'restoring_snapshot'
+                                    ? 'Restoring Snapshot'
                                     : 'Unavailable'}
                             </span>
                         </div>

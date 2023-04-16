@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Services\Deployment;
+namespace Kubectyl\Services\Deployment;
 
-use Pterodactyl\Models\Cluster;
+use Kubectyl\Models\Cluster;
 use Webmozart\Assert\Assert;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Pterodactyl\Exceptions\Service\Deployment\NoViableClusterException;
+use Kubectyl\Exceptions\Service\Deployment\NoViableClusterException;
 
 class FindViableClustersService
 {
@@ -64,7 +64,7 @@ class FindViableClustersService
      *                       If "null" is provided as the value no pagination will
      *                       be used.
      *
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableClusterException
+     * @throws \Kubectyl\Exceptions\Service\Deployment\NoViableClusterException
      */
     public function handle(int $perPage = null, int $page = null): LengthAwarePaginator|Collection
     {

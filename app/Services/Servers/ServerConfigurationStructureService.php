@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Services\Servers;
+namespace Kubectyl\Services\Servers;
 
-use Pterodactyl\Models\Mount;
-use Pterodactyl\Models\Server;
+use Kubectyl\Models\Mount;
+use Kubectyl\Models\Server;
 
 class ServerConfigurationStructureService
 {
@@ -18,7 +18,7 @@ class ServerConfigurationStructureService
      * Return a configuration array for a specific server when passed a server model.
      *
      * DO NOT MODIFY THIS FUNCTION. This powers legacy code handling for the new Wings
-     * daemon, if you modify the structure eggs will break unexpectedly.
+     * daemon, if you modify the structure rockets will break unexpectedly.
      */
     public function handle(Server $server, array $override = [], bool $legacy = false): array
     {
@@ -42,7 +42,7 @@ class ServerConfigurationStructureService
      */
     protected function returnCurrentFormat(Server $server): array
     {
-        return [
+        $array = [
             'uuid' => $server->uuid,
             'meta' => [
                 'name' => $server->name,
@@ -51,27 +51,15 @@ class ServerConfigurationStructureService
             'suspended' => $server->isSuspended(),
             'environment' => $this->environment->handle($server),
             'invocation' => $server->startup,
-            'skip_egg_scripts' => $server->skip_scripts,
+            'skip_rocket_scripts' => $server->skip_scripts,
             'build' => [
                 'memory_limit' => $server->memory,
-                // 'swap' => $server->swap,
-                // 'io_weight' => $server->io,
                 'cpu_limit' => $server->cpu,
-                // 'threads' => $server->threads,
                 'disk_space' => $server->disk,
-                // 'oom_disabled' => $server->oom_disabled,
             ],
             'container' => [
                 'image' => $server->image,
-                // This field is deprecated — use the value in the "build" block.
-                //
-                // TODO: remove this key in V2.
-                'oom_disabled' => $server->oom_disabled,
                 'requires_rebuild' => false,
-            ],
-            'allocations' => [
-                'default_port' => $server->default_port,
-                'additional_ports' => $server->additional_ports,
             ],
             'mounts' => $server->mounts->map(function (Mount $mount) {
                 return [
@@ -80,15 +68,35 @@ class ServerConfigurationStructureService
                     'read_only' => $mount->read_only,
                 ];
             }),
-            'egg' => [
-                'id' => $server->egg->uuid,
-                'file_denylist' => $server->egg->inherit_file_denylist,
+            'rocket' => [
+                'id' => $server->rocket->uuid,
+                'file_denylist' => $server->rocket->inherit_file_denylist,
             ],
+            'node_selectors' => $server->node_selectors,
         ];
+
+        if (!empty($server->default_port)) {
+            $array['ports'] = [
+                'default' => [
+                    'port' => $server->default_port,
+                ],
+                'mappings' => $server->additional_ports ? $server->additional_ports : [],
+            ];
+        } else {
+            $array['allocations'] = [
+                'default' => [
+                    'ip' => $ip = $server->allocation ? $server->allocation->ip : null,
+                    'port' => $server->allocation ? $server->allocation->port : null,
+                ],
+                'mappings' => $server->getAllocationMappings(),
+            ];
+        }
+
+        return $array;
     }
 
     /**
-     * Returns the legacy server data format to continue support for old egg configurations
+     * Returns the legacy server data format to continue support for old rocket configurations
      * that have not yet been updated.
      *
      * @deprecated
@@ -119,7 +127,7 @@ class ServerConfigurationStructureService
                 'image' => $server->image,
             ],
             'service' => [
-                'egg' => $server->egg->uuid,
+                'rocket' => $server->rocket->uuid,
                 'skip_scripts' => $server->skip_scripts,
             ],
             'rebuild' => false,

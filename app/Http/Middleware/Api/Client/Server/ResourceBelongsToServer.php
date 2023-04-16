@@ -1,18 +1,18 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware\Api\Client\Server;
+namespace Kubectyl\Http\Middleware\Api\Client\Server;
 
 use Closure;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Task;
-use Pterodactyl\Models\User;
+use Kubectyl\Models\Task;
+use Kubectyl\Models\User;
 use InvalidArgumentException;
-use Pterodactyl\Models\Backup;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Subuser;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Models\Schedule;
-use Pterodactyl\Models\Allocation;
+use Kubectyl\Models\Snapshot;
+use Kubectyl\Models\Server;
+use Kubectyl\Models\Subuser;
+use Kubectyl\Models\Database;
+use Kubectyl\Models\Schedule;
+use Kubectyl\Models\Allocation;
 use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -33,7 +33,7 @@ class ResourceBelongsToServer
             throw new InvalidArgumentException('This middleware cannot be used in a context that is missing a server in the parameters.');
         }
 
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var \Kubectyl\Models\Server $server */
         $server = $request->route()->parameter('server');
         $exception = new NotFoundHttpException('The requested resource was not found for this server.');
         foreach ($params as $key => $model) {
@@ -49,7 +49,7 @@ class ResourceBelongsToServer
                 // All of these models use "server_id" as the field key for the server
                 // they are assigned to, so the logic is identical for them all.
                 case Allocation::class:
-                case Backup::class:
+                case Snapshot::class:
                 case Database::class:
                 case Schedule::class:
                 case Subuser::class:

@@ -21,9 +21,12 @@ return new class () extends Migration {
             $table->string('service_type')->after('insecure');
             $table->string('storage_class')->after('service_type');
             $table->string('ns')->after('storage_class');
-            $table->string('dns_policy')->after('ns');
+            $table->string('cert_file')->nullable()->after('ns');
+            $table->string('key_file')->nullable()->after('cert_file');
+            $table->string('ca_file')->nullable()->after('key_file');
+            $table->string('dns_policy')->after('ca_file');
             $table->string('image_pull_policy')->after('dns_policy');
-            $table->string('metallb_address_pool')->after('image_pull_policy');
+            $table->string('metallb_address_pool')->nullable()->after('image_pull_policy');
             $table->boolean('metallb_shared_ip')->after('metallb_address_pool');
         });
 

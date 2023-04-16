@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Kubectyl\Models;
 
 use Illuminate\Support\Str;
 use Webmozart\Assert\Assert;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Kubectyl\Services\Acl\Api\AdminAcl;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Pterodactyl\Models\ApiKey.
+ * Kubectyl\Models\ApiKey.
  *
  * @property int $id
  * @property int $user_id
@@ -25,12 +25,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $r_allocations
  * @property int $r_users
  * @property int $r_locations
- * @property int $r_nests
- * @property int $r_eggs
+ * @property int $r_launchpads
+ * @property int $r_rockets
  * @property int $r_database_hosts
  * @property int $r_server_databases
- * @property \Pterodactyl\Models\User $tokenable
- * @property \Pterodactyl\Models\User $user
+ * @property \Kubectyl\Models\User $tokenable
+ * @property \Kubectyl\Models\User $user
  *
  * @method static \Database\Factories\ApiKeyFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|ApiKey newModelQuery()
@@ -45,10 +45,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereMemo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereRAllocations($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereRDatabaseHosts($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereREggs($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereRRockets($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereRLocations($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereRNests($value)
- * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereRNodes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereRLaunchpads($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereRClusters($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereRServerDatabases($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereRServers($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereRUsers($value)
@@ -101,10 +101,10 @@ class ApiKey extends Model
         'r_' . AdminAcl::RESOURCE_ALLOCATIONS => 'int',
         'r_' . AdminAcl::RESOURCE_DATABASE_HOSTS => 'int',
         'r_' . AdminAcl::RESOURCE_SERVER_DATABASES => 'int',
-        'r_' . AdminAcl::RESOURCE_EGGS => 'int',
+        'r_' . AdminAcl::RESOURCE_ROCKETS => 'int',
         'r_' . AdminAcl::RESOURCE_LOCATIONS => 'int',
-        'r_' . AdminAcl::RESOURCE_NESTS => 'int',
-        'r_' . AdminAcl::RESOURCE_NODES => 'int',
+        'r_' . AdminAcl::RESOURCE_LAUNCHPADS => 'int',
+        'r_' . AdminAcl::RESOURCE_CLUSTERS => 'int',
         'r_' . AdminAcl::RESOURCE_SERVERS => 'int',
     ];
 
@@ -141,10 +141,10 @@ class ApiKey extends Model
         'r_' . AdminAcl::RESOURCE_ALLOCATIONS => 'integer|min:0|max:3',
         'r_' . AdminAcl::RESOURCE_DATABASE_HOSTS => 'integer|min:0|max:3',
         'r_' . AdminAcl::RESOURCE_SERVER_DATABASES => 'integer|min:0|max:3',
-        'r_' . AdminAcl::RESOURCE_EGGS => 'integer|min:0|max:3',
+        'r_' . AdminAcl::RESOURCE_ROCKETS => 'integer|min:0|max:3',
         'r_' . AdminAcl::RESOURCE_LOCATIONS => 'integer|min:0|max:3',
-        'r_' . AdminAcl::RESOURCE_NESTS => 'integer|min:0|max:3',
-        'r_' . AdminAcl::RESOURCE_NODES => 'integer|min:0|max:3',
+        'r_' . AdminAcl::RESOURCE_LAUNCHPADS => 'integer|min:0|max:3',
+        'r_' . AdminAcl::RESOURCE_CLUSTERS => 'integer|min:0|max:3',
         'r_' . AdminAcl::RESOURCE_SERVERS => 'integer|min:0|max:3',
     ];
 

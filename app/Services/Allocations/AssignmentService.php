@@ -1,17 +1,17 @@
 <?php
 
-namespace Pterodactyl\Services\Allocations;
+namespace Kubectyl\Services\Allocations;
 
 use Exception;
 use IPTools\Network;
-use Pterodactyl\Models\Cluster;
+use Kubectyl\Models\Cluster;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException;
-use Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException;
-use Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException;
-use Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException;
+use Kubectyl\Exceptions\DisplayException;
+use Kubectyl\Contracts\Repository\AllocationRepositoryInterface;
+use Kubectyl\Exceptions\Service\Allocation\CidrOutOfRangeException;
+use Kubectyl\Exceptions\Service\Allocation\PortOutOfRangeException;
+use Kubectyl\Exceptions\Service\Allocation\InvalidPortMappingException;
+use Kubectyl\Exceptions\Service\Allocation\TooManyPortsInRangeException;
 
 class AssignmentService
 {
@@ -32,11 +32,11 @@ class AssignmentService
     /**
      * Insert allocations into the database and link them to a specific cluster.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
+     * @throws \Kubectyl\Exceptions\DisplayException
+     * @throws \Kubectyl\Exceptions\Service\Allocation\CidrOutOfRangeException
+     * @throws \Kubectyl\Exceptions\Service\Allocation\InvalidPortMappingException
+     * @throws \Kubectyl\Exceptions\Service\Allocation\PortOutOfRangeException
+     * @throws \Kubectyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
      */
     public function handle(Cluster $cluster, array $data): void
     {

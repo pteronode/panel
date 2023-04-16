@@ -1,12 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Pterodactyl\Http\Controllers\Api\Client;
-use Pterodactyl\Http\Middleware\Activity\ServerSubject;
-use Pterodactyl\Http\Middleware\Activity\AccountSubject;
-use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
-use Pterodactyl\Http\Middleware\Api\Client\Server\ResourceBelongsToServer;
-use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
+use Kubectyl\Http\Controllers\Api\Client;
+use Kubectyl\Http\Middleware\Activity\ServerSubject;
+use Kubectyl\Http\Middleware\Activity\AccountSubject;
+use Kubectyl\Http\Middleware\RequireTwoFactorAuthentication;
+use Kubectyl\Http\Middleware\Api\Client\Server\ResourceBelongsToServer;
+use Kubectyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
 
 /*
 |--------------------------------------------------------------------------
@@ -119,14 +119,14 @@ Route::group([
         Route::delete('/{user}', [Client\Servers\SubuserController::class, 'delete']);
     });
 
-    Route::group(['prefix' => '/backups'], function () {
+    Route::group(['prefix' => '/snapshots'], function () {
         Route::get('/', [Client\Servers\BackupController::class, 'index']);
         Route::post('/', [Client\Servers\BackupController::class, 'store']);
-        Route::get('/{backup}', [Client\Servers\BackupController::class, 'view']);
-        Route::get('/{backup}/download', [Client\Servers\BackupController::class, 'download']);
-        Route::post('/{backup}/lock', [Client\Servers\BackupController::class, 'toggleLock']);
-        Route::post('/{backup}/restore', [Client\Servers\BackupController::class, 'restore']);
-        Route::delete('/{backup}', [Client\Servers\BackupController::class, 'delete']);
+        Route::get('/{snapshot}', [Client\Servers\BackupController::class, 'view']);
+        Route::get('/{snapshot}/download', [Client\Servers\BackupController::class, 'download']);
+        Route::post('/{snapshot}/lock', [Client\Servers\BackupController::class, 'toggleLock']);
+        Route::post('/{snapshot}/restore', [Client\Servers\BackupController::class, 'restore']);
+        Route::delete('/{snapshot}', [Client\Servers\BackupController::class, 'delete']);
     });
 
     Route::group(['prefix' => '/startup'], function () {

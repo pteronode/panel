@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Console\Commands\Environment;
+namespace Kubectyl\Console\Commands\Environment;
 
 use PDOException;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Database\DatabaseManager;
-use Pterodactyl\Traits\Commands\EnvironmentWriterTrait;
+use Kubectyl\Traits\Commands\EnvironmentWriterTrait;
 
 class DatabaseSettingsCommand extends Command
 {
@@ -34,7 +34,7 @@ class DatabaseSettingsCommand extends Command
     /**
      * Handle command execution.
      *
-     * @throws \Pterodactyl\Exceptions\PterodactylException
+     * @throws \Kubectyl\Exceptions\KubectylException
      */
     public function handle(): int
     {

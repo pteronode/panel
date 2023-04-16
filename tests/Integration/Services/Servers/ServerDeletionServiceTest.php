@@ -1,20 +1,20 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Services\Servers;
+namespace Kubectyl\Tests\Integration\Services\Servers;
 
 use Mockery;
 use Exception;
 use Mockery\MockInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Models\DatabaseHost;
+use Kubectyl\Models\Database;
+use Kubectyl\Models\DatabaseHost;
 use GuzzleHttp\Exception\BadResponseException;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
-use Pterodactyl\Services\Servers\ServerDeletionService;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
-use Pterodactyl\Services\Databases\DatabaseManagementService;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Kubectyl\Tests\Integration\IntegrationTestCase;
+use Kubectyl\Services\Servers\ServerDeletionService;
+use Kubectyl\Repositories\Kuber\DaemonServerRepository;
+use Kubectyl\Services\Databases\DatabaseManagementService;
+use Kubectyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class ServerDeletionServiceTest extends IntegrationTestCase
 {
@@ -114,7 +114,7 @@ class ServerDeletionServiceTest extends IntegrationTestCase
         $server = $this->createServerModel();
         $host = DatabaseHost::factory()->create();
 
-        /** @var \Pterodactyl\Models\Database $db */
+        /** @var \Kubectyl\Models\Database $db */
         $db = Database::factory()->create(['database_host_id' => $host->id, 'server_id' => $server->id]);
 
         $server->refresh();
@@ -139,7 +139,7 @@ class ServerDeletionServiceTest extends IntegrationTestCase
         $server = $this->createServerModel();
         $host = DatabaseHost::factory()->create();
 
-        /** @var \Pterodactyl\Models\Database $db */
+        /** @var \Kubectyl\Models\Database $db */
         $db = Database::factory()->create(['database_host_id' => $host->id, 'server_id' => $server->id]);
 
         $server->refresh();

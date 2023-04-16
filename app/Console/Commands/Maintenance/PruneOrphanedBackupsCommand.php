@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Console\Commands\Maintenance;
+namespace Kubectyl\Console\Commands\Maintenance;
 
 use Carbon\CarbonImmutable;
 use InvalidArgumentException;
 use Illuminate\Console\Command;
-use Pterodactyl\Repositories\Eloquent\BackupRepository;
+use Kubectyl\Repositories\Eloquent\BackupRepository;
 
 class PruneOrphanedBackupsCommand extends Command
 {
@@ -23,7 +23,7 @@ class PruneOrphanedBackupsCommand extends Command
 
     public function handle()
     {
-        $since = $this->option('prune-age') ?? config('backups.prune_age', 360);
+        $since = $this->option('prune-age') ?? config('snapshots.prune_age', 360);
         if (!$since || !is_digit($since)) {
             throw new InvalidArgumentException('The "--prune-age" argument must be a value greater than 0.');
         }

@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Services\Servers;
+namespace Kubectyl\Services\Servers;
 
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\ServerVariable;
+use Kubectyl\Models\Rocket;
+use Kubectyl\Models\User;
+use Kubectyl\Models\Server;
+use Kubectyl\Models\ServerVariable;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Traits\Services\HasUserLevels;
+use Kubectyl\Traits\Services\HasUserLevels;
 
 class StartupModificationService
 {
@@ -30,11 +30,11 @@ class StartupModificationService
     {
         return $this->connection->transaction(function () use ($server, $data) {
             if (!empty($data['environment'])) {
-                $egg = $this->isUserLevel(User::USER_LEVEL_ADMIN) ? ($data['egg_id'] ?? $server->egg_id) : $server->egg_id;
+                $rocket = $this->isUserLevel(User::USER_LEVEL_ADMIN) ? ($data['rocket_id'] ?? $server->rocket_id) : $server->rocket_id;
 
                 $results = $this->validatorService
                     ->setUserLevel($this->getUserLevel())
-                    ->handle($egg, $data['environment']);
+                    ->handle($rocket, $data['environment']);
 
                 foreach ($results as $result) {
                     ServerVariable::query()->updateOrCreate(
@@ -67,15 +67,15 @@ class StartupModificationService
      */
     protected function updateAdministrativeSettings(array $data, Server &$server): void
     {
-        $eggId = Arr::get($data, 'egg_id');
+        $rocketId = Arr::get($data, 'rocket_id');
 
-        if (is_digit($eggId) && $server->egg_id !== (int) $eggId) {
-            /** @var \Pterodactyl\Models\Egg $egg */
-            $egg = Egg::query()->findOrFail($data['egg_id']);
+        if (is_digit($rocketId) && $server->rocket_id !== (int) $rocketId) {
+            /** @var \Kubectyl\Models\Rocket $rocket */
+            $rocket = Rocket::query()->findOrFail($data['rocket_id']);
 
             $server = $server->forceFill([
-                'egg_id' => $egg->id,
-                'nest_id' => $egg->nest_id,
+                'rocket_id' => $rocket->id,
+                'launchpad_id' => $rocket->launchpad_id,
             ]);
         }
 

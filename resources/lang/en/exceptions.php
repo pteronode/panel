@@ -2,8 +2,8 @@
 
 return [
     'daemon_connection_failed' => 'There was an exception while attempting to communicate with the daemon resulting in a HTTP/:code response code. This exception has been logged.',
-    'node' => [
-        'servers_attached' => 'A node must have no servers linked to it in order to be deleted.',
+    'cluster' => [
+        'servers_attached' => 'A cluster must have no servers linked to it in order to be deleted.',
         'daemon_off_config_updated' => 'The daemon configuration <strong>has been updated</strong>, however there was an error encountered while attempting to automatically update the configuration file on the Daemon. You will need to manually update the configuration file (config.yml) for the daemon to apply these changes.',
     ],
     'allocations' => [
@@ -13,16 +13,16 @@ return [
         'cidr_out_of_range' => 'CIDR notation only allows masks between /25 and /32.',
         'port_out_of_range' => 'Ports in an allocation must be greater than 1024 and less than or equal to 65535.',
     ],
-    'nest' => [
-        'delete_has_servers' => 'A Nest with active servers attached to it cannot be deleted from the Panel.',
-        'egg' => [
-            'delete_has_servers' => 'An Egg with active servers attached to it cannot be deleted from the Panel.',
-            'invalid_copy_id' => 'The Egg selected for copying a script from either does not exist, or is copying a script itself.',
-            'must_be_child' => 'The "Copy Settings From" directive for this Egg must be a child option for the selected Nest.',
-            'has_children' => 'This Egg is a parent to one or more other Eggs. Please delete those Eggs before deleting this Egg.',
+    'launchpad' => [
+        'delete_has_servers' => 'A Launchpad with active servers attached to it cannot be deleted from the Panel.',
+        'rocket' => [
+            'delete_has_servers' => 'A Rocket with active servers attached to it cannot be deleted from the Panel.',
+            'invalid_copy_id' => 'The Rocket selected for copying a script from either does not exist, or is copying a script itself.',
+            'must_be_child' => 'The "Copy Settings From" directive for this Rocket must be a child option for the selected Launchpad.',
+            'has_children' => 'This Rocket is a parent to one or more other Rockets. Please delete those Rockets before deleting this Rocket.',
         ],
         'variables' => [
-            'env_not_unique' => 'The environment variable :name must be unique to this Egg.',
+            'env_not_unique' => 'The environment variable :name must be unique to this Rocket.',
             'reserved_name' => 'The environment variable :name is protected and cannot be assigned to a variable.',
             'bad_validation_rule' => 'The validation rule ":rule" is not a valid rule for this application.',
         ],
@@ -44,10 +44,10 @@ return [
         'chain_interval_too_long' => 'The maximum interval time for a chained task is 15 minutes.',
     ],
     'locations' => [
-        'has_nodes' => 'Cannot delete a location that has active nodes attached to it.',
+        'has_clusters' => 'Cannot delete a location that has active clusters attached to it.',
     ],
     'users' => [
-        'node_revocation_failed' => 'Failed to revoke keys on <a href=":link">Node #:node</a>. :error',
+        'cluster_revocation_failed' => 'Failed to revoke keys on <a href=":link">Cluster #:cluster</a>. :error',
     ],
     'deployment' => [
         'no_viable_clusters' => 'No clusters satisfying the requirements specified for automatic deployment could be found.',

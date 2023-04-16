@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin;
+namespace Kubectyl\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Cluster;
-use Pterodactyl\Models\ApiKey;
+use Kubectyl\Models\Cluster;
+use Kubectyl\Models\ApiKey;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Http\Controllers\Controller;
+use Kubectyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Services\Api\KeyCreationService;
-use Pterodactyl\Repositories\Eloquent\ApiKeyRepository;
+use Kubectyl\Services\Api\KeyCreationService;
+use Kubectyl\Repositories\Eloquent\ApiKeyRepository;
 
 class ClusterAutoDeployController extends Controller
 {
@@ -27,11 +27,11 @@ class ClusterAutoDeployController extends Controller
      * Generates a new API key for the logged-in user with only permission to read
      * clusters, and returns that as the deployment key for a cluster.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Kubectyl\Exceptions\Model\DataValidationException
      */
     public function __invoke(Request $request, Cluster $cluster): JsonResponse
     {
-        /** @var \Pterodactyl\Models\ApiKey|null $key */
+        /** @var \Kubectyl\Models\ApiKey|null $key */
         $key = $this->repository->getApplicationKeys($request->user())
             ->filter(function (ApiKey $key) {
                 foreach ($key->getAttributes() as $permission => $value) {

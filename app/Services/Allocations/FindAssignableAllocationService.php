@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Services\Allocations;
+namespace Kubectyl\Services\Allocations;
 
 use Webmozart\Assert\Assert;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Allocation;
-use Pterodactyl\Exceptions\Service\Allocation\AutoAllocationNotEnabledException;
-use Pterodactyl\Exceptions\Service\Allocation\NoAutoAllocationSpaceAvailableException;
+use Kubectyl\Models\Server;
+use Kubectyl\Models\Allocation;
+use Kubectyl\Exceptions\Service\Allocation\AutoAllocationNotEnabledException;
+use Kubectyl\Exceptions\Service\Allocation\NoAutoAllocationSpaceAvailableException;
 
 class FindAssignableAllocationService
 {
@@ -22,11 +22,11 @@ class FindAssignableAllocationService
      * no allocation can be found, a new one will be created with a random port between the defined
      * range from the configuration.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
+     * @throws \Kubectyl\Exceptions\DisplayException
+     * @throws \Kubectyl\Exceptions\Service\Allocation\CidrOutOfRangeException
+     * @throws \Kubectyl\Exceptions\Service\Allocation\InvalidPortMappingException
+     * @throws \Kubectyl\Exceptions\Service\Allocation\PortOutOfRangeException
+     * @throws \Kubectyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
      */
     public function handle(Server $server): Allocation
     {
@@ -37,7 +37,7 @@ class FindAssignableAllocationService
         // Attempt to find a given available allocation for a server. If one cannot be found
         // we will fall back to attempting to create a new allocation that can be used for the
         // server.
-        /** @var \Pterodactyl\Models\Allocation|null $allocation */
+        /** @var \Kubectyl\Models\Allocation|null $allocation */
         $allocation = $server->cluster->allocations()
             ->where('ip', $server->allocation->ip)
             ->whereNull('server_id')
@@ -56,11 +56,11 @@ class FindAssignableAllocationService
      * in the settings. If there are no matches in that range, or something is wrong with the
      * range information provided an exception will be raised.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
+     * @throws \Kubectyl\Exceptions\DisplayException
+     * @throws \Kubectyl\Exceptions\Service\Allocation\CidrOutOfRangeException
+     * @throws \Kubectyl\Exceptions\Service\Allocation\InvalidPortMappingException
+     * @throws \Kubectyl\Exceptions\Service\Allocation\PortOutOfRangeException
+     * @throws \Kubectyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
      */
     protected function createNewAllocation(Server $server): Allocation
     {
@@ -100,7 +100,7 @@ class FindAssignableAllocationService
             'allocation_ports' => [$port],
         ]);
 
-        /** @var \Pterodactyl\Models\Allocation $allocation */
+        /** @var \Kubectyl\Models\Allocation $allocation */
         $allocation = $server->cluster->allocations()
             ->where('ip', $server->allocation->ip)
             ->where('port', $port)

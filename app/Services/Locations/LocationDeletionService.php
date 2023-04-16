@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Services\Locations;
+namespace Kubectyl\Services\Locations;
 
 use Webmozart\Assert\Assert;
-use Pterodactyl\Models\Location;
-use Pterodactyl\Contracts\Repository\ClusterRepositoryInterface;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Location\HasActiveClustersException;
+use Kubectyl\Models\Location;
+use Kubectyl\Contracts\Repository\ClusterRepositoryInterface;
+use Kubectyl\Contracts\Repository\LocationRepositoryInterface;
+use Kubectyl\Exceptions\Service\Location\HasActiveClustersException;
 
 class LocationDeletionService
 {
@@ -22,7 +22,7 @@ class LocationDeletionService
     /**
      * Delete an existing location.
      *
-     * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveClustersException
+     * @throws \Kubectyl\Exceptions\Service\Location\HasActiveClustersException
      */
     public function handle(Location|int $location): ?int
     {
@@ -32,7 +32,7 @@ class LocationDeletionService
 
         $count = $this->clusterRepository->findCountWhere([['location_id', '=', $location]]);
         if ($count > 0) {
-            throw new HasActiveClustersException(trans('exceptions.locations.has_nodes'));
+            throw new HasActiveClustersException(trans('exceptions.locations.has_clusters'));
         }
 
         return $this->repository->delete($location);

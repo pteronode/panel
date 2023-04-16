@@ -1,17 +1,17 @@
 <?php
 
-namespace Pterodactyl\Services\Backups;
+namespace Kubectyl\Services\Backups;
 
 use Ramsey\Uuid\Uuid;
 use Carbon\CarbonImmutable;
 use Webmozart\Assert\Assert;
-use Pterodactyl\Models\Backup;
-use Pterodactyl\Models\Server;
+use Kubectyl\Models\Snapshot;
+use Kubectyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Extensions\Backups\BackupManager;
-use Pterodactyl\Repositories\Eloquent\BackupRepository;
-use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
-use Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException;
+use Kubectyl\Extensions\Backups\BackupManager;
+use Kubectyl\Repositories\Eloquent\BackupRepository;
+use Kubectyl\Repositories\Kuber\DaemonBackupRepository;
+use Kubectyl\Exceptions\Service\Backup\TooManyBackupsException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 class InitiateBackupService
@@ -33,7 +33,7 @@ class InitiateBackupService
     }
 
     /**
-     * Set if the backup should be locked once it is created which will prevent
+     * Set if the snapshot should be locked once it is created which will prevent
      * its deletion by users or automated system processes.
      */
     public function setIsLocked(bool $isLocked): self
@@ -44,7 +44,7 @@ class InitiateBackupService
     }
 
     /**
-     * Sets the files to be ignored by this backup.
+     * Sets the files to be ignored by this snapshot.
      *
      * @param string[]|null $ignored
      */
@@ -67,49 +67,49 @@ class InitiateBackupService
     }
 
     /**
-     * Initiates the backup process for a server on Wings.
+     * Initiates the snapshot process for a server on Wings.
      *
      * @throws \Throwable
-     * @throws \Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException
+     * @throws \Kubectyl\Exceptions\Service\Backup\TooManyBackupsException
      * @throws \Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException
      */
-    public function handle(Server $server, string $name = null, bool $override = false): Backup
+    public function handle(Server $server, string $name = null, bool $override = false): Snapshot
     {
-        $limit = config('backups.throttles.limit');
-        $period = config('backups.throttles.period');
+        $limit = config('snapshots.throttles.limit');
+        $period = config('snapshots.throttles.period');
         if ($period > 0) {
             $previous = $this->repository->getBackupsGeneratedDuringTimespan($server->id, $period);
             if ($previous->count() >= $limit) {
-                $message = sprintf('Only %d backups may be generated within a %d second span of time.', $limit, $period);
+                $message = sprintf('Only %d snapshots may be generated within a %d second span of time.', $limit, $period);
 
                 throw new TooManyRequestsHttpException(CarbonImmutable::now()->diffInSeconds($previous->last()->created_at->addSeconds($period)), $message);
             }
         }
 
-        // Check if the server has reached or exceeded its backup limit.
-        // completed_at == null will cover any ongoing backups, while is_successful == true will cover any completed backups.
+        // Check if the server has reached or exceeded its snapshot limit.
+        // completed_at == null will cover any ongoing snapshots, while is_successful == true will cover any completed snapshots.
         $successful = $this->repository->getNonFailedBackups($server);
-        if (!$server->backup_limit || $successful->count() >= $server->backup_limit) {
+        if (!$server->snapshot_limit || $successful->count() >= $server->snapshot_limit) {
             // Do not allow the user to continue if this server is already at its limit and can't override.
-            if (!$override || $server->backup_limit <= 0) {
-                throw new TooManyBackupsException($server->backup_limit);
+            if (!$override || $server->snapshot_limit <= 0) {
+                throw new TooManyBackupsException($server->snapshot_limit);
             }
 
-            // Get the oldest backup the server has that is not "locked" (indicating a backup that should
-            // never be automatically purged). If we find a backup we will delete it and then continue with
-            // this process. If no backup is found that can be used an exception is thrown.
-            /** @var \Pterodactyl\Models\Backup $oldest */
+            // Get the oldest snapshot the server has that is not "locked" (indicating a snapshot that should
+            // never be automatically purged). If we find a snapshot we will delete it and then continue with
+            // this process. If no snapshot is found that can be used an exception is thrown.
+            /** @var \Kubectyl\Models\Snapshot $oldest */
             $oldest = $successful->where('is_locked', false)->orderBy('created_at')->first();
             if (!$oldest) {
-                throw new TooManyBackupsException($server->backup_limit);
+                throw new TooManyBackupsException($server->snapshot_limit);
             }
 
             $this->deleteBackupService->handle($oldest);
         }
 
         return $this->connection->transaction(function () use ($server, $name) {
-            /** @var \Pterodactyl\Models\Backup $backup */
-            $backup = $this->repository->create([
+            /** @var \Kubectyl\Models\Snapshot $snapshot */
+            $snapshot = $this->repository->create([
                 'server_id' => $server->id,
                 'uuid' => Uuid::uuid4()->toString(),
                 'name' => trim($name) ?: sprintf('Backup at %s', CarbonImmutable::now()->toDateTimeString()),
@@ -120,9 +120,9 @@ class InitiateBackupService
 
             $this->daemonBackupRepository->setServer($server)
                 ->setBackupAdapter($this->backupManager->getDefaultAdapter())
-                ->backup($backup);
+                ->snapshot($snapshot);
 
-            return $backup;
+            return $snapshot;
         });
     }
 }

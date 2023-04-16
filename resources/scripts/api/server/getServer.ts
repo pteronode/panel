@@ -1,6 +1,6 @@
 import http, { FractalResponseData, FractalResponseList } from '@/api/http';
-import { rawDataToServerAllocation, rawDataToServerEggVariable } from '@/api/transformers';
-import { ServerEggVariable, ServerStatus } from '@/api/server/types';
+import { rawDataToServerAllocation, rawDataToServerRocketVariable } from '@/api/transformers';
+import { ServerRocketVariable, ServerStatus } from '@/api/server/types';
 
 export interface Allocation {
     id: number;
@@ -45,10 +45,10 @@ export interface Server {
     featureLimits: {
         databases: number;
         allocations: number;
-        backups: number;
+        snapshots: number;
     };
     isTransferring: boolean;
-    variables: ServerEggVariable[];
+    variables: ServerRocketVariable[];
     allocations: Allocation[];
 }
 
@@ -75,11 +75,11 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
     additional_ports: data.service.additional_ports,
     description: data.description ? (data.description.length > 0 ? data.description : null) : null,
     limits: { ...data.limits },
-    eggFeatures: data.egg_features || [],
+    eggFeatures: data.rocket_features || [],
     featureLimits: { ...data.feature_limits },
     isTransferring: data.is_transferring,
     variables: ((data.relationships?.variables as FractalResponseList | undefined)?.data || []).map(
-        rawDataToServerEggVariable
+        rawDataToServerRocketVariable
     ),
     allocations: ((data.relationships?.allocations as FractalResponseList | undefined)?.data || []).map(
         rawDataToServerAllocation

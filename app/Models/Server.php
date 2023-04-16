@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Kubectyl\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Query\JoinClause;
@@ -10,10 +10,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
+use Kubectyl\Exceptions\Http\Server\ServerStateConflictException;
 
 /**
- * \Pterodactyl\Models\Server.
+ * \Kubectyl\Models\Server.
  *
  * @property int $id
  * @property string|null $external_id
@@ -30,41 +30,42 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  * @property int $cpu
  * @property string|null $threads
  * @property bool $oom_disabled
+ * @property int $allocation_id
  * @property int $default_port
  * @property array $additional_ports
- * @property int $nest_id
- * @property int $egg_id
+ * @property int $launchpad_id
+ * @property int $rocket_id
  * @property string $startup
  * @property string $image
  * @property int|null $allocation_limit
  * @property int|null $database_limit
- * @property int $backup_limit
+ * @property int $snapshot_limit
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $installed_at
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ActivityLog[] $activity
+ * @property \Illuminate\Database\Eloquent\Collection|\Kubectyl\Models\ActivityLog[] $activity
  * @property int|null $activity_count
- * @property \Pterodactyl\Models\Allocation|null $allocation
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Allocation[] $allocations
+ * @property \Kubectyl\Models\Allocation|null $allocation
+ * @property \Illuminate\Database\Eloquent\Collection|\Kubectyl\Models\Allocation[] $allocations
  * @property int|null $allocations_count
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Backup[] $backups
+ * @property \Illuminate\Database\Eloquent\Collection|\Kubectyl\Models\Snapshot[] $snapshots
  * @property int|null $backups_count
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Database[] $databases
+ * @property \Illuminate\Database\Eloquent\Collection|\Kubectyl\Models\Database[] $databases
  * @property int|null $databases_count
- * @property \Pterodactyl\Models\Egg|null $egg
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Mount[] $mounts
+ * @property \Kubectyl\Models\Rocket|null $rocket
+ * @property \Illuminate\Database\Eloquent\Collection|\Kubectyl\Models\Mount[] $mounts
  * @property int|null $mounts_count
- * @property \Pterodactyl\Models\Nest $nest
- * @property \Pterodactyl\Models\Cluster $cluster
+ * @property \Kubectyl\Models\Launchpad $launchpad
+ * @property \Kubectyl\Models\Cluster $cluster
  * @property \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property int|null $notifications_count
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Schedule[] $schedules
+ * @property \Illuminate\Database\Eloquent\Collection|\Kubectyl\Models\Schedule[] $schedules
  * @property int|null $schedules_count
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Subuser[] $subusers
+ * @property \Illuminate\Database\Eloquent\Collection|\Kubectyl\Models\Subuser[] $subusers
  * @property int|null $subusers_count
- * @property \Pterodactyl\Models\ServerTransfer|null $transfer
- * @property \Pterodactyl\Models\User $user
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\EggVariable[] $variables
+ * @property \Kubectyl\Models\ServerTransfer|null $transfer
+ * @property \Kubectyl\Models\User $user
+ * @property \Illuminate\Database\Eloquent\Collection|\Kubectyl\Models\RocketVariable[] $variables
  * @property int|null $variables_count
  *
  * @method static \Database\Factories\ServerFactory factory(...$parameters)
@@ -79,14 +80,14 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereDatabaseLimit($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereDisk($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Server whereEggId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereRocketId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereExternalId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereImage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereIo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereMemory($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Server whereNestId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereLaunchpadId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereClusterId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereOomDisabled($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereOwnerId($value)
@@ -116,7 +117,7 @@ class Server extends Model
     public const STATUS_INSTALL_FAILED = 'install_failed';
     public const STATUS_REINSTALL_FAILED = 'reinstall_failed';
     public const STATUS_SUSPENDED = 'suspended';
-    public const STATUS_RESTORING_BACKUP = 'restoring_backup';
+    public const STATUS_RESTORING_SNAPSHOT = 'restoring_snapshot';
 
     /**
      * The table associated with the model.
@@ -131,6 +132,7 @@ class Server extends Model
         'status' => self::STATUS_INSTALLING,
         'oom_disabled' => true,
         'installed_at' => null,
+        'node_selectors' => null,
     ];
 
     /**
@@ -160,16 +162,19 @@ class Server extends Model
         'threads' => 'nullable|regex:/^[0-9-,]+$/',
         'oom_disabled' => 'sometimes|boolean',
         'disk' => 'required|numeric|min:0',
-        'default_port' => 'required|numeric|between:1,65535',
+        'allocation_id' => 'required_without:default_port|nullable|bail|unique:servers|exists:allocations,id',
+        'default_port' => 'required_without:allocation_id|nullable|numeric|between:1,65535',
         'additional_ports' => 'nullable|array',
-        'nest_id' => 'required|exists:nests,id',
-        'egg_id' => 'required|exists:eggs,id',
+        'launchpad_id' => 'required|exists:launchpads,id',
+        'rocket_id' => 'required|exists:rockets,id',
+        'node_selectors' => 'array|nullable',
+        'node_selectors.*' => 'string',
         'startup' => 'required|string',
         'skip_scripts' => 'sometimes|boolean',
         'image' => 'required|string|max:191',
         'database_limit' => 'present|nullable|integer|min:0',
         'allocation_limit' => 'sometimes|nullable|integer|min:0',
-        'backup_limit' => 'present|nullable|integer|min:0',
+        'snapshot_limit' => 'present|nullable|integer|min:0',
     ];
 
     /**
@@ -183,13 +188,15 @@ class Server extends Model
         'disk' => 'integer',
         'cpu' => 'integer',
         'oom_disabled' => 'boolean',
+        'allocation_id' => 'integer',
         'default_port' => 'integer',
         'additional_ports' => 'array',
-        'nest_id' => 'integer',
-        'egg_id' => 'integer',
+        'launchpad_id' => 'integer',
+        'rocket_id' => 'integer',
+        'node_selectors' => 'array',
         'database_limit' => 'integer',
         'allocation_limit' => 'integer',
-        'backup_limit' => 'integer',
+        'snapshot_limit' => 'integer',
     ];
 
     /**
@@ -245,19 +252,19 @@ class Server extends Model
     }
 
     /**
-     * Gets information for the nest associated with this server.
+     * Gets information for the launchpad associated with this server.
      */
-    public function nest(): BelongsTo
+    public function launchpad(): BelongsTo
     {
-        return $this->belongsTo(Nest::class);
+        return $this->belongsTo(Launchpad::class);
     }
 
     /**
-     * Gets information for the egg associated with this server.
+     * Gets information for the rocket associated with this server.
      */
-    public function egg(): HasOne
+    public function rocket(): HasOne
     {
-        return $this->hasOne(Egg::class, 'id', 'egg_id');
+        return $this->hasOne(Rocket::class, 'id', 'rocket_id');
     }
 
     /**
@@ -265,15 +272,15 @@ class Server extends Model
      */
     public function variables(): HasMany
     {
-        return $this->hasMany(EggVariable::class, 'egg_id', 'egg_id')
-            ->select(['egg_variables.*', 'server_variables.variable_value as server_value'])
+        return $this->hasMany(RocketVariable::class, 'rocket_id', 'rocket_id')
+            ->select(['rocket_variables.*', 'server_variables.variable_value as server_value'])
             ->leftJoin('server_variables', function (JoinClause $join) {
                 // Don't forget to join against the server ID as well since the way we're using this relationship
-                // would actually return all the variables and their values for _all_ servers using that egg,
+                // would actually return all the variables and their values for _all_ servers using that rocket,
                 // rather than only the server for this model.
                 //
                 // @see https://github.com/pterodactyl/panel/issues/2250
-                $join->on('server_variables.variable_id', 'egg_variables.id')
+                $join->on('server_variables.variable_id', 'rocket_variables.id')
                     ->where('server_variables.server_id', $this->id);
             });
     }
@@ -320,9 +327,9 @@ class Server extends Model
         return $this->hasOne(ServerTransfer::class)->whereNull('successful')->orderByDesc('id');
     }
 
-    public function backups(): HasMany
+    public function snapshots(): HasMany
     {
-        return $this->hasMany(Backup::class);
+        return $this->hasMany(Snapshot::class);
     }
 
     /**
@@ -346,7 +353,7 @@ class Server extends Model
      * exception is raised. This should be called whenever something needs to make
      * sure the server is not in a weird state that should block user access.
      *
-     * @throws \Pterodactyl\Exceptions\Http\Server\ServerStateConflictException
+     * @throws \Kubectyl\Exceptions\Http\Server\ServerStateConflictException
      */
     public function validateCurrentState()
     {
@@ -354,7 +361,7 @@ class Server extends Model
             $this->isSuspended() ||
             $this->cluster->isUnderMaintenance() ||
             !$this->isInstalled() ||
-            $this->status === self::STATUS_RESTORING_BACKUP ||
+            $this->status === self::STATUS_RESTORING_SNAPSHOT ||
             !is_null($this->transfer)
         ) {
             throw new ServerStateConflictException($this);
@@ -371,7 +378,7 @@ class Server extends Model
     {
         if (
             !$this->isInstalled() ||
-            $this->status === self::STATUS_RESTORING_BACKUP ||
+            $this->status === self::STATUS_RESTORING_SNAPSHOT ||
             !is_null($this->transfer)
         ) {
             throw new ServerStateConflictException($this);

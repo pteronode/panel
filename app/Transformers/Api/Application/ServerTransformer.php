@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Application;
+namespace Kubectyl\Transformers\Api\Application;
 
-use Pterodactyl\Models\Server;
+use Kubectyl\Models\Server;
 use League\Fractal\Resource\Item;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Services\Servers\EnvironmentService;
+use Kubectyl\Services\Acl\Api\AdminAcl;
+use Kubectyl\Services\Servers\EnvironmentService;
 
 class ServerTransformer extends BaseTransformer
 {
@@ -20,8 +20,8 @@ class ServerTransformer extends BaseTransformer
         'allocations',
         'user',
         'subusers',
-        'nest',
-        'egg',
+        'launchpad',
+        'rocket',
         'variables',
         'location',
         'cluster',
@@ -72,13 +72,13 @@ class ServerTransformer extends BaseTransformer
             'feature_limits' => [
                 'databases' => $server->database_limit,
                 'allocations' => $server->allocation_limit,
-                'backups' => $server->backup_limit,
+                'snapshots' => $server->snapshot_limit,
             ],
             'user' => $server->owner_id,
             'cluster' => $server->cluster_id,
             'allocation' => $server->allocation_id,
-            'nest' => $server->nest_id,
-            'egg' => $server->egg_id,
+            'launchpad' => $server->launchpad_id,
+            'rocket' => $server->rocket_id,
             'container' => [
                 'startup_command' => $server->startup,
                 'image' => $server->image,
@@ -94,7 +94,7 @@ class ServerTransformer extends BaseTransformer
     /**
      * Return a generic array of allocations for this server.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeAllocations(Server $server): Collection|NullResource
     {
@@ -110,7 +110,7 @@ class ServerTransformer extends BaseTransformer
     /**
      * Return a generic array of data about subusers for this server.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeSubusers(Server $server): Collection|NullResource
     {
@@ -126,7 +126,7 @@ class ServerTransformer extends BaseTransformer
     /**
      * Return a generic array of data about subusers for this server.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeUser(Server $server): Item|NullResource
     {
@@ -140,41 +140,41 @@ class ServerTransformer extends BaseTransformer
     }
 
     /**
-     * Return a generic array with nest information for this server.
+     * Return a generic array with launchpad information for this server.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeNest(Server $server): Item|NullResource
+    public function includeLaunchpad(Server $server): Item|NullResource
     {
-        if (!$this->authorize(AdminAcl::RESOURCE_NESTS)) {
+        if (!$this->authorize(AdminAcl::RESOURCE_LAUNCHPADS)) {
             return $this->null();
         }
 
-        $server->loadMissing('nest');
+        $server->loadMissing('launchpad');
 
-        return $this->item($server->getRelation('nest'), $this->makeTransformer(NestTransformer::class), 'nest');
+        return $this->item($server->getRelation('launchpad'), $this->makeTransformer(LaunchpadTransformer::class), 'launchpad');
     }
 
     /**
-     * Return a generic array with egg information for this server.
+     * Return a generic array with rocket information for this server.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeEgg(Server $server): Item|NullResource
+    public function includeRocket(Server $server): Item|NullResource
     {
-        if (!$this->authorize(AdminAcl::RESOURCE_EGGS)) {
+        if (!$this->authorize(AdminAcl::RESOURCE_ROCKETS)) {
             return $this->null();
         }
 
-        $server->loadMissing('egg');
+        $server->loadMissing('rocket');
 
-        return $this->item($server->getRelation('egg'), $this->makeTransformer(EggTransformer::class), 'egg');
+        return $this->item($server->getRelation('rocket'), $this->makeTransformer(RocketTransformer::class), 'rocket');
     }
 
     /**
      * Return a generic array of data about subusers for this server.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeVariables(Server $server): Collection|NullResource
     {
@@ -190,7 +190,7 @@ class ServerTransformer extends BaseTransformer
     /**
      * Return a generic array with location information for this server.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeLocation(Server $server): Item|NullResource
     {
@@ -206,11 +206,11 @@ class ServerTransformer extends BaseTransformer
     /**
      * Return a generic array with cluster information for this server.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeNode(Server $server): Item|NullResource
+    public function includeCluster(Server $server): Item|NullResource
     {
-        if (!$this->authorize(AdminAcl::RESOURCE_NODES)) {
+        if (!$this->authorize(AdminAcl::RESOURCE_CLUSTERS)) {
             return $this->null();
         }
 
@@ -222,7 +222,7 @@ class ServerTransformer extends BaseTransformer
     /**
      * Return a generic array with database information for this server.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeDatabases(Server $server): Collection|NullResource
     {

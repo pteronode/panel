@@ -6,7 +6,7 @@
 @endsection
 
 @section('content-header')
-    <h1>Mounts<small>Configure and manage additional mount points for servers.</small></h1>
+    <h1>Mounts<small>Configure and manage additional local mount points for servers.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li class="active">Mounts</li>
@@ -33,8 +33,8 @@
                                 <th>Name</th>
                                 <th>Source</th>
                                 <th>Target</th>
-                                <th class="text-center">Eggs</th>
-                                <th class="text-center">Nodes</th>
+                                <th class="text-center">Rockets</th>
+                                <th class="text-center">Clusters</th>
                                 <th class="text-center">Servers</th>
                             </tr>
 
@@ -44,8 +44,8 @@
                                     <td><a href="{{ route('admin.mounts.view', $mount->id) }}">{{ $mount->name }}</a></td>
                                     <td><code>{{ $mount->source }}</code></td>
                                     <td><code>{{ $mount->target }}</code></td>
-                                    <td class="text-center">{{ $mount->eggs_count }}</td>
-                                    <td class="text-center">{{ $mount->nodes_count }}</td>
+                                    <td class="text-center">{{ $mount->rockets_count }}</td>
+                                    <td class="text-center">{{ $mount->clusters_count }}</td>
                                     <td class="text-center">{{ $mount->servers_count }}</td>
                                 </tr>
                             @endforeach

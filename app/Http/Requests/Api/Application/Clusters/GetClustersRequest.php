@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Application\Clusters;
+namespace Kubectyl\Http\Requests\Api\Application\Clusters;
 
-use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
+use Kubectyl\Services\Acl\Api\AdminAcl;
+use Kubectyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class GetClustersRequest extends ApplicationApiRequest
 {
-    protected ?string $resource = AdminAcl::RESOURCE_NODES;
+    protected ?string $resource = AdminAcl::RESOURCE_CLUSTERS;
 
     protected int $permission = AdminAcl::READ;
 }

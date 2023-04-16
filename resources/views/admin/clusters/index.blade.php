@@ -46,22 +46,22 @@
                             <th class="text-center">SSL</th>
                             <th class="text-center">Public</th>
                         </tr>
-                        @foreach ($nodes as $node)
+                        @foreach ($clusters as $cluster)
                             <tr>
-                                <td class="text-center text-muted left-icon" data-action="ping" data-secret="{{ $node->getDecryptedKey() }}" data-location="{{ $node->scheme }}://{{ $node->fqdn }}:{{ $node->daemonListen }}/api/system"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
-                                <td>{!! $node->maintenance_mode ? '<span class="label label-warning"><i class="fa fa-wrench"></i></span> ' : '' !!}<a href="{{ route('admin.clusters.view', $node->id) }}">{{ $node->name }}</a></td>
-                                <td>{{ $node->location->short }}</td>
-                                <td class="text-center">{{ $node->servers_count }}</td>
-                                <td class="text-center" style="color:{{ ($node->scheme === 'https') ? '#50af51' : '#d9534f' }}"><i class="fa fa-{{ ($node->scheme === 'https') ? 'lock' : 'unlock' }}"></i></td>
-                                <td class="text-center"><i class="fa fa-{{ ($node->public) ? 'eye' : 'eye-slash' }}"></i></td>
+                                <td class="text-center text-muted left-icon" data-action="ping" data-secret="{{ $cluster->getDecryptedKey() }}" data-location="{{ $cluster->scheme }}://{{ $cluster->fqdn }}:{{ $cluster->daemonListen }}/api/system"><i class="fa fa-fw fa-refresh fa-spin"></i></td>
+                                <td>{!! $cluster->maintenance_mode ? '<span class="label label-warning"><i class="fa fa-wrench"></i></span> ' : '' !!}<a href="{{ route('admin.clusters.view', $cluster->id) }}">{{ $cluster->name }}</a></td>
+                                <td>{{ $cluster->location->short }}</td>
+                                <td class="text-center">{{ $cluster->servers_count }}</td>
+                                <td class="text-center" style="color:{{ ($cluster->scheme === 'https') ? '#50af51' : '#d9534f' }}"><i class="fa fa-{{ ($cluster->scheme === 'https') ? 'lock' : 'unlock' }}"></i></td>
+                                <td class="text-center"><i class="fa fa-{{ ($cluster->public) ? 'eye' : 'eye-slash' }}"></i></td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
-            @if($nodes->hasPages())
+            @if($clusters->hasPages())
                 <div class="box-footer with-border">
-                    <div class="col-md-12 text-center">{!! $nodes->appends(['query' => Request::input('query')])->render() !!}</div>
+                    <div class="col-md-12 text-center">{!! $clusters->appends(['query' => Request::input('query')])->render() !!}</div>
                 </div>
             @endif
         </div>
@@ -72,7 +72,7 @@
 @section('footer-scripts')
     @parent
     <script>
-    (function pingNodes() {
+    (function pingClusters() {
         $('td[data-action="ping"]').each(function(i, element) {
             $.ajax({
                 type: 'GET',
@@ -87,7 +87,7 @@
                 });
                 $(element).removeClass('text-muted').find('i').removeClass().addClass('fa fa-fw fa-heartbeat faa-pulse animated').css('color', '#50af51');
             }).fail(function (error) {
-                var errorText = 'Error connecting to node! Check browser console for details.';
+                var errorText = 'Error connecting to cluster! Check browser console for details.';
                 try {
                     errorText = error.responseJSON.errors[0].detail || errorText;
                 } catch (ex) {}
@@ -96,7 +96,7 @@
                 $(element).find('i').tooltip({ title: errorText });
             });
         }).promise().done(function () {
-            setTimeout(pingNodes, 10000);
+            setTimeout(pingClusters, 10000);
         });
     })();
     </script>

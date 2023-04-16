@@ -1,28 +1,30 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin;
+namespace Kubectyl\Http\Controllers\Admin;
 
 use Illuminate\View\View;
-use Pterodactyl\Models\Cluster;
-use Pterodactyl\Models\Allocation;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Kubectyl\Models\Cluster;
+use Kubectyl\Models\Allocation;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\View\Factory as ViewFactory;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Clusters\ClusterUpdateService;
+use Kubectyl\Http\Controllers\Controller;
+use Kubectyl\Services\Clusters\ClusterUpdateService;
 use Illuminate\Cache\Repository as CacheRepository;
-use Pterodactyl\Services\Clusters\ClusterCreationService;
-use Pterodactyl\Services\Clusters\ClusterDeletionService;
-use Pterodactyl\Services\Allocations\AssignmentService;
-use Pterodactyl\Services\Helpers\SoftwareVersionService;
-use Pterodactyl\Http\Requests\Admin\Cluster\ClusterFormRequest;
-use Pterodactyl\Contracts\Repository\ClusterRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Http\Requests\Admin\Cluster\AllocationFormRequest;
-use Pterodactyl\Services\Allocations\AllocationDeletionService;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Http\Requests\Admin\Cluster\AllocationAliasFormRequest;
+use Kubectyl\Services\Clusters\ClusterCreationService;
+use Kubectyl\Services\Clusters\ClusterDeletionService;
+use Kubectyl\Services\Allocations\AssignmentService;
+use Kubectyl\Services\Helpers\SoftwareVersionService;
+use Kubectyl\Http\Requests\Admin\Cluster\ClusterFormRequest;
+use Kubectyl\Contracts\Repository\ClusterRepositoryInterface;
+use Kubectyl\Contracts\Repository\ServerRepositoryInterface;
+use Kubectyl\Http\Requests\Admin\Cluster\AllocationFormRequest;
+use Kubectyl\Services\Allocations\AllocationDeletionService;
+use Kubectyl\Contracts\Repository\LocationRepositoryInterface;
+use Kubectyl\Contracts\Repository\AllocationRepositoryInterface;
+use Kubectyl\Http\Requests\Admin\Cluster\AllocationAliasFormRequest;
 
 class ClustersController extends Controller
 {
@@ -53,7 +55,7 @@ class ClustersController extends Controller
     {
         $locations = $this->locationRepository->all();
         if (count($locations) < 1) {
-            $this->alert->warning(trans('admin/node.notices.location_required'))->flash();
+            $this->alert->warning(trans('admin/cluster.notices.location_required'))->flash();
 
             return redirect()->route('admin.locations');
         }
@@ -64,12 +66,12 @@ class ClustersController extends Controller
     /**
      * Post controller to create a new cluster on the system.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Kubectyl\Exceptions\Model\DataValidationException
      */
     public function store(ClusterFormRequest $request): RedirectResponse
     {
         $cluster = $this->creationService->handle($request->normalize());
-        // $this->alert->info(trans('admin/node.notices.node_created'))->flash();
+        // $this->alert->info(trans('admin/cluster.notices.cluster_created'))->flash();
 
         return redirect()->route('admin.clusters.view.configuration', $cluster->id);
     }
@@ -77,24 +79,24 @@ class ClustersController extends Controller
     /**
      * Updates settings for a cluster.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\DisplayException
+     * @throws \Kubectyl\Exceptions\Model\DataValidationException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
     public function updateSettings(ClusterFormRequest $request, Cluster $cluster): RedirectResponse
     {
         $this->updateService->handle($cluster, $request->normalize(), $request->input('reset_secret') === 'on');
-        $this->alert->success(trans('admin/node.notices.node_updated'))->flash();
+        $this->alert->success(trans('admin/cluster.notices.cluster_updated'))->flash();
 
         return redirect()->route('admin.clusters.view.settings', $cluster->id)->withInput();
     }
 
     /**
-     * Removes a single allocation from a node.
+     * Removes a single allocation from a cluster.
      *
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
+     * @throws \Kubectyl\Exceptions\Service\Allocation\ServerUsingAllocationException
      */
-    public function allocationRemoveSingle(int $node, Allocation $allocation): Response
+    public function allocationRemoveSingle(int $cluster, Allocation $allocation): Response
     {
         $this->allocationDeletionService->handle($allocation);
 
@@ -102,24 +104,24 @@ class ClustersController extends Controller
     }
 
     /**
-     * Removes multiple individual allocations from a node.
+     * Removes multiple individual allocations from a cluster.
      *
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
+     * @throws \Kubectyl\Exceptions\Service\Allocation\ServerUsingAllocationException
      */
-    public function allocationRemoveMultiple(Request $request, int $node): Response
+    public function allocationRemoveMultiple(Request $request, int $cluster): Response
     {
         $allocations = $request->input('allocations');
         foreach ($allocations as $rawAllocation) {
             $allocation = new Allocation();
             $allocation->id = $rawAllocation['id'];
-            $this->allocationRemoveSingle($node, $allocation);
+            $this->allocationRemoveSingle($cluster, $allocation);
         }
 
         return response('', 204);
     }
 
     /**
-     * Remove all allocations for a specific IP at once on a node.
+     * Remove all allocations for a specific IP at once on a cluster.
      */
     public function allocationRemoveBlock(Request $request, int $cluster): RedirectResponse
     {
@@ -129,7 +131,7 @@ class ClustersController extends Controller
             ['ip', '=', $request->input('ip')],
         ]);
 
-        $this->alert->success(trans('admin/node.notices.unallocated_deleted', ['ip' => $request->input('ip')]))
+        $this->alert->success(trans('admin/cluster.notices.unallocated_deleted', ['ip' => $request->input('ip')]))
             ->flash();
 
         return redirect()->route('admin.clusters.view.allocation', $cluster);
@@ -138,8 +140,8 @@ class ClustersController extends Controller
     /**
      * Sets an alias for a specific allocation on a cluster.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\Model\DataValidationException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
     public function allocationSetAlias(AllocationAliasFormRequest $request): \Symfony\Component\HttpFoundation\Response
     {
@@ -153,15 +155,15 @@ class ClustersController extends Controller
     /**
      * Creates new allocations on a cluster.
      *
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
+     * @throws \Kubectyl\Exceptions\Service\Allocation\CidrOutOfRangeException
+     * @throws \Kubectyl\Exceptions\Service\Allocation\InvalidPortMappingException
+     * @throws \Kubectyl\Exceptions\Service\Allocation\PortOutOfRangeException
+     * @throws \Kubectyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
      */
     public function createAllocation(AllocationFormRequest $request, Cluster $cluster): RedirectResponse
     {
         $this->assignmentService->handle($cluster, $request->normalize());
-        $this->alert->success(trans('admin/node.notices.allocations_added'))->flash();
+        $this->alert->success(trans('admin/cluster.notices.allocations_added'))->flash();
 
         return redirect()->route('admin.clusters.view.allocation', $cluster->id);
     }
@@ -169,12 +171,12 @@ class ClustersController extends Controller
     /**
      * Deletes a cluster from the system.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Kubectyl\Exceptions\DisplayException
      */
     public function delete(int|Cluster $cluster): RedirectResponse
     {
         $this->deletionService->handle($cluster);
-        $this->alert->success(trans('admin/node.notices.node_deleted'))->flash();
+        $this->alert->success(trans('admin/cluster.notices.cluster_deleted'))->flash();
 
         return redirect()->route('admin.clusters');
     }

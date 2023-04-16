@@ -1,28 +1,27 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Client;
+namespace Kubectyl\Transformers\Api\Client;
 
-use Pterodactyl\Models\Backup;
+use Kubectyl\Models\Snapshot;
 
 class BackupTransformer extends BaseClientTransformer
 {
     public function getResourceName(): string
     {
-        return Backup::RESOURCE_NAME;
+        return Snapshot::RESOURCE_NAME;
     }
 
-    public function transform(Backup $backup): array
+    public function transform(Snapshot $snapshot): array
     {
         return [
-            'uuid' => $backup->uuid,
-            'is_successful' => $backup->is_successful,
-            'is_locked' => $backup->is_locked,
-            'name' => $backup->name,
-            'ignored_files' => $backup->ignored_files,
-            'checksum' => $backup->checksum,
-            'bytes' => $backup->bytes,
-            'created_at' => $backup->created_at->toAtomString(),
-            'completed_at' => $backup->completed_at ? $backup->completed_at->toAtomString() : null,
+            'uuid' => $snapshot->uuid,
+            'is_successful' => $snapshot->is_successful,
+            'is_locked' => $snapshot->is_locked,
+            'name' => $snapshot->name,
+            'snapcontent' => $snapshot->snapcontent,
+            'bytes' => $snapshot->bytes,
+            'created_at' => $snapshot->created_at->toAtomString(),
+            'completed_at' => $snapshot->completed_at ? $snapshot->completed_at->toAtomString() : null,
         ];
     }
 }

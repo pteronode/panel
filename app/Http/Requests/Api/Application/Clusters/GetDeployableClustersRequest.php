@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Application\Clusters;
+namespace Kubectyl\Http\Requests\Api\Application\Clusters;
 
 class GetDeployableClustersRequest extends GetClustersRequest
 {

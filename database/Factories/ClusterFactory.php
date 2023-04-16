@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;
-use Pterodactyl\Models\Cluster;
+use Kubectyl\Models\Cluster;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -46,6 +46,9 @@ class ClusterFactory extends Factory
             'dns_policy' => 'clusterfirst',
             'image_pull_policy' => 'ifnotpresent',
             'metallb_shared_ip' => true,
+            'external_traffic_policy' => 'cluster',
+            'metrics' => 'metrics_api',
+            'snapshot_class' => 'csi-rbd-provisioner',
         ];
     }
 }

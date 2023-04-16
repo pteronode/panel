@@ -28,6 +28,6 @@ type WithLoaded<M extends ModelWithRelationships, R extends keyof M['relationshi
  * Helper type that allows you to infer the type of an object by giving
  * it the specific API request function with a return type. For example:
  *
- * type Egg = InferModel<typeof getEgg>;
+ * type Rocket = InferModel<typeof getRocket>;
  */
 export type InferModel<T extends (...args: any) => any> = ReturnType<T> extends Promise<infer U> ? U : T;

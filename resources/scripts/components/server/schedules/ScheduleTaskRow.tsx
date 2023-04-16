@@ -32,8 +32,8 @@ const getActionDetails = (action: string): [string, any] => {
             return ['Send Command', faCode];
         case 'power':
             return ['Send Power Action', faToggleOn];
-        case 'backup':
-            return ['Create Backup', faFileArchive];
+        case 'snapshot':
+            return ['Create Snapshot', faFileArchive];
         default:
             return ['Unknown Action', faCode];
     }

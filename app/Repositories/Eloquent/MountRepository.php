@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace Kubectyl\Repositories\Eloquent;
 
-use Pterodactyl\Models\Mount;
-use Pterodactyl\Models\Server;
+use Kubectyl\Models\Mount;
+use Kubectyl\Models\Server;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Kubectyl\Exceptions\Repository\RecordNotFoundException;
 
 class MountRepository extends EloquentRepository
 {
@@ -19,22 +19,22 @@ class MountRepository extends EloquentRepository
     }
 
     /**
-     * Return mounts with a count of eggs, clusters, and servers attached to it.
+     * Return mounts with a count of rockets, clusters, and servers attached to it.
      */
     public function getAllWithDetails(): Collection
     {
-        return $this->getBuilder()->withCount('eggs', 'clusters')->get($this->getColumns());
+        return $this->getBuilder()->withCount('rockets', 'clusters')->get($this->getColumns());
     }
 
     /**
      * Return all the mounts and their respective relations.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithRelations(string $id): Mount
     {
         try {
-            return $this->getBuilder()->with('eggs', 'clusters')->findOrFail($id, $this->getColumns());
+            return $this->getBuilder()->with('rockets', 'clusters')->findOrFail($id, $this->getColumns());
         } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException();
         }
@@ -46,8 +46,8 @@ class MountRepository extends EloquentRepository
     public function getMountListForServer(Server $server): Collection
     {
         return $this->getBuilder()
-            ->whereHas('eggs', function ($q) use ($server) {
-                $q->where('id', '=', $server->egg_id);
+            ->whereHas('rockets', function ($q) use ($server) {
+                $q->where('id', '=', $server->rocket_id);
             })
             ->whereHas('clusters', function ($q) use ($server) {
                 $q->where('id', '=', $server->cluster_id);

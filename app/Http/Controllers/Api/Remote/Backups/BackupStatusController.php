@@ -1,18 +1,18 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Remote\Backups;
+namespace Kubectyl\Http\Controllers\Api\Remote\Backups;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Backup;
+use Kubectyl\Models\Snapshot;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Facades\Activity;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Extensions\Backups\BackupManager;
-use Pterodactyl\Extensions\Filesystem\S3Filesystem;
+use Kubectyl\Facades\Activity;
+use Kubectyl\Exceptions\DisplayException;
+use Kubectyl\Http\Controllers\Controller;
+use Kubectyl\Extensions\Backups\BackupManager;
+use Kubectyl\Extensions\Filesystem\S3Filesystem;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Pterodactyl\Http\Requests\Api\Remote\ReportBackupCompleteRequest;
+use Kubectyl\Http\Requests\Api\Remote\ReportBackupCompleteRequest;
 
 class BackupStatusController extends Controller
 {
@@ -24,20 +24,20 @@ class BackupStatusController extends Controller
     }
 
     /**
-     * Handles updating the state of a backup.
+     * Handles updating the state of a snapshot.
      *
      * @throws \Throwable
      */
-    public function index(ReportBackupCompleteRequest $request, string $backup): JsonResponse
+    public function index(ReportBackupCompleteRequest $request, string $snapshot): JsonResponse
     {
-        /** @var \Pterodactyl\Models\Backup $model */
-        $model = Backup::query()->where('uuid', $backup)->firstOrFail();
+        /** @var \Kubectyl\Models\Snapshot $model */
+        $model = Snapshot::query()->where('uuid', $snapshot)->firstOrFail();
 
         if ($model->is_successful) {
-            throw new BadRequestHttpException('Cannot update the status of a backup that is already marked as completed.');
+            throw new BadRequestHttpException('Cannot update the status of a snapshot that is already marked as completed.');
         }
 
-        $action = $request->boolean('successful') ? 'server:backup.complete' : 'server:backup.fail';
+        $action = $request->boolean('successful') ? 'server:snapshot.complete' : 'server:snapshot.fail';
         $log = Activity::event($action)->subject($model, $model->server)->property('name', $model->name);
 
         $log->transaction(function () use ($model, $request) {
@@ -45,16 +45,16 @@ class BackupStatusController extends Controller
 
             $model->fill([
                 'is_successful' => $successful,
-                // Change the lock state to unlocked if this was a failed backup so that it can be
-                // deleted easily. Also does not make sense to have a locked backup on the system
+                // Change the lock state to unlocked if this was a failed snapshot so that it can be
+                // deleted easily. Also does not make sense to have a locked snapshot on the system
                 // that is failed.
                 'is_locked' => $successful ? $model->is_locked : false,
-                'checksum' => $successful ? ($request->input('checksum_type') . ':' . $request->input('checksum')) : null,
+                'snapcontent' => $successful ? $request->input('snapcontent') : null,
                 'bytes' => $successful ? $request->input('size') : 0,
                 'completed_at' => CarbonImmutable::now(),
             ])->save();
 
-            // Check if we are using the s3 backup adapter. If so, make sure we mark the backup as
+            // Check if we are using the s3 snapshot adapter. If so, make sure we mark the snapshot as
             // being completed in S3 correctly.
             $adapter = $this->backupManager->adapter();
             if ($adapter instanceof S3Filesystem) {
@@ -75,14 +75,14 @@ class BackupStatusController extends Controller
      *
      * @throws \Throwable
      */
-    public function restore(Request $request, string $backup): JsonResponse
+    public function restore(Request $request, string $snapshot): JsonResponse
     {
-        /** @var \Pterodactyl\Models\Backup $model */
-        $model = Backup::query()->where('uuid', $backup)->firstOrFail();
+        /** @var \Kubectyl\Models\Snapshot $model */
+        $model = Snapshot::query()->where('uuid', $snapshot)->firstOrFail();
 
         $model->server->update(['status' => null]);
 
-        Activity::event($request->boolean('successful') ? 'server:backup.restore-complete' : 'server.backup.restore-failed')
+        Activity::event($request->boolean('successful') ? 'server:snapshot.restore-complete' : 'server.snapshot.restore-failed')
             ->subject($model, $model->server)
             ->property('name', $model->name)
             ->log();
@@ -92,30 +92,30 @@ class BackupStatusController extends Controller
 
     /**
      * Marks a multipart upload in a given S3-compatible instance as failed or successful for
-     * the given backup.
+     * the given snapshot.
      *
      * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Kubectyl\Exceptions\DisplayException
      */
-    protected function completeMultipartUpload(Backup $backup, S3Filesystem $adapter, bool $successful, ?array $parts): void
+    protected function completeMultipartUpload(Backup $snapshot, S3Filesystem $adapter, bool $successful, ?array $parts): void
     {
         // This should never really happen, but if it does don't let us fall victim to Amazon's
         // wildly fun error messaging. Just stop the process right here.
-        if (empty($backup->upload_id)) {
-            // A failed backup doesn't need to error here, this can happen if the backup encounters
+        if (empty($snapshot->upload_id)) {
+            // A failed snapshot doesn't need to error here, this can happen if the snapshot encounters
             // an error before we even start the upload. AWS gives you tooling to clear these failed
             // multipart uploads as needed too.
             if (!$successful) {
                 return;
             }
 
-            throw new DisplayException('Cannot complete backup request: no upload_id present on model.');
+            throw new DisplayException('Cannot complete snapshot request: no upload_id present on model.');
         }
 
         $params = [
             'Bucket' => $adapter->getBucket(),
-            'Key' => sprintf('%s/%s.tar.gz', $backup->server->uuid, $backup->uuid),
-            'UploadId' => $backup->upload_id,
+            'Key' => sprintf('%s/%s.tar.gz', $snapshot->server->uuid, $snapshot->uuid),
+            'UploadId' => $snapshot->upload_id,
         ];
 
         $client = $adapter->getClient();

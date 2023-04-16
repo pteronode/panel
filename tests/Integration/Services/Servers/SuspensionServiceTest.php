@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Services\Servers;
+namespace Kubectyl\Tests\Integration\Services\Servers;
 
 use Mockery;
 use Mockery\MockInterface;
 use InvalidArgumentException;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Servers\SuspensionService;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
+use Kubectyl\Models\Server;
+use Kubectyl\Services\Servers\SuspensionService;
+use Kubectyl\Tests\Integration\IntegrationTestCase;
+use Kubectyl\Repositories\Kuber\DaemonServerRepository;
 
 class SuspensionServiceTest extends IntegrationTestCase
 {

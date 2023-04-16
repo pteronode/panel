@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Services\Servers;
+namespace Kubectyl\Services\Servers;
 
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\EggVariable;
+use Kubectyl\Models\Server;
+use Kubectyl\Models\RocketVariable;
 
 class EnvironmentService
 {
@@ -32,7 +32,7 @@ class EnvironmentService
      */
     public function handle(Server $server): array
     {
-        $variables = $server->variables->toBase()->mapWithKeys(function (EggVariable $variable) {
+        $variables = $server->variables->toBase()->mapWithKeys(function (RocketVariable $variable) {
             return [$variable->env_variable => $variable->server_value ?? $variable->default_value];
         });
 

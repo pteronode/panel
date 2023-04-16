@@ -1,24 +1,24 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Services\Servers;
+namespace Kubectyl\Tests\Integration\Services\Servers;
 
 use Mockery;
 use Mockery\MockInterface;
-use Pterodactyl\Models\Egg;
+use Kubectyl\Models\Rocket;
 use GuzzleHttp\Psr7\Request;
-use Pterodactyl\Models\Cluster;
-use Pterodactyl\Models\User;
+use Kubectyl\Models\Cluster;
+use Kubectyl\Models\User;
 use GuzzleHttp\Psr7\Response;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Location;
-use Pterodactyl\Models\Allocation;
+use Kubectyl\Models\Server;
+use Kubectyl\Models\Location;
+use Kubectyl\Models\Allocation;
 use Illuminate\Foundation\Testing\WithFaker;
 use GuzzleHttp\Exception\BadResponseException;
-use Pterodactyl\Models\Objects\DeploymentObject;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
-use Pterodactyl\Services\Servers\ServerCreationService;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Kubectyl\Models\Objects\DeploymentObject;
+use Kubectyl\Tests\Integration\IntegrationTestCase;
+use Kubectyl\Services\Servers\ServerCreationService;
+use Kubectyl\Repositories\Kuber\DaemonServerRepository;
+use Kubectyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class ServerCreationServiceTest extends IntegrationTestCase
 {
@@ -26,18 +26,18 @@ class ServerCreationServiceTest extends IntegrationTestCase
 
     protected MockInterface $daemonServerRepository;
 
-    protected Egg $bungeecord;
+    protected Rocket $bungeecord;
 
     /**
-     * Stub the calls to Wings so that we don't actually hit those API endpoints.
+     * Stub the calls to Kuber so that we don't actually hit those API endpoints.
      */
     public function setUp(): void
     {
         parent::setUp();
 
         /* @noinspection PhpFieldAssignmentTypeMismatchInspection */
-        $this->bungeecord = Egg::query()
-            ->where('author', 'support@pterodactyl.io')
+        $this->bungeecord = Rocket::query()
+            ->where('author', 'support@kubectyl.org')
             ->where('name', 'Bungeecord')
             ->firstOrFail();
 
@@ -54,18 +54,18 @@ class ServerCreationServiceTest extends IntegrationTestCase
      */
     // public function testServerIsCreatedWithDeploymentObject()
     // {
-    //     /** @var \Pterodactyl\Models\User $user */
+    //     /** @var \Kubectyl\Models\User $user */
     //     $user = User::factory()->create();
 
-    //     /** @var \Pterodactyl\Models\Location $location */
+    //     /** @var \Kubectyl\Models\Location $location */
     //     $location = Location::factory()->create();
 
-    //     /** @var \Pterodactyl\Models\Cluster $cluster */
+    //     /** @var \Kubectyl\Models\Cluster $cluster */
     //     $cluster = Cluster::factory()->create([
     //         'location_id' => $location->id,
     //     ]);
 
-    //     /** @var \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations */
+    //     /** @var \Kubectyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations */
     //     $allocations = Allocation::factory()->times(5)->create([
     //         'cluster_id' => $cluster->id,
     //     ]);
@@ -74,10 +74,10 @@ class ServerCreationServiceTest extends IntegrationTestCase
     //         $allocations[0]->port,
     //     ]);
 
-    //     $egg = $this->cloneEggAndVariables($this->bungeecord);
+    //     $rocket = $this->cloneRocketAndVariables($this->bungeecord);
     //     // We want to make sure that the validator service runs as an admin, and not as a regular
     //     // user when saving variables.
-    //     $egg->variables()->first()->update([
+    //     $rocket->variables()->first()->update([
     //         'user_editable' => false,
     //     ]);
 
@@ -92,7 +92,7 @@ class ServerCreationServiceTest extends IntegrationTestCase
     //         'cpu' => 0,
     //         'startup' => 'java server2.jar',
     //         'image' => 'java:8',
-    //         'egg_id' => $egg->id,
+    //         'rocket_id' => $rocket->id,
     //         'allocation_additional' => [
     //             $allocations[4]->id,
     //         ],
@@ -125,7 +125,7 @@ class ServerCreationServiceTest extends IntegrationTestCase
     //     $this->assertInstanceOf(Server::class, $response);
     //     $this->assertNotNull($response->uuid);
     //     $this->assertSame($response->uuidShort, substr($response->uuid, 0, 8));
-    //     $this->assertSame($egg->id, $response->egg_id);
+    //     $this->assertSame($rocket->id, $response->rocket_id);
     //     $variables = $response->variables->sortBy('server_value')->values();
     //     $this->assertCount(2, $variables);
     //     $this->assertSame('123', $variables->get(0)->server_value);
@@ -152,23 +152,23 @@ class ServerCreationServiceTest extends IntegrationTestCase
     // }
 
     /**
-     * Test that a server is deleted from the Panel if Wings returns an error during the creation
+     * Test that a server is deleted from the Panel if Kuber returns an error during the creation
      * process.
      */
-    public function testErrorEncounteredByWingsCausesServerToBeDeleted()
+    public function testErrorEncounteredByKuberCausesServerToBeDeleted()
     {
-        /** @var \Pterodactyl\Models\User $user */
+        /** @var \Kubectyl\Models\User $user */
         $user = User::factory()->create();
 
-        /** @var \Pterodactyl\Models\Location $location */
+        /** @var \Kubectyl\Models\Location $location */
         $location = Location::factory()->create();
 
-        /** @var \Pterodactyl\Models\Cluster $cluster */
+        /** @var \Kubectyl\Models\Cluster $cluster */
         $cluster = Cluster::factory()->create([
             'location_id' => $location->id,
         ]);
 
-        /** @var \Pterodactyl\Models\Allocation $allocation */
+        /** @var \Kubectyl\Models\Allocation $allocation */
         $allocation = Allocation::factory()->create([
             'cluster_id' => $cluster->id,
         ]);
@@ -187,7 +187,7 @@ class ServerCreationServiceTest extends IntegrationTestCase
             'cpu' => 0,
             'startup' => 'java server2.jar',
             'image' => 'java:8',
-            'egg_id' => $this->bungeecord->id,
+            'rocket_id' => $this->bungeecord->id,
             'environment' => [
                 'BUNGEE_VERSION' => '123',
                 'SERVER_JARFILE' => 'server2.jar',

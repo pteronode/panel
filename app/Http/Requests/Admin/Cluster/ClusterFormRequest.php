@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Admin\Cluster;
+namespace Kubectyl\Http\Requests\Admin\Cluster;
 
-use Pterodactyl\Rules\Fqdn;
-use Pterodactyl\Models\Cluster;
-use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
+use Kubectyl\Rules\Fqdn;
+use Kubectyl\Models\Cluster;
+use Kubectyl\Http\Requests\Admin\AdminFormRequest;
 
 class ClusterFormRequest extends AdminFormRequest
 {

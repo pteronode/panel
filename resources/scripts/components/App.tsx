@@ -21,7 +21,7 @@ const AuthenticationRouter = lazy(() => import(/* webpackChunkName: "auth" */ '@
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
-    PterodactylUser?: {
+    KubectylUser?: {
         uuid: string;
         username: string;
         email: string;
@@ -38,17 +38,17 @@ interface ExtendedWindow extends Window {
 setupInterceptors(history);
 
 const App = () => {
-    const { PterodactylUser, SiteConfiguration } = window as ExtendedWindow;
-    if (PterodactylUser && !store.getState().user.data) {
+    const { KubectylUser, SiteConfiguration } = window as ExtendedWindow;
+    if (KubectylUser && !store.getState().user.data) {
         store.getActions().user.setUserData({
-            uuid: PterodactylUser.uuid,
-            username: PterodactylUser.username,
-            email: PterodactylUser.email,
-            language: PterodactylUser.language,
-            rootAdmin: PterodactylUser.root_admin,
-            useTotp: PterodactylUser.use_totp,
-            createdAt: new Date(PterodactylUser.created_at),
-            updatedAt: new Date(PterodactylUser.updated_at),
+            uuid: KubectylUser.uuid,
+            username: KubectylUser.username,
+            email: KubectylUser.email,
+            language: KubectylUser.language,
+            rootAdmin: KubectylUser.root_admin,
+            useTotp: KubectylUser.use_totp,
+            createdAt: new Date(KubectylUser.created_at),
+            updatedAt: new Date(KubectylUser.updated_at),
         });
     }
 

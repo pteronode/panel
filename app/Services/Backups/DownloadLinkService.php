@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Services\Backups;
+namespace Kubectyl\Services\Backups;
 
 use Carbon\CarbonImmutable;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Backup;
-use Pterodactyl\Services\Clusters\ClusterJWTService;
-use Pterodactyl\Extensions\Backups\BackupManager;
+use Kubectyl\Models\User;
+use Kubectyl\Models\Snapshot;
+use Kubectyl\Services\Clusters\ClusterJWTService;
+use Kubectyl\Extensions\Backups\BackupManager;
 
 class DownloadLinkService
 {
@@ -21,9 +21,9 @@ class DownloadLinkService
      * Returns the URL that allows for a backup to be downloaded by an individual
      * user, or by the Wings control software.
      */
-    public function handle(Backup $backup, User $user): string
+    public function handle(Snapshot $backup, User $user): string
     {
-        if ($backup->disk === Backup::ADAPTER_AWS_S3) {
+        if ($backup->disk === Snapshot::ADAPTER_AWS_S3) {
             return $this->getS3BackupUrl($backup);
         }
 
@@ -43,10 +43,10 @@ class DownloadLinkService
      * Returns a signed URL that allows us to download a file directly out of a non-public
      * S3 bucket by using a signed URL.
      */
-    protected function getS3BackupUrl(Backup $backup): string
+    protected function getS3BackupUrl(Snapshot $backup): string
     {
-        /** @var \Pterodactyl\Extensions\Filesystem\S3Filesystem $adapter */
-        $adapter = $this->backupManager->adapter(Backup::ADAPTER_AWS_S3);
+        /** @var \Kubectyl\Extensions\Filesystem\S3Filesystem $adapter */
+        $adapter = $this->backupManager->adapter(Snapshot::ADAPTER_AWS_S3);
 
         $request = $adapter->getClient()->createPresignedRequest(
             $adapter->getClient()->getCommand('GetObject', [

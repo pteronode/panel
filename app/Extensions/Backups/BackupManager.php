@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Extensions\Backups;
+namespace Kubectyl\Extensions\Backups;
 
 use Closure;
 use Aws\S3\S3Client;
@@ -10,7 +10,7 @@ use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 use Illuminate\Foundation\Application;
 use League\Flysystem\FilesystemAdapter;
-use Pterodactyl\Extensions\Filesystem\S3Filesystem;
+use Kubectyl\Extensions\Filesystem\S3Filesystem;
 use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
@@ -124,19 +124,19 @@ class BackupManager
     }
 
     /**
-     * Returns the configuration associated with a given backup type.
+     * Returns the configuration associated with a given snapshot type.
      */
     protected function getConfig(string $name): array
     {
-        return $this->config->get("backups.disks.$name") ?: [];
+        return $this->config->get("snapshots.disks.$name") ?: [];
     }
 
     /**
-     * Get the default backup driver name.
+     * Get the default snapshot driver name.
      */
     public function getDefaultAdapter(): string
     {
-        return $this->config->get('backups.default');
+        return $this->config->get('snapshots.default');
     }
 
     /**
@@ -144,7 +144,7 @@ class BackupManager
      */
     public function setDefaultAdapter(string $name): void
     {
-        $this->config->set('backups.default', $name);
+        $this->config->set('snapshots.default', $name);
     }
 
     /**

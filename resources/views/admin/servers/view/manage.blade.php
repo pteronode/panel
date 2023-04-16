@@ -92,7 +92,7 @@
             </div>
         @endif
 
-        <!-- @if(is_null($server->transfer))
+        @if(is_null($server->transfer))
             <div class="col-sm-4">
                 <div class="box box-success">
                     <div class="box-header with-border">
@@ -100,7 +100,7 @@
                     </div>
                     <div class="box-body">
                         <p>
-                            Transfer this server to another node connected to this panel.
+                            Transfer this server to another cluster connected to this panel.
                             <strong>Warning!</strong> This feature has not been fully tested and may have bugs.
                         </p>
                     </div>
@@ -110,7 +110,7 @@
                             <button class="btn btn-success" data-toggle="modal" data-target="#transferServerModal">Transfer Server</button>
                         @else
                             <button class="btn btn-success disabled">Transfer Server</button>
-                            <p style="padding-top: 1rem;">Transferring a server requires more than one node to be configured on your panel.</p>
+                            <p style="padding-top: 1rem;">Transferring a server requires more than one cluster to be configured on your panel.</p>
                         @endif
                     </div>
                 </div>
@@ -123,7 +123,7 @@
                     </div>
                     <div class="box-body">
                         <p>
-                            This server is currently being transferred to another node.
+                            This server is currently being transferred to another cluster.
                             Transfer was initiated at <strong>{{ $server->transfer->created_at }}</strong>
                         </p>
                     </div>
@@ -133,7 +133,7 @@
                     </div>
                 </div>
             </div>
-        @endif -->
+        @endif
     </div>
 
     <div class="modal fade" id="transferServerModal" tabindex="-1" role="dialog">
@@ -148,23 +148,23 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group col-md-12">
-                                <label for="pNodeId">Node</label>
-                                <select name="node_id" id="pNodeId" class="form-control">
+                                <label for="pClusterId">Cluster</label>
+                                <select name="cluster_id" id="pClusterId" class="form-control">
                                     @foreach($locations as $location)
                                         <optgroup label="{{ $location->long }} ({{ $location->short }})">
-                                            @foreach($location->nodes as $node)
+                                            @foreach($location->clusters as $cluster)
 
-                                                @if($node->id != $server->node_id)
-                                                    <option value="{{ $node->id }}"
+                                                @if($cluster->id != $server->cluster_id)
+                                                    <option value="{{ $cluster->id }}"
                                                             @if($location->id === old('location_id')) selected @endif
-                                                    >{{ $node->name }}</option>
+                                                    >{{ $cluster->name }}</option>
                                                 @endif
 
                                             @endforeach
                                         </optgroup>
                                     @endforeach
                                 </select>
-                                <p class="small text-muted no-margin">The node which this server will be transferred to.</p>
+                                <p class="small text-muted no-margin">The cluster which this server will be transferred to.</p>
                             </div>
 
                             <div class="form-group col-md-12">

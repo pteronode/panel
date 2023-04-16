@@ -1,17 +1,17 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
+namespace Kubectyl\Http\Controllers\Api\Remote\Servers;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Server;
+use Kubectyl\Models\Server;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
-use Pterodactyl\Events\Server\Installed as ServerInstalled;
+use Kubectyl\Http\Controllers\Controller;
+use Kubectyl\Repositories\Eloquent\ServerRepository;
+use Kubectyl\Events\Server\Installed as ServerInstalled;
 use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
-use Pterodactyl\Http\Requests\Api\Remote\InstallationDataRequest;
+use Kubectyl\Http\Requests\Api\Remote\InstallationDataRequest;
 
 class ServerInstallController extends Controller
 {
@@ -25,25 +25,25 @@ class ServerInstallController extends Controller
     /**
      * Returns installation information for a server.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
     public function index(Request $request, string $uuid): JsonResponse
     {
         $server = $this->repository->getByUuid($uuid);
-        $egg = $server->egg;
+        $rocket = $server->rocket;
 
         return new JsonResponse([
-            'container_image' => $egg->copy_script_container,
-            'entrypoint' => $egg->copy_script_entry,
-            'script' => $egg->copy_script_install,
+            'container_image' => $rocket->copy_script_container,
+            'entrypoint' => $rocket->copy_script_entry,
+            'script' => $rocket->copy_script_install,
         ]);
     }
 
     /**
      * Updates the installation state of a server.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\Model\DataValidationException
      */
     public function store(InstallationDataRequest $request, string $uuid): JsonResponse
     {

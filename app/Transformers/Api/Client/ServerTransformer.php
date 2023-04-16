@@ -1,20 +1,20 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Client;
+namespace Kubectyl\Transformers\Api\Client;
 
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Subuser;
+use Kubectyl\Models\Rocket;
+use Kubectyl\Models\Server;
+use Kubectyl\Models\Subuser;
 use League\Fractal\Resource\Item;
-use Pterodactyl\Models\Allocation;
-use Pterodactyl\Models\Permission;
+use Kubectyl\Models\Allocation;
+use Kubectyl\Models\Permission;
 use Illuminate\Container\Container;
-use Pterodactyl\Models\EggVariable;
+use Kubectyl\Models\RocketVariable;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
-use Pterodactyl\Services\Servers\StartupCommandService;
-use Pterodactyl\Services\Allocations\AssignmentService;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
+use Kubectyl\Services\Servers\StartupCommandService;
+use Kubectyl\Services\Allocations\AssignmentService;
+use Kubectyl\Repositories\Kuber\DaemonServerRepository;
 
 class ServerTransformer extends BaseClientTransformer
 {
@@ -29,7 +29,7 @@ class ServerTransformer extends BaseClientTransformer
 
     protected array $defaultIncludes = ['allocations', 'variables'];
 
-    protected array $availableIncludes = ['egg', 'subusers'];
+    protected array $availableIncludes = ['rocket', 'subusers'];
 
     public function getResourceName(): string
     {
@@ -41,7 +41,7 @@ class ServerTransformer extends BaseClientTransformer
      * empty, all ports will be considered when finding an allocation. If set, only ports appearing
      * in the array or range will be used.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Kubectyl\Exceptions\DisplayException
      */
     public function setPorts(array $ports): array
     {
@@ -89,7 +89,7 @@ class ServerTransformer extends BaseClientTransformer
      */
     public function transform(Server $server): array
     {
-        /** @var \Pterodactyl\Services\Servers\StartupCommandService $service */
+        /** @var \Kubectyl\Services\Servers\StartupCommandService $service */
         $service = Container::getInstance()->make(StartupCommandService::class);
 
         $user = $this->request->user();
@@ -102,6 +102,13 @@ class ServerTransformer extends BaseClientTransformer
             // do nothing
         }
 
+        // Check if services array exists
+        if (is_array($pod) && array_key_exists('services', $pod)) {
+            $services = $pod['services'];
+        } else {
+            $services = [];
+        }
+
         return [
             'server_owner' => $user->id === $server->owner_id,
             'identifier' => $server->uuidShort,
@@ -111,11 +118,11 @@ class ServerTransformer extends BaseClientTransformer
             'cluster' => $server->cluster->name,
             'is_cluster_under_maintenance' => $server->cluster->isUnderMaintenance(),
             'sftp_details' => [
-                'ip' => $ip = $this->array_column_recursive($pod, 'ip') ? current($this->array_column_recursive($pod, 'ip')) : current($this->array_column_recursive($pod, 'clusterIP')),
+                'ip' => $this->array_column_recursive($services, 'ip') ? current($this->array_column_recursive($services, 'ip')) : current($this->array_column_recursive($services, 'clusterIP')),
                 'port' => 2022,
             ],
             'service' => [
-                'ip' => $ip = $this->array_column_recursive($pod, 'ip') ? current($this->array_column_recursive($pod, 'ip')) : current($this->array_column_recursive($pod, 'clusterIP')),
+                'ip' => $this->array_column_recursive($services, 'ip') ? current($this->array_column_recursive($services, 'ip')) : current($this->array_column_recursive($services, 'clusterIP')),
                 'port' => $server->default_port,
                 'additional_ports' => $server->additional_ports ? $this->setPorts($server->additional_ports) : [],
             ],
@@ -129,15 +136,15 @@ class ServerTransformer extends BaseClientTransformer
                 // 'io' => $server->io,
                 'cpu' => $server->cpu,
                 // 'threads' => $server->threads,
-                'oom_disabled' => $server->oom_disabled,
+                // 'oom_disabled' => $server->oom_disabled,
             ],
             'invocation' => $service->handle($server, !$user->can(Permission::ACTION_STARTUP_READ, $server)),
             'docker_image' => $server->image,
-            'egg_features' => $server->egg->inherit_features,
+            'rocket_features' => $server->rocket->inherit_features,
             'feature_limits' => [
                 'databases' => $server->database_limit,
                 'allocations' => $server->allocation_limit,
-                'backups' => $server->backup_limit,
+                'snapshots' => $server->snapshot_limit,
             ],
             'status' => $server->status,
             // This field is deprecated, please use "status".
@@ -151,7 +158,7 @@ class ServerTransformer extends BaseClientTransformer
     /**
      * Returns the allocations associated with this server.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeAllocations(Server $server): Collection
     {
@@ -165,7 +172,7 @@ class ServerTransformer extends BaseClientTransformer
         //
         // This allows us to avoid too much permission regression, without also hiding information that
         // is generally needed for the frontend to make sense when browsing or searching results.
-        if (!$user->can(Permission::ACTION_ALLOCATION_READ, $server)) {
+        if (!$user->can(Permission::ACTION_ALLOCATION_READ, $server) && $server->allocation) {
             $primary = clone $server->allocation;
             $primary->notes = null;
 
@@ -176,7 +183,7 @@ class ServerTransformer extends BaseClientTransformer
     }
 
     /**
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeVariables(Server $server): Collection|NullResource
     {
@@ -186,25 +193,25 @@ class ServerTransformer extends BaseClientTransformer
 
         return $this->collection(
             $server->variables->where('user_viewable', true),
-            $this->makeTransformer(EggVariableTransformer::class),
-            EggVariable::RESOURCE_NAME
+            $this->makeTransformer(RocketVariableTransformer::class),
+            RocketVariable::RESOURCE_NAME
         );
     }
 
     /**
-     * Returns the egg associated with this server.
+     * Returns the rocket associated with this server.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeEgg(Server $server): Item
+    public function includeRocket(Server $server): Item
     {
-        return $this->item($server->egg, $this->makeTransformer(EggTransformer::class), Egg::RESOURCE_NAME);
+        return $this->item($server->rocket, $this->makeTransformer(RocketTransformer::class), Rocket::RESOURCE_NAME);
     }
 
     /**
      * Returns the subusers associated with this server.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeSubusers(Server $server): Collection|NullResource
     {

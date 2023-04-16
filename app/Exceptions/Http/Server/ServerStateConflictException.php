@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Exceptions\Http\Server;
+namespace Kubectyl\Exceptions\Http\Server;
 
 use Throwable;
-use Pterodactyl\Models\Server;
+use Kubectyl\Models\Server;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class ServerStateConflictException extends ConflictHttpException
@@ -21,7 +21,7 @@ class ServerStateConflictException extends ConflictHttpException
             $message = 'The cluster of this server is currently under maintenance and the functionality requested is unavailable.';
         } elseif (!$server->isInstalled()) {
             $message = 'This server has not yet completed its installation process, please try again later.';
-        } elseif ($server->status === Server::STATUS_RESTORING_BACKUP) {
+        } elseif ($server->status === Server::STATUS_RESTORING_SNAPSHOT) {
             $message = 'This server is currently restoring from a backup, please try again later.';
         } elseif (!is_null($server->transfer)) {
             $message = 'This server is currently being transferred to a new machine, please try again later.';

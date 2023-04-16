@@ -1,25 +1,25 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Services\Backups;
+namespace Kubectyl\Tests\Integration\Services\Backups;
 
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Pterodactyl\Models\Backup;
+use Kubectyl\Models\Snapshot;
 use GuzzleHttp\Exception\ClientException;
-use Pterodactyl\Extensions\Backups\BackupManager;
-use Pterodactyl\Extensions\Filesystem\S3Filesystem;
-use Pterodactyl\Services\Backups\DeleteBackupService;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
-use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
-use Pterodactyl\Exceptions\Service\Backup\BackupLockedException;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Kubectyl\Extensions\Backups\BackupManager;
+use Kubectyl\Extensions\Filesystem\S3Filesystem;
+use Kubectyl\Services\Backups\DeleteBackupService;
+use Kubectyl\Tests\Integration\IntegrationTestCase;
+use Kubectyl\Repositories\Kuber\DaemonBackupRepository;
+use Kubectyl\Exceptions\Service\Backup\BackupLockedException;
+use Kubectyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class DeleteBackupServiceTest extends IntegrationTestCase
 {
     public function testLockedBackupCannotBeDeleted()
     {
         $server = $this->createServerModel();
-        $backup = Backup::factory()->create([
+        $backup = Snapshot::factory()->create([
             'server_id' => $server->id,
             'is_locked' => true,
         ]);
@@ -32,7 +32,7 @@ class DeleteBackupServiceTest extends IntegrationTestCase
     public function testFailedBackupThatIsLockedCanBeDeleted()
     {
         $server = $this->createServerModel();
-        $backup = Backup::factory()->create([
+        $backup = Snapshot::factory()->create([
             'server_id' => $server->id,
             'is_locked' => true,
             'is_successful' => false,
@@ -51,7 +51,7 @@ class DeleteBackupServiceTest extends IntegrationTestCase
     public function testExceptionThrownDueToMissingBackupIsIgnored()
     {
         $server = $this->createServerModel();
-        $backup = Backup::factory()->create(['server_id' => $server->id]);
+        $backup = Snapshot::factory()->create(['server_id' => $server->id]);
 
         $mock = $this->mock(DaemonBackupRepository::class);
         $mock->expects('setServer->delete')->with($backup)->andThrow(
@@ -70,7 +70,7 @@ class DeleteBackupServiceTest extends IntegrationTestCase
     public function testExceptionIsThrownIfNot404()
     {
         $server = $this->createServerModel();
-        $backup = Backup::factory()->create(['server_id' => $server->id]);
+        $backup = Snapshot::factory()->create(['server_id' => $server->id]);
 
         $mock = $this->mock(DaemonBackupRepository::class);
         $mock->expects('setServer->delete')->with($backup)->andThrow(
@@ -91,15 +91,15 @@ class DeleteBackupServiceTest extends IntegrationTestCase
     public function testS3ObjectCanBeDeleted()
     {
         $server = $this->createServerModel();
-        $backup = Backup::factory()->create([
-            'disk' => Backup::ADAPTER_AWS_S3,
+        $backup = Snapshot::factory()->create([
+            'disk' => Snapshot::ADAPTER_AWS_S3,
             'server_id' => $server->id,
         ]);
 
         $manager = $this->mock(BackupManager::class);
         $adapter = $this->mock(S3Filesystem::class);
 
-        $manager->expects('adapter')->with(Backup::ADAPTER_AWS_S3)->andReturn($adapter);
+        $manager->expects('adapter')->with(Snapshot::ADAPTER_AWS_S3)->andReturn($adapter);
 
         $adapter->expects('getBucket')->andReturn('foobar');
         $adapter->expects('getClient->deleteObject')->with([

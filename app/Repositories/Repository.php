@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Repositories;
+namespace Kubectyl\Repositories;
 
 use InvalidArgumentException;
 use Illuminate\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
-use Pterodactyl\Contracts\Repository\RepositoryInterface;
+use Kubectyl\Contracts\Repository\RepositoryInterface;
 
 abstract class Repository implements RepositoryInterface
 {

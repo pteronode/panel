@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use Ramsey\Uuid\Uuid;
-use Pterodactyl\Models\Nest;
+use Kubectyl\Models\Launchpad;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class NestFactory extends Factory
@@ -13,7 +13,7 @@ class NestFactory extends Factory
      *
      * @var string
      */
-    protected $model = Nest::class;
+    protected $model = Launchpad::class;
 
     /**
      * Define the model's default state.

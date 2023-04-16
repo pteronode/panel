@@ -1,16 +1,16 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
+namespace Kubectyl\Http\Controllers\Api\Client\Servers;
 
 use Carbon\CarbonImmutable;
-use Pterodactyl\Models\Server;
+use Kubectyl\Models\Server;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Models\Permission;
-use Pterodactyl\Services\Clusters\ClusterJWTService;
-use Pterodactyl\Exceptions\Http\HttpForbiddenException;
-use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Services\Servers\GetUserPermissionsService;
-use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
+use Kubectyl\Models\Permission;
+use Kubectyl\Services\Clusters\ClusterJWTService;
+use Kubectyl\Exceptions\Http\HttpForbiddenException;
+use Kubectyl\Http\Requests\Api\Client\ClientApiRequest;
+use Kubectyl\Services\Servers\GetUserPermissionsService;
+use Kubectyl\Http\Controllers\Api\Client\ClientApiController;
 
 class WebsocketController extends ClientApiController
 {
@@ -48,7 +48,7 @@ class WebsocketController extends ClientApiController
 
             // Redirect the websocket request to the new cluster if the server has been archived.
             if ($server->transfer->archived) {
-                $cluster = $server->transfer->newNode;
+                $cluster = $server->transfer->newCluster;
             }
         }
 

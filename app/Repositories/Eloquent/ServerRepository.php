@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace Kubectyl\Repositories\Eloquent;
 
-use Pterodactyl\Models\Server;
+use Kubectyl\Models\Server;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Kubectyl\Exceptions\Repository\RecordNotFoundException;
+use Kubectyl\Contracts\Repository\ServerRepositoryInterface;
 
 class ServerRepository extends EloquentRepository implements ServerRepositoryInterface
 {
@@ -21,12 +21,12 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * Load the egg relations onto the server model.
+     * Load the rocket relations onto the server model.
      */
-    public function loadEggRelations(Server $server, bool $refresh = false): Server
+    public function loadRocketRelations(Server $server, bool $refresh = false): Server
     {
-        if (!$server->relationLoaded('egg') || $refresh) {
-            $server->load('egg.scriptFrom');
+        if (!$server->relationLoaded('rocket') || $refresh) {
+            $server->load('rocket.scriptFrom');
         }
 
         return $server;
@@ -37,7 +37,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getDataForRebuild(int $server = null, int $cluster = null): Collection
     {
-        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'egg', 'cluster']);
+        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'rocket', 'cluster']);
 
         if (!is_null($server) && is_null($cluster)) {
             $instance = $instance->where('id', '=', $server);
@@ -53,7 +53,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getDataForReinstall(int $server = null, int $cluster = null): Collection
     {
-        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'egg', 'cluster']);
+        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'rocket', 'cluster']);
 
         if (!is_null($server) && is_null($cluster)) {
             $instance = $instance->where('id', '=', $server);
@@ -67,12 +67,12 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     /**
      * Return a server model and all variables associated with the server.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
     public function findWithVariables(int $id): Server
     {
         try {
-            return $this->getBuilder()->with('egg.variables', 'variables')
+            return $this->getBuilder()->with('rocket.variables', 'variables')
                 ->where($this->getModel()->getKeyName(), '=', $id)
                 ->firstOrFail($this->getColumns());
         } catch (ModelNotFoundException) {
@@ -99,7 +99,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getDataForCreation(Server $server, bool $refresh = false): Server
     {
-        foreach (['allocation', 'allocations', 'egg'] as $relation) {
+        foreach (['allocation', 'allocations', 'rocket'] as $relation) {
             if (!$server->relationLoaded($relation) || $refresh) {
                 $server->load($relation);
             }
@@ -122,31 +122,31 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
 
     /**
      * Get data for use when updating a server on the Daemon. Returns an array of
-     * the egg which is used for build and rebuild. Only loads relations
+     * the rocket which is used for build and rebuild. Only loads relations
      * if they are missing, or refresh is set to true.
      */
     public function getDaemonServiceData(Server $server, bool $refresh = false): array
     {
-        if (!$server->relationLoaded('egg') || $refresh) {
-            $server->load('egg');
+        if (!$server->relationLoaded('rocket') || $refresh) {
+            $server->load('rocket');
         }
 
         return [
-            'egg' => $server->getRelation('egg')->uuid,
+            'rocket' => $server->getRelation('rocket')->uuid,
         ];
     }
 
     /**
      * Return a server by UUID.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getByUuid(string $uuid): Server
     {
         try {
-            /** @var \Pterodactyl\Models\Server $model */
+            /** @var \Kubectyl\Models\Server $model */
             $model = $this->getBuilder()
-                ->with('nest', 'cluster')
+                ->with('launchpad', 'cluster')
                 ->where(function (Builder $query) use ($uuid) {
                     $query->where('uuidShort', $uuid)->orWhere('uuid', $uuid);
                 })
@@ -172,7 +172,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     public function loadAllServersForCluster(int $cluster, int $limit): LengthAwarePaginator
     {
         return $this->getBuilder()
-            ->with(['user', 'nest', 'egg'])
+            ->with(['user', 'launchpad', 'rocket'])
             ->where('cluster_id', '=', $cluster)
             ->paginate($limit);
     }

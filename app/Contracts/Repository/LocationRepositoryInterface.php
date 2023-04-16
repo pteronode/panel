@@ -1,33 +1,33 @@
 <?php
 
-namespace Pterodactyl\Contracts\Repository;
+namespace Kubectyl\Contracts\Repository;
 
-use Pterodactyl\Models\Location;
+use Kubectyl\Models\Location;
 use Illuminate\Support\Collection;
 
 interface LocationRepositoryInterface extends RepositoryInterface
 {
     /**
-     * Return locations with a count of nodes and servers attached to it.
+     * Return locations with a count of clusters and servers attached to it.
      */
     public function getAllWithDetails(): Collection;
 
     /**
-     * Return all the available locations with the nodes as a relationship.
+     * Return all the available locations with the clusters as a relationship.
      */
     public function getAllWithClusters(): Collection;
 
     /**
-     * Return all the nodes and their respective count of servers for a location.
+     * Return all the clusters and their respective count of servers for a location.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithClusters(int $id): Location;
 
     /**
-     * Return a location and the count of nodes in that location.
+     * Return a location and the count of clusters in that location.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithNodeCount(int $id): Location;
+    public function getWithClusterCount(int $id): Location;
 }

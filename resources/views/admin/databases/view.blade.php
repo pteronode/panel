@@ -37,18 +37,18 @@
                         <p class="text-muted small">The port that MySQL is running on for this host.</p>
                     </div>
                     <div class="form-group">
-                        <label for="pNodeId" class="form-label">Linked Node</label>
-                        <select name="node_id" id="pNodeId" class="form-control">
+                        <label for="pClusterId" class="form-label">Linked Cluster</label>
+                        <select name="cluster_id" id="pClusterId" class="form-control">
                             <option value="">None</option>
                             @foreach($locations as $location)
                                 <optgroup label="{{ $location->short }}">
-                                    @foreach($location->nodes as $node)
-                                        <option value="{{ $node->id }}" {{ $host->node_id !== $node->id ?: 'selected' }}>{{ $node->name }}</option>
+                                    @foreach($location->clusters as $cluster)
+                                        <option value="{{ $cluster->id }}" {{ $host->cluster_id !== $cluster->id ?: 'selected' }}>{{ $cluster->name }}</option>
                                     @endforeach
                                 </optgroup>
                             @endforeach
                         </select>
-                        <p class="text-muted small">This setting does nothing other than default to this database host when adding a database to a server on the selected node.</p>
+                        <p class="text-muted small">This setting does nothing other than default to this database host when adding a database to a server on the selected cluster.</p>
                     </div>
                 </div>
             </div>
@@ -130,6 +130,6 @@
 @section('footer-scripts')
     @parent
     <script>
-        $('#pNodeId').select2();
+        $('#pClusterId').select2();
     </script>
 @endsection

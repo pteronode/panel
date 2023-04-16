@@ -56,29 +56,29 @@
                         </p>
                     </div>
                     <div class="form-group col-xs-12">
-                        <label for="pNestId">Nest</label>
-                        <select name="nest_id" id="pNestId" class="form-control">
-                            @foreach($nests as $nest)
-                                <option value="{{ $nest->id }}"
-                                    @if($nest->id === $server->nest_id)
+                        <label for="pLaunchpadId">Launchpad</label>
+                        <select name="launchpad_id" id="pLaunchpadId" class="form-control">
+                            @foreach($launchpads as $launchpad)
+                                <option value="{{ $launchpad->id }}"
+                                    @if($launchpad->id === $server->launchpad_id)
                                         selected
                                     @endif
-                                >{{ $nest->name }}</option>
+                                >{{ $launchpad->name }}</option>
                             @endforeach
                         </select>
-                        <p class="small text-muted no-margin">Select the Nest that this server will be grouped into.</p>
+                        <p class="small text-muted no-margin">Select the Launchpad that this server will be grouped into.</p>
                     </div>
                     <div class="form-group col-xs-12">
-                        <label for="pEggId">Egg</label>
-                        <select name="egg_id" id="pEggId" class="form-control"></select>
-                        <p class="small text-muted no-margin">Select the Egg that will provide processing data for this server.</p>
+                        <label for="pRocketId">Rocket</label>
+                        <select name="rocket_id" id="pRocketId" class="form-control"></select>
+                        <p class="small text-muted no-margin">Select the Rocket that will provide processing data for this server.</p>
                     </div>
                     <div class="form-group col-xs-12">
                         <div class="checkbox checkbox-primary no-margin-bottom">
                             <input id="pSkipScripting" name="skip_scripts" type="checkbox" value="1" @if($server->skip_scripts) checked @endif />
-                            <label for="pSkipScripting" class="strong">Skip Egg Install Script</label>
+                            <label for="pSkipScripting" class="strong">Skip Rocket Install Script</label>
                         </div>
-                        <p class="small text-muted no-margin">If the selected Egg has an install script attached to it, the script will run during install. If you would like to skip this step, check this box.</p>
+                        <p class="small text-muted no-margin">If the selected Rocket has an install script attached to it, the script will run during install. If you would like to skip this step, check this box.</p>
                     </div>
                 </div>
             </div>
@@ -108,10 +108,10 @@
     {!! Theme::js('vendor/lodash/lodash.js') !!}
     <script>
     $(document).ready(function () {
-        $('#pEggId').select2({placeholder: 'Select a Nest Egg'}).on('change', function () {
-            var selectedEgg = _.isNull($(this).val()) ? $(this).find('option').first().val() : $(this).val();
-            var parentChain = _.get(Pterodactyl.nests, $("#pNestId").val());
-            var objectChain = _.get(parentChain, 'eggs.' + selectedEgg);
+        $('#pRocketId').select2({placeholder: 'Select a Launchpad Rocket'}).on('change', function () {
+            var selectedRocket = _.isNull($(this).val()) ? $(this).find('option').first().val() : $(this).val();
+            var parentChain = _.get(Kubectyl.launchpads, $("#pLaunchpadId").val());
+            var objectChain = _.get(parentChain, 'rockets.' + selectedRocket);
 
             const images = _.get(objectChain, 'docker_images', [])
             $('#pDockerImage').html('');
@@ -120,7 +120,7 @@
                 let opt = document.createElement('option');
                 opt.value = images[keys[i]];
                 opt.innerHTML = keys[i] + " (" + images[keys[i]] + ")";
-                if (objectChain.id === parseInt(Pterodactyl.server.egg_id) && Pterodactyl.server.image == opt.value) {
+                if (objectChain.id === parseInt(Kubectyl.server.rocket_id) && Kubectyl.server.image == opt.value) {
                     opt.selected = true
                 }
                 $('#pDockerImage').append(opt);
@@ -129,9 +129,9 @@
                 $('#pDockerImageCustom').val('');
             })
 
-            if (objectChain.id === parseInt(Pterodactyl.server.egg_id)) {
-                if ($('#pDockerImage').val() != Pterodactyl.server.image) {
-                    $('#pDockerImageCustom').val(Pterodactyl.server.image);
+            if (objectChain.id === parseInt(Kubectyl.server.rocket_id)) {
+                if ($('#pDockerImage').val() != Kubectyl.server.image) {
+                    $('#pDockerImageCustom').val(Kubectyl.server.image);
                 }
             }
 
@@ -143,7 +143,7 @@
 
             $('#appendVariablesTo').html('');
             $.each(_.get(objectChain, 'variables', []), function (i, item) {
-                var setValue = _.get(Pterodactyl.server_variables, item.env_variable, item.default_value);
+                var setValue = _.get(Kubectyl.server_variables, item.env_variable, item.default_value);
                 var isRequired = (item.required === 1) ? '<span class="label label-danger">Required</span> ' : '';
                 var dataAppend = ' \
                     <div class="col-xs-12"> \
@@ -152,7 +152,7 @@
                                 <h3 class="box-title">' + isRequired + item.name + '</h3> \
                             </div> \
                             <div class="box-body"> \
-                                <input name="environment[' + item.env_variable + ']" class="form-control" type="text" id="egg_variable_' + item.env_variable + '" /> \
+                                <input name="environment[' + item.env_variable + ']" class="form-control" type="text" id="rocket_variable_' + item.env_variable + '" /> \
                                 <p class="no-margin small text-muted">' + item.description + '</p> \
                             </div> \
                             <div class="box-footer"> \
@@ -161,13 +161,13 @@
                             </div> \
                         </div> \
                     </div>';
-                $('#appendVariablesTo').append(dataAppend).find('#egg_variable_' + item.env_variable).val(setValue);
+                $('#appendVariablesTo').append(dataAppend).find('#rocket_variable_' + item.env_variable).val(setValue);
             });
         });
 
-        $('#pNestId').select2({placeholder: 'Select a Nest'}).on('change', function () {
-            $('#pEggId').html('').select2({
-                data: $.map(_.get(Pterodactyl.nests, $(this).val() + '.eggs', []), function (item) {
+        $('#pLaunchpadId').select2({placeholder: 'Select a Launchpad'}).on('change', function () {
+            $('#pRocketId').html('').select2({
+                data: $.map(_.get(Kubectyl.launchpads, $(this).val() + '.rockets', []), function (item) {
                     return {
                         id: item.id,
                         text: item.name,
@@ -175,11 +175,11 @@
                 }),
             });
 
-            if (_.isObject(_.get(Pterodactyl.nests, $(this).val() + '.eggs.' + Pterodactyl.server.egg_id))) {
-                $('#pEggId').val(Pterodactyl.server.egg_id);
+            if (_.isObject(_.get(Kubectyl.launchpads, $(this).val() + '.rockets.' + Kubectyl.server.rocket_id))) {
+                $('#pRocketId').val(Kubectyl.server.rocket_id);
             }
 
-            $('#pEggId').change();
+            $('#pRocketId').change();
         }).change();
     });
     </script>

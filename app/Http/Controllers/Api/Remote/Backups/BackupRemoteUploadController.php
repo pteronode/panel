@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Remote\Backups;
+namespace Kubectyl\Http\Controllers\Api\Remote\Backups;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Backup;
+use Kubectyl\Models\Snapshot;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Extensions\Backups\BackupManager;
-use Pterodactyl\Extensions\Filesystem\S3Filesystem;
+use Kubectyl\Http\Controllers\Controller;
+use Kubectyl\Extensions\Backups\BackupManager;
+use Kubectyl\Extensions\Filesystem\S3Filesystem;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -38,13 +38,13 @@ class BackupRemoteUploadController extends Controller
             throw new BadRequestHttpException('A non-empty "size" query parameter must be provided.');
         }
 
-        /** @var \Pterodactyl\Models\Backup $backup */
-        $backup = Backup::query()->where('uuid', $backup)->firstOrFail();
+        /** @var \Kubectyl\Models\Snapshot $snapshot */
+        $backup = Snapshot::query()->where('uuid', $backup)->firstOrFail();
 
-        // Prevent backups that have already been completed from trying to
+        // Prevent snapshots that have already been completed from trying to
         // be uploaded again.
         if (!is_null($backup->completed_at)) {
-            throw new ConflictHttpException('This backup is already in a completed state.');
+            throw new ConflictHttpException('This snapshot is already in a completed state.');
         }
 
         // Ensure we are using the S3 adapter.
@@ -58,7 +58,7 @@ class BackupRemoteUploadController extends Controller
 
         // Get the S3 client
         $client = $adapter->getClient();
-        $expires = CarbonImmutable::now()->addMinutes(config('backups.presigned_url_lifespan', 60));
+        $expires = CarbonImmutable::now()->addMinutes(config('snapshots.presigned_url_lifespan', 60));
 
         // Params for generating the presigned urls
         $params = [
@@ -67,7 +67,7 @@ class BackupRemoteUploadController extends Controller
             'ContentType' => 'application/x-gzip',
         ];
 
-        $storageClass = config('backups.disks.s3.storage_class');
+        $storageClass = config('snapshots.disks.s3.storage_class');
         if (!is_null($storageClass)) {
             $params['StorageClass'] = $storageClass;
         }
@@ -113,7 +113,7 @@ class BackupRemoteUploadController extends Controller
      */
     private function getConfiguredMaxPartSize(): int
     {
-        $maxPartSize = (int) config('backups.max_part_size', self::DEFAULT_MAX_PART_SIZE);
+        $maxPartSize = (int) config('snapshots.max_part_size', self::DEFAULT_MAX_PART_SIZE);
         if ($maxPartSize <= 0) {
             $maxPartSize = self::DEFAULT_MAX_PART_SIZE;
         }

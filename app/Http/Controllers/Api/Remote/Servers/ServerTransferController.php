@@ -1,18 +1,18 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
+namespace Kubectyl\Http\Controllers\Api\Remote\Servers;
 
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Models\Allocation;
+use Kubectyl\Models\Allocation;
 use Illuminate\Support\Facades\Log;
-use Pterodactyl\Models\ServerTransfer;
+use Kubectyl\Models\ServerTransfer;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
+use Kubectyl\Http\Controllers\Controller;
+use Kubectyl\Repositories\Eloquent\ServerRepository;
+use Kubectyl\Repositories\Kuber\DaemonServerRepository;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Kubectyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class ServerTransferController extends Controller
 {
@@ -55,16 +55,16 @@ class ServerTransferController extends Controller
             throw new ConflictHttpException('Server is not being transferred.');
         }
 
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var \Kubectyl\Models\Server $server */
         $server = $this->connection->transaction(function () use ($server, $transfer) {
             $allocations = array_merge([$transfer->old_allocation], $transfer->old_additional_allocations);
 
             // Remove the old allocations for the server and re-assign the server to the new
-            // primary allocation and node.
+            // primary allocation and cluster.
             Allocation::query()->whereIn('id', $allocations)->update(['server_id' => null]);
             $server->update([
                 'allocation_id' => $transfer->new_allocation,
-                'node_id' => $transfer->new_node,
+                'cluster_id' => $transfer->new_cluster,
             ]);
 
             $server = $server->fresh();
@@ -73,12 +73,12 @@ class ServerTransferController extends Controller
             return $server;
         });
 
-        // Delete the server from the old node making sure to point it to the old node so
-        // that we do not delete it from the new node the server was transferred to.
+        // Delete the server from the old cluster making sure to point it to the old cluster so
+        // that we do not delete it from the new cluster the server was transferred to.
         try {
             $this->daemonServerRepository
                 ->setServer($server)
-                ->setNode($transfer->oldNode)
+                ->setCluster($transfer->oldCluster)
                 ->delete();
         } catch (DaemonConnectionException $exception) {
             Log::warning($exception, ['transfer_id' => $server->transfer->id]);

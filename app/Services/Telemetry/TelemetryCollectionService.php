@@ -1,24 +1,24 @@
 <?php
 
-namespace Pterodactyl\Services\Telemetry;
+namespace Kubectyl\Services\Telemetry;
 
 use PDO;
 use Exception;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\Nest;
-use Pterodactyl\Models\Cluster;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Mount;
-use Pterodactyl\Models\Backup;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Location;
+use Kubectyl\Models\Rocket;
+use Kubectyl\Models\Launchpad;
+use Kubectyl\Models\Cluster;
+use Kubectyl\Models\User;
+use Kubectyl\Models\Mount;
+use Kubectyl\Models\Snapshot;
+use Kubectyl\Models\Server;
+use Kubectyl\Models\Location;
 use Illuminate\Support\Facades\DB;
-use Pterodactyl\Models\Allocation;
+use Kubectyl\Models\Allocation;
 use Illuminate\Support\Facades\Http;
-use Pterodactyl\Repositories\Eloquent\SettingsRepository;
-use Pterodactyl\Repositories\Wings\DaemonConfigurationRepository;
+use Kubectyl\Repositories\Eloquent\SettingsRepository;
+use Kubectyl\Repositories\Kuber\DaemonConfigurationRepository;
 
 class TelemetryCollectionService
 {
@@ -48,7 +48,7 @@ class TelemetryCollectionService
     /**
      * Collects telemetry data and returns it as an array.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Kubectyl\Exceptions\Model\DataValidationException
      */
     public function collect(): array
     {
@@ -58,15 +58,15 @@ class TelemetryCollectionService
             $this->settingsRepository->set('app:telemetry:uuid', $uuid);
         }
 
-        $nodes = Node::all()->map(function ($node) {
+        $clusters = Cluster::all()->map(function ($cluster) {
             try {
-                $info = $this->daemonConfigurationRepository->setNode($node)->getSystemInformation(2);
+                $info = $this->daemonConfigurationRepository->setCluster($cluster)->getSystemInformation(2);
             } catch (Exception) {
                 return null;
             }
 
             return [
-                'id' => $node->uuid,
+                'id' => $cluster->uuid,
                 'version' => Arr::get($info, 'version', ''),
 
                 'docker' => [
@@ -103,7 +103,7 @@ class TelemetryCollectionService
                     'osType' => Arr::get($info, 'system.os_type', ''),
                 ],
             ];
-        })->filter(fn ($node) => !is_null($node))->toArray();
+        })->filter(fn ($cluster) => !is_null($cluster))->toArray();
 
         return [
             'id' => $uuid,
@@ -113,8 +113,8 @@ class TelemetryCollectionService
                 'phpVersion' => phpversion(),
 
                 'drivers' => [
-                    'backup' => [
-                        'type' => config('backups.default'),
+                    'snapshot' => [
+                        'type' => config('snapshots.default'),
                     ],
 
                     'cache' => [
@@ -134,19 +134,19 @@ class TelemetryCollectionService
                     'used' => Allocation::whereNotNull('server_id')->count(),
                 ],
 
-                'backups' => [
-                    'count' => Backup::count(),
-                    'bytes' => Backup::sum('bytes'),
+                'snapshots' => [
+                    'count' => Snapshot::count(),
+                    'bytes' => Snapshot::sum('bytes'),
                 ],
 
-                'eggs' => [
-                    'count' => Egg::count(),
-                    // Egg UUIDs are generated randomly on import, so there is not a consistent way to
-                    // determine if servers are using default eggs or not.
-//                    'server_usage' => Egg::all()
-//                        ->flatMap(fn (Egg $egg) => [$egg->uuid => $egg->servers->count()])
-//                        ->filter(fn (int $count) => $count > 0)
-//                        ->toArray(),
+                'rockets' => [
+                    'count' => Rocket::count(),
+                    // Rocket UUIDs are generated randomly on import, so there is not a consistent way to
+                    // determine if servers are using default rockets or not.
+                   'server_usage' => Rocket::all()
+                       ->flatMap(fn (Rocket $rocket) => [$rocket->uuid => $rocket->servers->count()])
+                       ->filter(fn (int $count) => $count > 0)
+                       ->toArray(),
                 ],
 
                 'locations' => [
@@ -157,18 +157,18 @@ class TelemetryCollectionService
                     'count' => Mount::count(),
                 ],
 
-                'nests' => [
-                    'count' => Nest::count(),
-                    // Nest UUIDs are generated randomly on import, so there is not a consistent way to
-                    // determine if servers are using default eggs or not.
-//                    'server_usage' => Nest::all()
-//                        ->flatMap(fn (Nest $nest) => [$nest->uuid => $nest->eggs->sum(fn (Egg $egg) => $egg->servers->count())])
-//                        ->filter(fn (int $count) => $count > 0)
-//                        ->toArray(),
+                'launchpads' => [
+                    'count' => Launchpad::count(),
+                    // Launchpad UUIDs are generated randomly on import, so there is not a consistent way to
+                    // determine if servers are using default rockets or not.
+                   'server_usage' => Launchpad::all()
+                       ->flatMap(fn (Launchpad $launchpad) => [$launchpad->uuid => $launchpad->rockets->sum(fn (Rocket $rocket) => $rocket->servers->count())])
+                       ->filter(fn (int $count) => $count > 0)
+                       ->toArray(),
                 ],
 
-                'nodes' => [
-                    'count' => Node::count(),
+                'clusters' => [
+                    'count' => Cluster::count(),
                 ],
 
                 'servers' => [
@@ -182,7 +182,7 @@ class TelemetryCollectionService
                 ],
             ],
 
-            'nodes' => $nodes,
+            'clusters' => $clusters,
         ];
     }
 }

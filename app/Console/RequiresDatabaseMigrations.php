@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Console;
+namespace Kubectyl\Console;
 
 /**
  * @mixin \Illuminate\Console\Command

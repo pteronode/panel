@@ -1,22 +1,22 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin;
+namespace Kubectyl\Http\Controllers\Admin;
 
 use Ramsey\Uuid\Uuid;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Nest;
+use Kubectyl\Models\Launchpad;
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Mount;
-use Pterodactyl\Models\Location;
+use Kubectyl\Models\Mount;
+use Kubectyl\Models\Location;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\View\Factory as ViewFactory;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Http\Requests\Admin\MountFormRequest;
-use Pterodactyl\Repositories\Eloquent\MountRepository;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use Kubectyl\Http\Controllers\Controller;
+use Kubectyl\Http\Requests\Admin\MountFormRequest;
+use Kubectyl\Repositories\Eloquent\MountRepository;
+use Kubectyl\Contracts\Repository\LaunchpadRepositoryInterface;
+use Kubectyl\Contracts\Repository\LocationRepositoryInterface;
 
 class MountController extends Controller
 {
@@ -25,7 +25,7 @@ class MountController extends Controller
      */
     public function __construct(
         protected AlertsMessageBag $alert,
-        protected NestRepositoryInterface $nestRepository,
+        protected LaunchpadRepositoryInterface $launchpadRepository,
         protected LocationRepositoryInterface $locationRepository,
         protected MountRepository $repository,
         protected ViewFactory $view
@@ -45,16 +45,16 @@ class MountController extends Controller
     /**
      * Return the mount view page.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
     public function view(string $id): View
     {
-        $nests = Nest::query()->with('eggs')->get();
+        $launchpads = Launchpad::query()->with('rockets')->get();
         $locations = Location::query()->with('clusters')->get();
 
         return $this->view->make('admin.mounts.view', [
             'mount' => $this->repository->getWithRelations($id),
-            'nests' => $nests,
+            'launchpads' => $launchpads,
             'locations' => $locations,
         ]);
     }
@@ -108,17 +108,17 @@ class MountController extends Controller
     }
 
     /**
-     * Adds eggs to the mount's many-to-many relation.
+     * Adds rockets to the mount's many-to-many relation.
      */
-    public function addEggs(Request $request, Mount $mount): RedirectResponse
+    public function addRockets(Request $request, Mount $mount): RedirectResponse
     {
         $validatedData = $request->validate([
-            'eggs' => 'required|exists:eggs,id',
+            'rockets' => 'required|exists:rockets,id',
         ]);
 
-        $eggs = $validatedData['eggs'] ?? [];
-        if (count($eggs) > 0) {
-            $mount->eggs()->attach($eggs);
+        $rockets = $validatedData['rockets'] ?? [];
+        if (count($rockets) > 0) {
+            $mount->rockets()->attach($rockets);
         }
 
         $this->alert->success('Mount was updated successfully.')->flash();
@@ -129,7 +129,7 @@ class MountController extends Controller
     /**
      * Adds clusters to the mount's many-to-many relation.
      */
-    public function addNodes(Request $request, Mount $mount): RedirectResponse
+    public function addClusters(Request $request, Mount $mount): RedirectResponse
     {
         $data = $request->validate(['clusters' => 'required|exists:clusters,id']);
 
@@ -144,11 +144,11 @@ class MountController extends Controller
     }
 
     /**
-     * Deletes an egg from the mount's many-to-many relation.
+     * Deletes an rocket from the mount's many-to-many relation.
      */
-    public function deleteEgg(Mount $mount, int $egg_id): Response
+    public function deleteRocket(Mount $mount, int $rocket_id): Response
     {
-        $mount->eggs()->detach($egg_id);
+        $mount->rocket()->detach($rocket_id);
 
         return response('', 204);
     }
@@ -156,7 +156,7 @@ class MountController extends Controller
     /**
      * Deletes a cluster from the mount's many-to-many relation.
      */
-    public function deleteNode(Mount $mount, int $cluster_id): Response
+    public function deleteCluster(Mount $mount, int $cluster_id): Response
     {
         $mount->clusters()->detach($cluster_id);
 

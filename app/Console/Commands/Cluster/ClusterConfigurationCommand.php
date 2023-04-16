@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Console\Commands\Cluster;
+namespace Kubectyl\Console\Commands\Cluster;
 
-use Pterodactyl\Models\Cluster;
+use Kubectyl\Models\Cluster;
 use Illuminate\Console\Command;
 
 class ClusterConfigurationCommand extends Command
@@ -17,7 +17,7 @@ class ClusterConfigurationCommand extends Command
     {
         $column = ctype_digit((string) $this->argument('cluster')) ? 'id' : 'uuid';
 
-        /** @var \Pterodactyl\Models\Cluster $cluster */
+        /** @var \Kubectyl\Models\Cluster $cluster */
         $cluster = Cluster::query()->where($column, $this->argument('cluster'))->firstOr(function () {
             $this->error('The selected cluster does not exist.');
 

@@ -1,38 +1,38 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin;
+namespace Kubectyl\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
+use Kubectyl\Models\User;
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Mount;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Models\MountServer;
+use Kubectyl\Models\Mount;
+use Kubectyl\Models\Server;
+use Kubectyl\Models\Database;
+use Kubectyl\Models\MountServer;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Http\Controllers\Controller;
+use Kubectyl\Exceptions\DisplayException;
+use Kubectyl\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
-use Pterodactyl\Services\Servers\SuspensionService;
-use Pterodactyl\Repositories\Eloquent\MountRepository;
-use Pterodactyl\Services\Servers\ServerDeletionService;
-use Pterodactyl\Services\Servers\ReinstallServerService;
-use Pterodactyl\Exceptions\Model\DataValidationException;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
-use Pterodactyl\Services\Servers\BuildModificationService;
-use Pterodactyl\Services\Databases\DatabasePasswordService;
-use Pterodactyl\Services\Servers\DetailsModificationService;
-use Pterodactyl\Services\Servers\StartupModificationService;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
-use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
-use Pterodactyl\Services\Databases\DatabaseManagementService;
+use Kubectyl\Services\Servers\SuspensionService;
+use Kubectyl\Repositories\Eloquent\MountRepository;
+use Kubectyl\Services\Servers\ServerDeletionService;
+use Kubectyl\Services\Servers\ReinstallServerService;
+use Kubectyl\Exceptions\Model\DataValidationException;
+use Kubectyl\Repositories\Kuber\DaemonServerRepository;
+use Kubectyl\Services\Servers\BuildModificationService;
+use Kubectyl\Services\Databases\DatabasePasswordService;
+use Kubectyl\Services\Servers\DetailsModificationService;
+use Kubectyl\Services\Servers\StartupModificationService;
+use Kubectyl\Contracts\Repository\LaunchpadRepositoryInterface;
+use Kubectyl\Repositories\Eloquent\DatabaseHostRepository;
+use Kubectyl\Services\Databases\DatabaseManagementService;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
-use Pterodactyl\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest;
+use Kubectyl\Contracts\Repository\ServerRepositoryInterface;
+use Kubectyl\Contracts\Repository\DatabaseRepositoryInterface;
+use Kubectyl\Contracts\Repository\AllocationRepositoryInterface;
+use Kubectyl\Services\Servers\ServerConfigurationStructureService;
+use Kubectyl\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest;
 
 class ServersController extends Controller
 {
@@ -54,7 +54,7 @@ class ServersController extends Controller
         protected ReinstallServerService $reinstallService,
         protected ServerRepositoryInterface $repository,
         protected MountRepository $mountRepository,
-        protected NestRepositoryInterface $nestRepository,
+        protected LaunchpadRepositoryInterface $launchpadRepository,
         protected ServerConfigurationStructureService $serverConfigurationStructureService,
         protected StartupModificationService $startupModificationService,
         protected SuspensionService $suspensionService
@@ -64,8 +64,8 @@ class ServersController extends Controller
     /**
      * Update the details for a server.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\Model\DataValidationException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
     public function setDetails(Request $request, Server $server): RedirectResponse
     {
@@ -81,9 +81,9 @@ class ServersController extends Controller
     /**
      * Toggles the installation status for a server.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\DisplayException
+     * @throws \Kubectyl\Exceptions\Model\DataValidationException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
     public function toggleInstall(Server $server): RedirectResponse
     {
@@ -103,9 +103,9 @@ class ServersController extends Controller
     /**
      * Reinstalls the server with the currently assigned service.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\DisplayException
+     * @throws \Kubectyl\Exceptions\Model\DataValidationException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
     public function reinstallServer(Server $server): RedirectResponse
     {
@@ -118,9 +118,9 @@ class ServersController extends Controller
     /**
      * Manage the suspension status for a server.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\DisplayException
+     * @throws \Kubectyl\Exceptions\Model\DataValidationException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
     public function manageSuspension(Request $request, Server $server): RedirectResponse
     {
@@ -135,17 +135,18 @@ class ServersController extends Controller
     /**
      * Update the build configuration for a server.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\DisplayException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Illuminate\Validation\ValidationException
      */
     public function updateBuild(Request $request, Server $server): RedirectResponse
     {
         try {
             $this->buildModificationService->handle($server, $request->only([
-                'allocation_id', 'add_allocations', 'remove_allocations',
-                'memory', 'cpu', 'disk',
-                'database_limit', 'allocation_limit', 'backup_limit',
+                'allocation_id', 'add_ports', 'remove_ports',
+                'add_allocations', 'remove_allocations', 'memory',
+                'cpu', 'disk', 'database_limit',
+                'allocation_limit', 'snapshot_limit', 'node_selectors',
             ]));
         } catch (DataValidationException $exception) {
             throw new ValidationException($exception->getValidator());
@@ -159,7 +160,7 @@ class ServersController extends Controller
     /**
      * Start the server deletion process.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Kubectyl\Exceptions\DisplayException
      * @throws \Throwable
      */
     public function delete(Request $request, Server $server): RedirectResponse
@@ -220,7 +221,7 @@ class ServersController extends Controller
      */
     public function resetDatabasePassword(Request $request, Server $server): Response
     {
-        /** @var \Pterodactyl\Models\Database $database */
+        /** @var \Kubectyl\Models\Database $database */
         $database = $server->databases()->findOrFail($request->input('database'));
 
         $this->databasePasswordService->handle($database);

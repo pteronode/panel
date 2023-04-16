@@ -36,14 +36,14 @@ return [
         'deleting_service_backup' => 'Deleting service backup file :file.',
     ],
     'server' => [
-        'rebuild_failed' => 'Rebuild request for ":name" (#:id) on node ":node" failed with error: :message',
+        'rebuild_failed' => 'Rebuild request for ":name" (#:id) on cluster ":cluster" failed with error: :message',
         'reinstall' => [
-            'failed' => 'Reinstall request for ":name" (#:id) on node ":node" failed with error: :message',
+            'failed' => 'Reinstall request for ":name" (#:id) on cluster ":cluster" failed with error: :message',
             'confirm' => 'You are about to reinstall against a group of servers. Do you wish to continue?',
         ],
         'power' => [
             'confirm' => 'You are about to perform a :action against :count servers. Do you wish to continue?',
-            'action_failed' => 'Power action request for ":name" (#:id) on node ":node" failed with error: :message',
+            'action_failed' => 'Power action request for ":name" (#:id) on cluster ":cluster" failed with error: :message',
         ],
     ],
     'environment' => [

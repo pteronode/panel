@@ -23,7 +23,7 @@ const TransferListener = () => {
             return;
         }
 
-        // Refresh the server's information as it's node and allocations were just updated.
+        // Refresh the server's information as it's cluster and allocations were just updated.
         getServer(uuid).catch((error) => console.error(error));
     });
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware;
+namespace Kubectyl\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Exceptions\Http\TwoFactorAuthRequiredException;
+use Kubectyl\Exceptions\Http\TwoFactorAuthRequiredException;
 
 class RequireTwoFactorAuthentication
 {
@@ -32,11 +32,11 @@ class RequireTwoFactorAuthentication
      * order to perform actions. If so, we check the level at which it is required (all users
      * or just admins) and then check if the user has enabled it for their account.
      *
-     * @throws \Pterodactyl\Exceptions\Http\TwoFactorAuthRequiredException
+     * @throws \Kubectyl\Exceptions\Http\TwoFactorAuthRequiredException
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        /** @var \Pterodactyl\Models\User $user */
+        /** @var \Kubectyl\Models\User $user */
         $user = $request->user();
         $uri = rtrim($request->getRequestUri(), '/') . '/';
         $current = $request->route()->getName();

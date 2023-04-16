@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware;
+namespace Kubectyl\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;

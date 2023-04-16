@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace Kubectyl\Repositories\Eloquent;
 
-use Pterodactyl\Models\Cluster;
+use Kubectyl\Models\Cluster;
 use Illuminate\Support\Collection;
-use Pterodactyl\Contracts\Repository\ClusterRepositoryInterface;
+use Kubectyl\Contracts\Repository\ClusterRepositoryInterface;
 
 class ClusterRepository extends EloquentRepository implements ClusterRepositoryInterface
 {
@@ -17,50 +17,50 @@ class ClusterRepository extends EloquentRepository implements ClusterRepositoryI
     }
 
     /**
-     * Return the usage stats for a single node.
+     * Return the usage stats for a single cluster.
      */
-    // public function getUsageStats(Node $node): array
-    // {
-    //     $stats = $this->getBuilder()
-    //         ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
-    //         ->join('servers', 'servers.node_id', '=', 'nodes.id')
-    //         ->where('node_id', '=', $node->id)
-    //         ->first();
+    public function getUsageStats(Cluster $cluster): array
+    {
+        $stats = $this->getBuilder()
+            ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
+            ->join('servers', 'servers.cluster_id', '=', 'clusters.id')
+            ->where('cluster_id', '=', $cluster->id)
+            ->first();
 
-    //     return Collection::make(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])
-    //         ->mapWithKeys(function ($value, $key) use ($node) {
-    //             $maxUsage = $node->{$key};
-    //             if ($node->{$key . '_overallocate'} > 0) {
-    //                 $maxUsage = $node->{$key} * (1 + ($node->{$key . '_overallocate'} / 100));
-    //             }
+        return Collection::make(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])
+            ->mapWithKeys(function ($value, $key) use ($cluster) {
+                $maxUsage = $cluster->{$key};
+                if ($cluster->{$key . '_overallocate'} > 0) {
+                    $maxUsage = $cluster->{$key} * (1 + ($cluster->{$key . '_overallocate'} / 100));
+                }
 
-    //             $percent = ($value / $maxUsage) * 100;
+                $percent = ($value / $maxUsage) * 100;
 
-    //             return [
-    //                 $key => [
-    //                     'value' => number_format($value),
-    //                     'max' => number_format($maxUsage),
-    //                     'percent' => $percent,
-    //                     'css' => ($percent <= self::THRESHOLD_PERCENTAGE_LOW) ? 'green' : (($percent > self::THRESHOLD_PERCENTAGE_MEDIUM) ? 'red' : 'yellow'),
-    //                 ],
-    //             ];
-    //         })
-    //         ->toArray();
-    // }
+                return [
+                    $key => [
+                        'value' => number_format($value),
+                        'max' => number_format($maxUsage),
+                        'percent' => $percent,
+                        'css' => ($percent <= self::THRESHOLD_PERCENTAGE_LOW) ? 'green' : (($percent > self::THRESHOLD_PERCENTAGE_MEDIUM) ? 'red' : 'yellow'),
+                    ],
+                ];
+            })
+            ->toArray();
+    }
 
     /**
-     * Return the usage stats for a single node.
+     * Return the usage stats for a single cluster.
      */
-    public function getUsageStatsRaw(Node $node): array
+    public function getUsageStatsRaw(Cluster $cluster): array
     {
         $stats = $this->getBuilder()->select(
             $this->getBuilder()->raw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
-        )->join('servers', 'servers.node_id', '=', 'nodes.id')->where('node_id', $node->id)->first();
+        )->join('servers', 'servers.cluster_id', '=', 'clusters.id')->where('cluster_id', $cluster->id)->first();
 
-        return collect(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])->mapWithKeys(function ($value, $key) use ($node) {
-            $maxUsage = $node->{$key};
-            if ($node->{$key . '_overallocate'} > 0) {
-                $maxUsage = $node->{$key} * (1 + ($node->{$key . '_overallocate'} / 100));
+        return collect(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])->mapWithKeys(function ($value, $key) use ($cluster) {
+            $maxUsage = $cluster->{$key};
+            if ($cluster->{$key . '_overallocate'} > 0) {
+                $maxUsage = $cluster->{$key} * (1 + ($cluster->{$key . '_overallocate'} / 100));
             }
 
             return [
@@ -73,7 +73,7 @@ class ClusterRepository extends EloquentRepository implements ClusterRepositoryI
     }
 
     /**
-     * Return a single node with location and server information.
+     * Return a single cluster with location and server information.
      */
     public function loadLocationAndServerCount(Cluster $cluster, bool $refresh = false): Cluster
     {
@@ -93,10 +93,10 @@ class ClusterRepository extends EloquentRepository implements ClusterRepositoryI
     }
 
     /**
-     * Attach a paginated set of allocations to a node mode including
+     * Attach a paginated set of allocations to a cluster mode including
      * any servers that are also attached to those allocations.
      */
-    public function loadNodeAllocations(Cluster $cluster, bool $refresh = false): Cluster
+    public function loadClusterAllocations(Cluster $cluster, bool $refresh = false): Cluster
     {
         $cluster->setRelation(
             'allocations',

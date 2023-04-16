@@ -7,14 +7,32 @@
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <meta name="_token" content="{{ csrf_token() }}">
 
-        <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png">
-        <link rel="icon" type="image/png" href="/favicons/favicon-32x32.png" sizes="32x32">
-        <link rel="icon" type="image/png" href="/favicons/favicon-16x16.png" sizes="16x16">
+        <link rel="apple-touch-icon" sizes="180x180" href="">
+        <link rel="icon" type="image/png" href="" sizes="32x32">
+        <link rel="icon" type="image/png" href="" sizes="16x16">
         <link rel="manifest" href="/favicons/manifest.json">
         <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#bc6e3c">
         <link rel="shortcut icon" href="/favicons/favicon.ico">
         <meta name="msapplication-config" content="/favicons/browserconfig.xml">
         <meta name="theme-color" content="#0e4688">
+
+        <script>
+            // Set icons based on user's preferred color scheme
+            const apple = document.querySelector('link[rel="apple-touch-icon"]');
+            apple.href = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
+                ? '/favicons/apple-touch-icon-dark.png'
+                : '/favicons/apple-touch-icon-light.png';
+
+            const favicon32x32 = document.querySelector('link[rel="icon"][sizes="32x32"]');
+            favicon32x32.href = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
+                ? '/favicons/favicon-dark-32x32.png'
+                : '/favicons/favicon-light-32x32.png';
+
+            const favicon16x16 = document.querySelector('link[rel="icon"][sizes="16x16"]');
+            favicon16x16.href = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches
+                ? '/favicons/favicon-dark-32x32.png'
+                : '/favicons/favicon-light-32x32.png';
+        </script>
 
         @include('layouts.scripts')
 
@@ -39,7 +57,7 @@
         <div class="wrapper">
             <header class="main-header">
                 <a href="{{ route('index') }}" class="logo">
-                    <span>{{ config('app.name', 'Pterodactyl') }}</span>
+                    <span>{{ config('app.name', 'Kubectyl') }}</span>
                 </a>
                 <nav class="navbar navbar-static-top">
                     <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
@@ -117,9 +135,9 @@
                                 <i class="fa fa-magic"></i> <span>Mounts</span>
                             </a>
                         </li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.nests') ?: 'active' }}">
-                            <a href="{{ route('admin.nests') }}">
-                                <i class="fa fa-th-large"></i> <span>Nests</span>
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.launchpads') ?: 'active' }}">
+                            <a href="{{ route('admin.launchpads') }}">
+                                <i class="fa fa-rocket"></i> <span>Launchpads</span>
                             </a>
                         </li>
                     </ul>

@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Application\Clusters;
+namespace Kubectyl\Http\Controllers\Api\Application\Clusters;
 
-use Pterodactyl\Services\Deployment\FindViableClustersService;
-use Pterodactyl\Transformers\Api\Application\ClusterTransformer;
-use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
-use Pterodactyl\Http\Requests\Api\Application\Clusters\GetDeployableClustersRequest;
+use Kubectyl\Services\Deployment\FindViableClustersService;
+use Kubectyl\Transformers\Api\Application\ClusterTransformer;
+use Kubectyl\Http\Controllers\Api\Application\ApplicationApiController;
+use Kubectyl\Http\Requests\Api\Application\Clusters\GetDeployableClustersRequest;
 
 class ClusterDeploymentController extends ApplicationApiController
 {
@@ -18,11 +18,11 @@ class ClusterDeploymentController extends ApplicationApiController
     }
 
     /**
-     * Finds any nodes that are available using the given deployment criteria. This works
+     * Finds any clusters that are available using the given deployment criteria. This works
      * similarly to the server creation process, but allows you to pass the deployment object
      * to this endpoint and get back a list of all Nodes satisfying the requirements.
      *
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableClusterException
+     * @throws \Kubectyl\Exceptions\Service\Deployment\NoViableClusterException
      */
     public function __invoke(GetDeployableClustersRequest $request): array
     {

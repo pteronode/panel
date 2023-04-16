@@ -64,8 +64,8 @@ export default () => {
                 return;
             }
 
-            // This code forces a reconnection to the websocket which will connect us to the target node instead of the source node
-            // in order to be able to receive transfer logs from the target node.
+            // This code forces a reconnection to the websocket which will connect us to the target cluster instead of the source cluster
+            // in order to be able to receive transfer logs from the target cluster.
             socket.close();
             setError('connecting');
             setConnectionState(false);

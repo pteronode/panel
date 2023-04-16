@@ -1,23 +1,23 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Services\Servers;
+namespace Kubectyl\Tests\Integration\Services\Servers;
 
 use Exception;
-use Pterodactyl\Models\Nest;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\ServerVariable;
+use Kubectyl\Models\Launchpad;
+use Kubectyl\Models\User;
+use Kubectyl\Models\Server;
+use Kubectyl\Models\ServerVariable;
 use Illuminate\Validation\ValidationException;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
+use Kubectyl\Tests\Integration\IntegrationTestCase;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Pterodactyl\Services\Servers\StartupModificationService;
+use Kubectyl\Services\Servers\StartupModificationService;
 
 class StartupModificationServiceTest extends IntegrationTestCase
 {
     /**
      * Test that a non-admin request to modify the server startup parameters does
-     * not perform any egg or nest updates. This also attempts to pass through an
-     * egg_id variable which should have no impact if the request is coming from
+     * not perform any rocket or launchpad updates. This also attempts to pass through an
+     * rocket_id variable which should have no impact if the request is coming from
      * a non-admin entity.
      */
     public function testNonAdminCanModifyServerVariables()
@@ -26,7 +26,7 @@ class StartupModificationServiceTest extends IntegrationTestCase
 
         try {
             $this->app->make(StartupModificationService::class)->handle($server, [
-                'egg_id' => $server->egg_id + 1,
+                'rocket_id' => $server->rocket_id + 1,
                 'environment' => [
                     'BUNGEE_VERSION' => '$$',
                     'SERVER_JARFILE' => 'server.jar',
@@ -50,7 +50,7 @@ class StartupModificationServiceTest extends IntegrationTestCase
 
         $result = $this->getService()
             ->handle($server, [
-                'egg_id' => $server->egg_id + 1,
+                'rocket_id' => $server->rocket_id + 1,
                 'startup' => 'random gibberish',
                 'environment' => [
                     'BUNGEE_VERSION' => '1234',
@@ -66,30 +66,30 @@ class StartupModificationServiceTest extends IntegrationTestCase
     }
 
     /**
-     * Test that modifying an egg as an admin properly updates the data for the server.
+     * Test that modifying an rocket as an admin properly updates the data for the server.
      */
     public function testServerIsProperlyModifiedAsAdminUser()
     {
-        /** @var \Pterodactyl\Models\Egg $nextEgg */
-        $nextEgg = Nest::query()->findOrFail(2)->eggs()->firstOrFail();
+        /** @var \Kubectyl\Models\Rocket $nextRocket */
+        $nextRocket = Launchpad::query()->findOrFail(2)->rockets()->firstOrFail();
 
-        $server = $this->createServerModel(['egg_id' => 1]);
+        $server = $this->createServerModel(['rocket_id' => 1]);
 
-        $this->assertNotSame($nextEgg->id, $server->egg_id);
-        $this->assertNotSame($nextEgg->nest_id, $server->nest_id);
+        $this->assertNotSame($nextRocket->id, $server->rocket_id);
+        $this->assertNotSame($nextRocket->launchpad_id, $server->launchpad_id);
 
         $response = $this->getService()
             ->setUserLevel(User::USER_LEVEL_ADMIN)
             ->handle($server, [
-                'egg_id' => $nextEgg->id,
+                'rocket_id' => $nextRocket->id,
                 'startup' => 'sample startup',
                 'skip_scripts' => true,
                 'docker_image' => 'docker/hodor',
             ]);
 
         $this->assertInstanceOf(Server::class, $response);
-        $this->assertSame($nextEgg->id, $response->egg_id);
-        $this->assertSame($nextEgg->nest_id, $response->nest_id);
+        $this->assertSame($nextRocket->id, $response->rocket_id);
+        $this->assertSame($nextRocket->launchpad_id, $response->launchpad_id);
         $this->assertSame('sample startup', $response->startup);
         $this->assertSame('docker/hodor', $response->image);
         $this->assertTrue($response->skip_scripts);
@@ -105,15 +105,15 @@ class StartupModificationServiceTest extends IntegrationTestCase
     public function testEnvironmentVariablesCanBeUpdatedByAdmin()
     {
         $server = $this->createServerModel();
-        $server->loadMissing(['egg', 'variables']);
+        $server->loadMissing(['rocket', 'variables']);
 
-        $clone = $this->cloneEggAndVariables($server->egg);
+        $clone = $this->cloneRocketAndVariables($server->rocket);
         // This makes the BUNGEE_VERSION variable not user editable.
         $clone->variables()->first()->update([
             'user_editable' => false,
         ]);
 
-        $server->fill(['egg_id' => $clone->id])->saveOrFail();
+        $server->fill(['rocket_id' => $clone->id])->saveOrFail();
         $server->refresh();
 
         ServerVariable::query()->updateOrCreate([
@@ -147,10 +147,10 @@ class StartupModificationServiceTest extends IntegrationTestCase
     }
 
     /**
-     * Test that passing an invalid egg ID into the function throws an exception
+     * Test that passing an invalid rocket ID into the function throws an exception
      * rather than silently failing or skipping.
      */
-    public function testInvalidEggIdTriggersException()
+    public function testInvalidRocketIdTriggersException()
     {
         $server = $this->createServerModel();
 
@@ -158,7 +158,7 @@ class StartupModificationServiceTest extends IntegrationTestCase
 
         $this->getService()
             ->setUserLevel(User::USER_LEVEL_ADMIN)
-            ->handle($server, ['egg_id' => 123456789]);
+            ->handle($server, ['rocket_id' => 123456789]);
     }
 
     private function getService(): StartupModificationService

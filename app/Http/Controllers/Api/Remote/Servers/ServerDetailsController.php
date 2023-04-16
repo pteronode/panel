@@ -1,17 +1,17 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
+namespace Kubectyl\Http\Controllers\Api\Remote\Servers;
 
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Server;
+use Kubectyl\Models\Server;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Facades\Activity;
+use Kubectyl\Facades\Activity;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Eggs\EggConfigurationService;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
-use Pterodactyl\Http\Resources\Wings\ServerConfigurationCollection;
-use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
+use Kubectyl\Http\Controllers\Controller;
+use Kubectyl\Services\Rockets\RocketConfigurationService;
+use Kubectyl\Repositories\Eloquent\ServerRepository;
+use Kubectyl\Http\Resources\Kuber\ServerConfigurationCollection;
+use Kubectyl\Services\Servers\ServerConfigurationStructureService;
 
 class ServerDetailsController extends Controller
 {
@@ -22,7 +22,7 @@ class ServerDetailsController extends Controller
         protected ConnectionInterface $connection,
         private ServerRepository $repository,
         private ServerConfigurationStructureService $configurationStructureService,
-        private EggConfigurationService $eggConfigurationService
+        private RocketConfigurationService $rocketConfigurationService
     ) {
     }
 
@@ -30,7 +30,7 @@ class ServerDetailsController extends Controller
      * Returns details about the server that allows Wings to self-recover and ensure
      * that the state of the server matches the Panel at all times.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
     public function __invoke(Request $request, string $uuid): JsonResponse
     {
@@ -38,7 +38,7 @@ class ServerDetailsController extends Controller
 
         return new JsonResponse([
             'settings' => $this->configurationStructureService->handle($server),
-            'process_configuration' => $this->eggConfigurationService->handle($server),
+            'process_configuration' => $this->rocketConfigurationService->handle($server),
         ]);
     }
 
@@ -47,12 +47,12 @@ class ServerDetailsController extends Controller
      */
     public function list(Request $request): ServerConfigurationCollection
     {
-        /** @var \Pterodactyl\Models\Cluster $cluster */
+        /** @var \Kubectyl\Models\Cluster $cluster */
         $cluster = $request->attributes->get('cluster');
 
         // Avoid run-away N+1 SQL queries by preloading the relationships that are used
         // within each of the services called below.
-        $servers = Server::query()->with('allocations', 'egg', 'mounts', 'variables', 'location')
+        $servers = Server::query()->with('allocations', 'rocket', 'mounts', 'variables', 'location')
             ->where('cluster_id', $cluster->id)
             // If you don't cast this to a string you'll end up with a stringified per_page returned in
             // the metadata, and then Wings will panic crash as a result.
@@ -86,19 +86,19 @@ class ServerDetailsController extends Controller
                     ->latest('timestamp'),
             ])
             ->where('cluster_id', $cluster->id)
-            ->where('status', Server::STATUS_RESTORING_BACKUP)
+            ->where('status', Server::STATUS_RESTORING_SNAPSHOT)
             ->get();
 
         $this->connection->transaction(function () use ($cluster, $servers) {
-            /** @var \Pterodactyl\Models\Server $server */
+            /** @var \Kubectyl\Models\Server $server */
             foreach ($servers as $server) {
-                /** @var \Pterodactyl\Models\ActivityLog|null $activity */
+                /** @var \Kubectyl\Models\ActivityLog|null $activity */
                 $activity = $server->activity->first();
                 if (!is_null($activity)) {
-                    if ($subject = $activity->subjects->where('subject_type', 'backup')->first()) {
+                    if ($subject = $activity->subjects->where('subject_type', 'snapshot')->first()) {
                         // Just create a new audit entry for this event and update the server state
-                        // so that power actions, file management, and backups can resume as normal.
-                        Activity::event('server:backup.restore-failed')
+                        // so that power actions, file management, and snapshots can resume as normal.
+                        Activity::event('server:snapshot.restore-failed')
                             ->subject($server, $subject->subject)
                             ->property('name', $subject->subject->name)
                             ->log();
@@ -109,7 +109,7 @@ class ServerDetailsController extends Controller
             // Update any server marked as installing or restoring as being in a normal state
             // at this point in the process.
             Server::query()->where('cluster_id', $cluster->id)
-                ->whereIn('status', [Server::STATUS_INSTALLING, Server::STATUS_RESTORING_BACKUP])
+                ->whereIn('status', [Server::STATUS_INSTALLING, Server::STATUS_RESTORING_SNAPSHOT])
                 ->update(['status' => null]);
         });
 

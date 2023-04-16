@@ -49,7 +49,7 @@ return [
             'restart' => 'Restarted the server',
             'kill' => 'Killed the server process',
         ],
-        'backup' => [
+        'snapshot' => [
             'download' => 'Downloaded the :name backup',
             'delete' => 'Deleted the :name backup',
             'restore' => 'Restored the :name backup (deleted files: :truncate)',

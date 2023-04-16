@@ -1,7 +1,7 @@
 import { Allocation } from '@/api/server/getServer';
 import { FractalResponseData } from '@/api/http';
 import { FileObject } from '@/api/server/files/loadDirectory';
-import { ServerBackup, ServerEggVariable } from '@/api/server/types';
+import { ServerBackup, ServerRocketVariable } from '@/api/server/types';
 
 export const rawDataToServerAllocation = (data: FractalResponseData): Allocation => ({
     id: data.attributes.id,
@@ -58,14 +58,13 @@ export const rawDataToServerBackup = ({ attributes }: FractalResponseData): Serv
     isSuccessful: attributes.is_successful,
     isLocked: attributes.is_locked,
     name: attributes.name,
-    ignoredFiles: attributes.ignored_files,
-    checksum: attributes.checksum,
+    snapcontent: attributes.snapcontent,
     bytes: attributes.bytes,
     createdAt: new Date(attributes.created_at),
     completedAt: attributes.completed_at ? new Date(attributes.completed_at) : null,
 });
 
-export const rawDataToServerEggVariable = ({ attributes }: FractalResponseData): ServerEggVariable => ({
+export const rawDataToServerRocketVariable = ({ attributes }: FractalResponseData): ServerRocketVariable => ({
     name: attributes.name,
     description: attributes.description,
     envVariable: attributes.env_variable,

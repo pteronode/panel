@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Application;
+namespace Kubectyl\Transformers\Api\Application;
 
-use Pterodactyl\Models\Cluster;
+use Kubectyl\Models\Cluster;
 use League\Fractal\Resource\Item;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Kubectyl\Services\Acl\Api\AdminAcl;
 
 class ClusterTransformer extends BaseTransformer
 {
@@ -20,16 +20,16 @@ class ClusterTransformer extends BaseTransformer
      */
     public function getResourceName(): string
     {
-        return Node::RESOURCE_NAME;
+        return Cluster::RESOURCE_NAME;
     }
 
     /**
-     * Return a node transformed into a format that can be consumed by the
+     * Return a cluster transformed into a format that can be consumed by the
      * external administrative API.
      */
-    public function transform(Node $node): array
+    public function transform(Cluster $cluster): array
     {
-        $response = collect($node->toArray())->mapWithKeys(function ($value, $key) {
+        $response = collect($cluster->toArray())->mapWithKeys(function ($value, $key) {
             // I messed up early in 2016 when I named this column as poorly
             // as I did. This is the tragic result of my mistakes.
             $key = ($key === 'daemonSFTP') ? 'daemonSftp' : $key;
@@ -37,10 +37,10 @@ class ClusterTransformer extends BaseTransformer
             return [snake_case($key) => $value];
         })->toArray();
 
-        $response[$node->getUpdatedAtColumn()] = $this->formatTimestamp($node->updated_at);
-        $response[$node->getCreatedAtColumn()] = $this->formatTimestamp($node->created_at);
+        $response[$cluster->getUpdatedAtColumn()] = $this->formatTimestamp($cluster->updated_at);
+        $response[$cluster->getCreatedAtColumn()] = $this->formatTimestamp($cluster->created_at);
 
-        $resources = $node->servers()->select(['memory', 'disk'])->get();
+        $resources = $cluster->servers()->select(['memory', 'disk'])->get();
 
         $response['allocated_resources'] = [
             'memory' => $resources->sum('memory'),
@@ -51,60 +51,60 @@ class ClusterTransformer extends BaseTransformer
     }
 
     /**
-     * Return the nodes associated with this location.
+     * Return the clusters associated with this location.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeAllocations(Node $node): Collection|NullResource
+    public function includeAllocations(Cluster $cluster): Collection|NullResource
     {
         if (!$this->authorize(AdminAcl::RESOURCE_ALLOCATIONS)) {
             return $this->null();
         }
 
-        $node->loadMissing('allocations');
+        $cluster->loadMissing('allocations');
 
         return $this->collection(
-            $node->getRelation('allocations'),
+            $cluster->getRelation('allocations'),
             $this->makeTransformer(AllocationTransformer::class),
             'allocation'
         );
     }
 
     /**
-     * Return the nodes associated with this location.
+     * Return the clusters associated with this location.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeLocation(Node $node): Item|NullResource
+    public function includeLocation(Cluster $cluster): Item|NullResource
     {
         if (!$this->authorize(AdminAcl::RESOURCE_LOCATIONS)) {
             return $this->null();
         }
 
-        $node->loadMissing('location');
+        $cluster->loadMissing('location');
 
         return $this->item(
-            $node->getRelation('location'),
+            $cluster->getRelation('location'),
             $this->makeTransformer(LocationTransformer::class),
             'location'
         );
     }
 
     /**
-     * Return the nodes associated with this location.
+     * Return the clusters associated with this location.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeServers(Node $node): Collection|NullResource
+    public function includeServers(Cluster $cluster): Collection|NullResource
     {
         if (!$this->authorize(AdminAcl::RESOURCE_SERVERS)) {
             return $this->null();
         }
 
-        $node->loadMissing('servers');
+        $cluster->loadMissing('servers');
 
         return $this->collection(
-            $node->getRelation('servers'),
+            $cluster->getRelation('servers'),
             $this->makeTransformer(ServerTransformer::class),
             'server'
         );

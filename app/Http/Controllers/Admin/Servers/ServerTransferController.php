@@ -1,19 +1,19 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin\Servers;
+namespace Kubectyl\Http\Controllers\Admin\Servers;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Server;
+use Kubectyl\Models\Server;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Models\ServerTransfer;
+use Kubectyl\Models\ServerTransfer;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Clusters\ClusterJWTService;
-use Pterodactyl\Repositories\Eloquent\ClusterRepository;
-use Pterodactyl\Repositories\Wings\DaemonTransferRepository;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use Kubectyl\Http\Controllers\Controller;
+use Kubectyl\Services\Clusters\ClusterJWTService;
+use Kubectyl\Repositories\Eloquent\ClusterRepository;
+use Kubectyl\Repositories\Kuber\DaemonTransferRepository;
+use Kubectyl\Contracts\Repository\AllocationRepositoryInterface;
 
 class ServerTransferController extends Controller
 {
@@ -54,8 +54,8 @@ class ServerTransferController extends Controller
             $transfer = new ServerTransfer();
 
             $transfer->server_id = $server->id;
-            $transfer->old_node = $server->cluster_id;
-            $transfer->new_node = $cluster_id;
+            $transfer->old_cluster = $server->cluster_id;
+            $transfer->new_cluster = $cluster_id;
             $transfer->old_allocation = $server->allocation_id;
             $transfer->new_allocation = $allocation_id;
             $transfer->old_additional_allocations = $server->allocations->where('id', '!=', $server->allocation_id)->pluck('id');
@@ -70,10 +70,10 @@ class ServerTransferController extends Controller
             $token = $this->clusterJWTService
                 ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
                 ->setSubject($server->uuid)
-                ->handle($transfer->newNode, $server->uuid, 'sha256');
+                ->handle($transfer->newCluster, $server->uuid, 'sha256');
 
             // Notify the source cluster of the pending outgoing transfer.
-            $this->daemonTransferRepository->setServer($server)->notify($transfer->newNode, $token);
+            $this->daemonTransferRepository->setServer($server)->notify($transfer->newCluster, $token);
 
             return $transfer;
         });

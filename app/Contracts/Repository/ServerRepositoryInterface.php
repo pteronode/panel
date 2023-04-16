@@ -1,32 +1,32 @@
 <?php
 
-namespace Pterodactyl\Contracts\Repository;
+namespace Kubectyl\Contracts\Repository;
 
-use Pterodactyl\Models\Server;
+use Kubectyl\Models\Server;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface ServerRepositoryInterface extends RepositoryInterface
 {
     /**
-     * Load the egg relations onto the server model.
+     * Load the rocket relations onto the server model.
      */
-    public function loadEggRelations(Server $server, bool $refresh = false): Server;
+    public function loadRocketRelations(Server $server, bool $refresh = false): Server;
 
     /**
      * Return a collection of servers with their associated data for rebuild operations.
      */
-    public function getDataForRebuild(int $server = null, int $node = null): Collection;
+    public function getDataForRebuild(int $server = null, int $cluster = null): Collection;
 
     /**
      * Return a collection of servers with their associated data for reinstall operations.
      */
-    public function getDataForReinstall(int $server = null, int $node = null): Collection;
+    public function getDataForReinstall(int $server = null, int $cluster = null): Collection;
 
     /**
      * Return a server model and all variables associated with the server.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
     public function findWithVariables(int $id): Server;
 
@@ -49,7 +49,7 @@ interface ServerRepositoryInterface extends RepositoryInterface
 
     /**
      * Get data for use when updating a server on the Daemon. Returns an array of
-     * the egg which is used for build and rebuild. Only loads relations
+     * the rocket which is used for build and rebuild. Only loads relations
      * if they are missing, or refresh is set to true.
      */
     public function getDaemonServiceData(Server $server, bool $refresh = false): array;
@@ -57,7 +57,7 @@ interface ServerRepositoryInterface extends RepositoryInterface
     /**
      * Return a server by UUID.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getByUuid(string $uuid): Server;
 

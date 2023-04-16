@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Application\Servers;
+namespace Kubectyl\Http\Requests\Api\Application\Servers;
 
-use Pterodactyl\Models\Server;
+use Kubectyl\Models\Server;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Models\Objects\DeploymentObject;
-use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
+use Kubectyl\Services\Acl\Api\AdminAcl;
+use Kubectyl\Models\Objects\DeploymentObject;
+use Kubectyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class StoreServerRequest extends ApplicationApiRequest
 {
@@ -27,7 +27,7 @@ class StoreServerRequest extends ApplicationApiRequest
             'name' => $rules['name'],
             'description' => array_merge(['nullable'], $rules['description']),
             'user' => $rules['owner_id'],
-            'egg' => $rules['egg_id'],
+            'rocket' => $rules['rocket_id'],
             'docker_image' => $rules['image'],
             'startup' => $rules['startup'],
             'environment' => 'present|array',
@@ -47,7 +47,7 @@ class StoreServerRequest extends ApplicationApiRequest
             'feature_limits' => 'required|array',
             'feature_limits.databases' => $rules['database_limit'],
             'feature_limits.allocations' => $rules['allocation_limit'],
-            'feature_limits.backups' => $rules['backup_limit'],
+            'feature_limits.snapshots' => $rules['snapshot_limit'],
 
             // Placeholders for rules added in withValidator() function.
             'allocation.default' => '',
@@ -77,7 +77,7 @@ class StoreServerRequest extends ApplicationApiRequest
             'name' => array_get($data, 'name'),
             'description' => array_get($data, 'description'),
             'owner_id' => array_get($data, 'user'),
-            'egg_id' => array_get($data, 'egg'),
+            'rocket_id' => array_get($data, 'rocket'),
             'image' => array_get($data, 'docker_image'),
             'startup' => array_get($data, 'startup'),
             'environment' => array_get($data, 'environment'),
@@ -93,7 +93,7 @@ class StoreServerRequest extends ApplicationApiRequest
             'start_on_completion' => array_get($data, 'start_on_completion', false),
             'database_limit' => array_get($data, 'feature_limits.databases'),
             'allocation_limit' => array_get($data, 'feature_limits.allocations'),
-            'backup_limit' => array_get($data, 'feature_limits.backups'),
+            'snapshot_limit' => array_get($data, 'feature_limits.snapshots'),
             'oom_disabled' => array_get($data, 'oom_disabled'),
         ];
     }

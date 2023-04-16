@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Allocation;
+use Kubectyl\Models\Server;
+use Kubectyl\Models\Allocation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AllocationFactory extends Factory
@@ -31,6 +31,6 @@ class AllocationFactory extends Factory
      */
     public function forServer(Server $server): self
     {
-        return $this->for($server)->for($server->node);
+        return $this->for($server)->for($server->cluster);
     }
 }

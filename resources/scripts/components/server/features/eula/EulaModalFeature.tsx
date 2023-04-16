@@ -39,8 +39,8 @@ const EulaModalFeature = () => {
 
         saveFileContents(uuid, 'eula.txt', 'eula=true')
             .then(() => {
-                if (status === 'offline' && instance) {
-                    instance.send(SocketRequest.SET_STATE, 'start');
+                if (status !== 'offline' && instance) {
+                    instance.send(SocketRequest.SET_STATE, 'restart');
                 }
 
                 setLoading(false);

@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Application\Servers;
+namespace Kubectyl\Http\Requests\Api\Application\Servers;
 
-use Pterodactyl\Models\Server;
+use Kubectyl\Models\Server;
 use Illuminate\Support\Collection;
 
 class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
@@ -32,10 +32,15 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
             // @see https://github.com/pterodactyl/panel/issues/1500
             'memory' => $this->requiredToOptional('memory', $rules['memory']),
             // 'swap' => $this->requiredToOptional('swap', $rules['swap']),
-            'io' => $this->requiredToOptional('io', $rules['io']),
+            // 'io' => $this->requiredToOptional('io', $rules['io']),
             'cpu' => $this->requiredToOptional('cpu', $rules['cpu']),
-            'threads' => $this->requiredToOptional('threads', $rules['threads']),
+            // 'threads' => $this->requiredToOptional('threads', $rules['threads']),
             'disk' => $this->requiredToOptional('disk', $rules['disk']),
+
+            'add_ports' => 'bail|array',
+            'add_ports.*' => 'integer',
+            'remove_ports' => 'bail|array',
+            'remove_ports.*' => 'integer',
 
             'add_allocations' => 'bail|array',
             'add_allocations.*' => 'integer',
@@ -45,7 +50,7 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
             'feature_limits' => 'required|array',
             'feature_limits.databases' => $rules['database_limit'],
             'feature_limits.allocations' => $rules['allocation_limit'],
-            'feature_limits.backups' => $rules['backup_limit'],
+            'feature_limits.snapshots' => $rules['snapshot_limit'],
         ];
     }
 
@@ -59,7 +64,7 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
         $data['allocation_id'] = $data['allocation'];
         $data['database_limit'] = $data['feature_limits']['databases'] ?? null;
         $data['allocation_limit'] = $data['feature_limits']['allocations'] ?? null;
-        $data['backup_limit'] = $data['feature_limits']['backups'] ?? null;
+        $data['snapshot_limit'] = $data['feature_limits']['snapshots'] ?? null;
         unset($data['allocation'], $data['feature_limits']);
 
         // Adjust the limits field to match what is expected by the model.
@@ -86,7 +91,7 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
             'remove_allocations.*' => 'allocation to remove',
             'feature_limits.databases' => 'Database Limit',
             'feature_limits.allocations' => 'Allocation Limit',
-            'feature_limits.backups' => 'Backup Limit',
+            'feature_limits.snapshots' => 'Snapshot Limit',
         ];
     }
 

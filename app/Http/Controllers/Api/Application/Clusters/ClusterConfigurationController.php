@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Application\Clusters;
+namespace Kubectyl\Http\Controllers\Api\Application\Clusters;
 
-use Pterodactyl\Models\Cluster;
+use Kubectyl\Models\Cluster;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Http\Requests\Api\Application\Clusters\GetClusterRequest;
-use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
+use Kubectyl\Http\Requests\Api\Application\Clusters\GetClusterRequest;
+use Kubectyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class ClusterConfigurationController extends ApplicationApiController
 {

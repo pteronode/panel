@@ -1,16 +1,16 @@
 <?php
 
-namespace Pterodactyl\Services\Servers;
+namespace Kubectyl\Services\Servers;
 
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Allocation;
+use Kubectyl\Models\Server;
+use Kubectyl\Models\Allocation;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
+use Kubectyl\Exceptions\DisplayException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Kubectyl\Repositories\Kuber\DaemonServerRepository;
+use Kubectyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class BuildModificationService
 {
@@ -28,11 +28,11 @@ class BuildModificationService
      * Change the build details for a specified server.
      *
      * @throws \Throwable
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Kubectyl\Exceptions\DisplayException
      */
     public function handle(Server $server, array $data): Server
     {
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var \Kubectyl\Models\Server $server */
         $server = $this->connection->transaction(function () use ($server, $data) {
             $this->processAllocations($server, $data);
 
@@ -48,10 +48,13 @@ class BuildModificationService
             // them correctly on the server model.
             $merge = Arr::only($data, ['memory', 'cpu', 'disk', 'allocation_id']);
 
+            $data['node_selectors'] = $this->normalizeNodeSelectors($data['node_selectors'] ?? null);
+
             $server->forceFill(array_merge($merge, [
                 'database_limit' => Arr::get($data, 'database_limit', 0) ?? null,
                 'allocation_limit' => Arr::get($data, 'allocation_limit', 0) ?? null,
-                'backup_limit' => Arr::get($data, 'backup_limit', 0) ?? 0,
+                'snapshot_limit' => Arr::get($data, 'snapshot_limit', 0) ?? 0,
+                'node_selectors' => Arr::get($data, 'node_selectors'),
             ]))->saveOrFail();
 
             return $server->refresh();
@@ -75,14 +78,44 @@ class BuildModificationService
     }
 
     /**
+     * Normalizes a string of node selectors data into the expected rocket format.
+     */
+    protected function normalizeNodeSelectors(string $input = null): array
+    {
+        $data = array_map(fn ($value) => trim($value), explode("\n", $input ?? ''));
+
+        $images = [];
+        // Iterate over the selector data provided and convert it into a key => value
+        // pairing that is used to improve the display on the front-end.
+        foreach ($data as $value) {
+            $parts = explode(':', $value, 2);
+            $images[$parts[0]] = empty($parts[1]) ? $parts[0] : $parts[1];
+        }
+
+        return $images;
+    }
+
+    /**
      * Process the allocations being assigned in the data and ensure they are available for a server.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Kubectyl\Exceptions\DisplayException
      */
     private function processAllocations(Server $server, array &$data): void
     {
-        if (empty($data['add_allocations']) && empty($data['remove_allocations'])) {
-            return;
+        // if (empty($data['add_allocations']) && empty($data['remove_allocations'])) {
+        //     return;
+        // }
+
+        if (!empty($data['add_ports'])) {
+            $additional = $server->additional_ports;
+
+            $difference = array_diff($data['add_ports'], $additional);
+            $additional = array_merge($additional, $difference);
+
+            Server::query()->where('id', $server->id)
+                ->update([
+                    'additional_ports' => $additional,
+                ]);
         }
 
         // Handle the addition of allocations to this server. Only assign allocations that are not currently
@@ -98,6 +131,25 @@ class BuildModificationService
             $freshlyAllocated = $query->pluck('id')->first();
 
             $query->update(['server_id' => $server->id, 'notes' => null]);
+        }
+
+        if (!empty($data['remove_ports'])) {
+            $additional = $server->additional_ports;
+            foreach ($data['remove_ports'] as $value) {
+                if ($value == $server->default_port) {
+                    throw new DisplayException('You are attempting to delete the default port for this server.');
+                }
+
+                $key = array_search($value, $additional);
+                if ($key !== false) {
+                    unset($additional[$key]);
+                }
+            }
+
+            Server::query()->where('id', $server->id)
+                ->update([
+                    'additional_ports' => array_values($additional),
+                ]);
         }
 
         if (!empty($data['remove_allocations'])) {

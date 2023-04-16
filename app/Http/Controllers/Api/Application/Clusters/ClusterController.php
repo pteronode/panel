@@ -1,20 +1,20 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Application\Clusters;
+namespace Kubectyl\Http\Controllers\Api\Application\Clusters;
 
-use Pterodactyl\Models\Cluster;
+use Kubectyl\Models\Cluster;
 use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
-use Pterodactyl\Services\Clusters\ClusterUpdateService;
-use Pterodactyl\Services\Clusters\ClusterCreationService;
-use Pterodactyl\Services\Clusters\ClusterDeletionService;
-use Pterodactyl\Transformers\Api\Application\ClusterTransformer;
-use Pterodactyl\Http\Requests\Api\Application\Clusters\GetClusterRequest;
-use Pterodactyl\Http\Requests\Api\Application\Clusters\GetClustersRequest;
-use Pterodactyl\Http\Requests\Api\Application\Clusters\StoreClusterRequest;
-use Pterodactyl\Http\Requests\Api\Application\Clusters\DeleteClusterRequest;
-use Pterodactyl\Http\Requests\Api\Application\Clusters\UpdateClusterRequest;
-use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
+use Kubectyl\Services\Clusters\ClusterUpdateService;
+use Kubectyl\Services\Clusters\ClusterCreationService;
+use Kubectyl\Services\Clusters\ClusterDeletionService;
+use Kubectyl\Transformers\Api\Application\ClusterTransformer;
+use Kubectyl\Http\Requests\Api\Application\Clusters\GetClusterRequest;
+use Kubectyl\Http\Requests\Api\Application\Clusters\GetClustersRequest;
+use Kubectyl\Http\Requests\Api\Application\Clusters\StoreClusterRequest;
+use Kubectyl\Http\Requests\Api\Application\Clusters\DeleteClusterRequest;
+use Kubectyl\Http\Requests\Api\Application\Clusters\UpdateClusterRequest;
+use Kubectyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class ClusterController extends ApplicationApiController
 {
@@ -58,7 +58,7 @@ class ClusterController extends ApplicationApiController
      * Create a new cluster on the Panel. Returns the created cluster and an HTTP/201
      * status response on success.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Kubectyl\Exceptions\Model\DataValidationException
      */
     public function store(StoreClusterRequest $request): JsonResponse
     {
@@ -96,7 +96,7 @@ class ClusterController extends ApplicationApiController
      * Deletes a given cluster from the Panel as long as there are no servers
      * currently attached to it.
      *
-     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
+     * @throws \Kubectyl\Exceptions\Service\HasActiveServersException
      */
     public function delete(DeleteClusterRequest $request, Cluster $cluster): JsonResponse
     {

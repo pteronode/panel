@@ -12,19 +12,19 @@ interface ctx {
 
 export const Context = createContext<ctx>({ page: 1, setPage: () => 1 });
 
-type BackupResponse = PaginatedResult<ServerBackup> & { backupCount: number };
+type BackupResponse = PaginatedResult<ServerBackup> & { snapshotCount: number };
 
 export default () => {
     const { page } = useContext(Context);
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
 
-    return useSWR<BackupResponse>(['server:backups', uuid, page], async () => {
-        const { data } = await http.get(`/api/client/servers/${uuid}/backups`, { params: { page } });
+    return useSWR<BackupResponse>(['server:snapshots', uuid, page], async () => {
+        const { data } = await http.get(`/api/client/servers/${uuid}/snapshots`, { params: { page } });
 
         return {
             items: (data.data || []).map(rawDataToServerBackup),
             pagination: getPaginationSet(data.meta.pagination),
-            backupCount: data.meta.backup_count,
+            snapshotCount: data.meta.snapshot_count,
         };
     });
 };

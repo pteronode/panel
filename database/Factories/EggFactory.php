@@ -3,17 +3,17 @@
 namespace Database\Factories;
 
 use Ramsey\Uuid\Uuid;
-use Pterodactyl\Models\Egg;
+use Kubectyl\Models\Rocket;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class EggFactory extends Factory
+class RocketFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Egg::class;
+    protected $model = Rocket::class;
 
     /**
      * Define the model's default state.

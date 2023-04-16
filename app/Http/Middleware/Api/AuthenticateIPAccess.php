@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware\Api;
+namespace Kubectyl\Http\Middleware\Api;
 
 use Closure;
 use IPTools\IP;
 use IPTools\Range;
 use Illuminate\Http\Request;
-use Pterodactyl\Facades\Activity;
+use Kubectyl\Facades\Activity;
 use Laravel\Sanctum\TransientToken;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -20,7 +20,7 @@ class AuthenticateIPAccess
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        /** @var \Laravel\Sanctum\TransientToken|\Pterodactyl\Models\ApiKey $token */
+        /** @var \Laravel\Sanctum\TransientToken|\Kubectyl\Models\ApiKey $token */
         $token = $request->user()->currentAccessToken();
 
         // If this is a stateful request just push the request through to the next

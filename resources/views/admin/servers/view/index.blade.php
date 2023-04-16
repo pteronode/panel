@@ -42,10 +42,10 @@
                                 <td><code>{{ $server->uuid }}</code></td>
                             </tr>
                             <tr>
-                                <td>Current Egg</td>
+                                <td>Current Rocket</td>
                                 <td>
-                                    <a href="{{ route('admin.nests.view', $server->nest_id) }}">{{ $server->nest->name }}</a> ::
-                                    <a href="{{ route('admin.nests.egg.view', $server->egg_id) }}">{{ $server->egg->name }}</a>
+                                    <a href="{{ route('admin.launchpads.view', $server->launchpad_id) }}">{{ $server->launchpad->name }}</a> ::
+                                    <a href="{{ route('admin.launchpads.rocket.view', $server->rocket_id) }}">{{ $server->rocket->name }}</a>
                                 </td>
                             </tr>
                             <tr>
@@ -69,14 +69,6 @@
                                         <code>Unlimited</code>
                                     @else
                                         <code>{{ $server->memory }}MiB</code>
-                                    @endif
-                                    /
-                                    @if($server->swap === 0)
-                                        <code data-toggle="tooltip" data-placement="top" title="Swap Space">Not Set</code>
-                                    @elseif($server->swap === -1)
-                                        <code data-toggle="tooltip" data-placement="top" title="Swap Space">Unlimited</code>
-                                    @else
-                                        <code data-toggle="tooltip" data-placement="top" title="Swap Space"> {{ $server->swap }}MiB</code>
                                     @endif
                                 </td>
                             </tr>
@@ -134,7 +126,7 @@
                         <div class="small-box bg-gray">
                             <div class="inner">
                                 <h3>{{ str_limit($server->cluster->name, 16) }}</h3>
-                                <p>Server Node</p>
+                                <p>Server Cluster</p>
                             </div>
                             <div class="icon"><i class="fa fa-codepen"></i></div>
                             <a href="{{ route('admin.clusters.view', $server->cluster->id) }}" class="small-box-footer">

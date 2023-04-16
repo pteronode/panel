@@ -46,7 +46,7 @@
 
                         <div class="form-group">
                             <div class="checkbox checkbox-primary no-margin-bottom">
-                                <input id="pStartOnCreation" name="start_on_completion" type="checkbox" {{ \Pterodactyl\Helpers\Utilities::checked('start_on_completion', 1) }} />
+                                <input id="pStartOnCreation" name="start_on_completion" type="checkbox" {{ \Kubectyl\Helpers\Utilities::checked('start_on_completion', 1) }} />
                                 <label for="pStartOnCreation" class="strong">Start Server when Installed</label>
                             </div>
                         </div>
@@ -65,7 +65,7 @@
                 </div>
 
                 <div class="box-body row">
-                    <div class="form-group col-sm-4">
+                    <div class="form-group col-md-4">
                         <label for="pClusterId">Cluster</label>
                         <select name="cluster_id" id="pClusterId" class="form-control">
                             @foreach($locations as $location)
@@ -84,31 +84,39 @@
                         <p class="small text-muted no-margin">The cluster which this server will be deployed to.</p>
                     </div>
 
-                    <div class="form-group col-sm-4">
-                        <label for="pDefaultPort">Default Port</label>
-                        <input type="text" id="pDefaultPort" name="default_port" class="form-control" value="{{ old('default_port') }}"></input>
-                        <p class="small text-muted no-margin">The main port that will be assigned to this server.</p>
+                    <div class="form-group col-md-4">
+                        <label for="pNodeSelectorFrom" class="form-label">Copy <em>Node Selector</em> From</label>
+                        <select name="config_from" id="pNodeSelectorFrom" class="form-control">
+                            <option value="">None</option>
+                        </select>
+                        <p class="text-muted small">If you would like to default nodeSelector settings from an existing Rocket select it from the menu above.</p>
                     </div>
 
-                    <div class="form-group col-sm-4">
-                        <label for="pAdditionalPorts" class="control-label">Additional Port(s)</label>
+                    <div class="form-group col-md-4">
+                        <label for="pNodeSelector">Node Selector</label>
+                        <textarea id="pNodeSelector" name="node_selectors" class="form-control" rows="4"></textarea>
+
+                        <p class="small text-muted no-margin">
+                            You can constrain a <b>Pod</b> so that it is <em>restricted</em> to run on particular node(s), or to prefer to run on particular nodes.
+                            Example: <code>Key:Value</code> one per line
+                        </p>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <label class="form-label">IP Allocation System</label>
                         <div>
-                            <select class="form-control" name="additional_ports[]" id="pAdditionalPorts" multiple></select>
-                            <p class="text-muted small">Enter individual ports here separated by commas or spaces. <b>Restrictions will apply</b>, please see <a href="https://kubernetes.io/docs/reference/networking/ports-and-protocols/" target="_blank">kubernetes.io/docs/reference/networking/ports-and-protocols</a> for more info.</p>
+                            <div class="radio radio-success radio-inline">
+                                <input type="radio" id="pAllocationSystemAutomatic" value="automatic" name="allocation_system" checked>
+                                <label for="pAllocationSystemAutomatic"> Automatic</label>
+                            </div>
+
+                            <div class="radio radio-success radio-inline">
+                                <input type="radio" id="pAllocationSystemManual" value="manual" name="allocation_system" {{ (old('allocation_system', $cluster->allocation_system) == 'manual') ? 'checked' : '' }}>
+                                <label for="pAllocationSystemManual"> Manual</label>
+                            </div>
                         </div>
+                        <p class="text-muted small">This feature allows you to select how IP address is assigned to your server.</p>
                     </div>
-
-                    <!-- <div class="form-group col-sm-4">
-                        <label for="pAllocation">Default Allocation</label>
-                        <select id="pAllocation" name="allocation_id" class="form-control"></select>
-                        <p class="small text-muted no-margin">The main allocation that will be assigned to this server.</p>
-                    </div>
-
-                    <div class="form-group col-sm-4">
-                        <label for="pAllocationAdditional">Additional Allocation(s)</label>
-                        <select id="pAllocationAdditional" name="allocation_additional[]" class="form-control" multiple></select>
-                        <p class="small text-muted no-margin">Additional allocations to assign to this server on creation.</p>
-                    </div> -->
                 </div>
             </div>
         </div>
@@ -131,18 +139,18 @@
                         <p class="text-muted small">The total number of databases a user is allowed to create for this server.</p>
                     </div>
                     <div class="form-group col-xs-6">
+                        <label for="pSnapshotLimit" class="control-label">Snapshot Limit</label>
+                        <div>
+                            <input type="text" id="pSnapshotLimit" name="snapshot_limit" class="form-control" value="{{ old('snapshot_limit', 0) }}"/>
+                        </div>
+                        <p class="text-muted small">The total number of backups that can be created for this server.</p>
+                    </div>
+                    <div class="form-group col-xs-6">
                         <label for="pAllocationLimit" class="control-label">Allocation Limit</label>
                         <div>
                             <input type="text" id="pAllocationLimit" name="allocation_limit" class="form-control" value="{{ old('allocation_limit', 0) }}"/>
                         </div>
                         <p class="text-muted small">The total number of allocations a user is allowed to create for this server.</p>
-                    </div>
-                    <div class="form-group col-xs-6">
-                        <label for="pBackupLimit" class="control-label">Backup Limit</label>
-                        <div>
-                            <input type="text" id="pBackupLimit" name="backup_limit" class="form-control" value="{{ old('backup_limit', 0) }}"/>
-                        </div>
-                        <p class="text-muted small">The total number of backups that can be created for this server.</p>
                     </div>
                 </div>
             </div>
@@ -171,7 +179,7 @@
                         <label for="pMemory">Memory</label>
 
                         <div class="input-group">
-                            <input type="text" id="pMemory" name="memory" class="form-control" value="{{ old('memory') }}" />
+                            <input type="text" id="pMemory" name="memory" class="form-control" value="{{ old('memory', 128) }}" />
                             <span class="input-group-addon">MiB</span>
                         </div>
 
@@ -184,7 +192,7 @@
                         <label for="pDisk">Disk Space</label>
 
                         <div class="input-group">
-                            <input type="text" id="pDisk" name="disk" class="form-control" value="{{ old('disk') }}" />
+                            <input type="text" id="pDisk" name="disk" class="form-control" value="{{ old('disk', 128) }}" />
                             <span class="input-group-addon">MiB</span>
                         </div>
 
@@ -199,38 +207,38 @@
         <div class="col-md-6">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Nest Configuration</h3>
+                    <h3 class="box-title">Launchpad Configuration</h3>
                 </div>
 
                 <div class="box-body row">
                     <div class="form-group col-xs-12">
-                        <label for="pNestId">Nest</label>
+                        <label for="pLaunchpadId">Launchpad</label>
 
-                        <select id="pNestId" name="nest_id" class="form-control">
-                            @foreach($nests as $nest)
-                                <option value="{{ $nest->id }}"
-                                    @if($nest->id === old('nest_id'))
+                        <select id="pLaunchpadId" name="launchpad_id" class="form-control">
+                            @foreach($launchpads as $launchpad)
+                                <option value="{{ $launchpad->id }}"
+                                    @if($launchpad->id === old('launchpad_id'))
                                         selected="selected"
                                     @endif
-                                >{{ $nest->name }}</option>
+                                >{{ $launchpad->name }}</option>
                             @endforeach
                         </select>
 
-                        <p class="small text-muted no-margin">Select the Nest that this server will be grouped under.</p>
+                        <p class="small text-muted no-margin">Select the Launchpad that this server will be grouped under.</p>
                     </div>
 
                     <div class="form-group col-xs-12">
-                        <label for="pEggId">Egg</label>
-                        <select id="pEggId" name="egg_id" class="form-control"></select>
-                        <p class="small text-muted no-margin">Select the Egg that will define how this server should operate.</p>
+                        <label for="pRocketId">Rocket</label>
+                        <select id="pRocketId" name="rocket_id" class="form-control"></select>
+                        <p class="small text-muted no-margin">Select the Rocket that will define how this server should operate.</p>
                     </div>
                     <div class="form-group col-xs-12">
                         <div class="checkbox checkbox-primary no-margin-bottom">
-                            <input type="checkbox" id="pSkipScripting" name="skip_scripts" value="1" {{ \Pterodactyl\Helpers\Utilities::checked('skip_scripts', 0) }} />
-                            <label for="pSkipScripting" class="strong">Skip Egg Install Script</label>
+                            <input type="checkbox" id="pSkipScripting" name="skip_scripts" value="1" {{ \Kubectyl\Helpers\Utilities::checked('skip_scripts', 0) }} />
+                            <label for="pSkipScripting" class="strong">Skip Rocket Install Script</label>
                         </div>
 
-                        <p class="small text-muted no-margin">If the selected Egg has an install script attached to it, the script will run during the install. If you would like to skip this step, check this box.</p>
+                        <p class="small text-muted no-margin">If the selected Rocket has an install script attached to it, the script will run during the install. If you would like to skip this step, check this box.</p>
                     </div>
                 </div>
             </div>
@@ -291,10 +299,10 @@
 
     <script type="application/javascript">
         // Persist 'Service Variables'
-        function serviceVariablesUpdated(eggId, ids) {
-            @if (old('egg_id'))
-                // Check if the egg id matches.
-                if (eggId != '{{ old('egg_id') }}') {
+        function serviceVariablesUpdated(rocketId, ids) {
+            @if (old('rocket_id'))
+                // Check if the rocket id matches.
+                if (rocketId != '{{ old('rocket_id') }}') {
                     return;
                 }
 
@@ -333,6 +341,21 @@
                 $('#pClusterId').val('{{ old('cluster_id') }}').change();
 
                 // Persist 'Default Allocation' select2
+                @if (old('allocation_id'))
+                    $('#pAllocation').val('{{ old('allocation_id') }}').change();
+                @endif
+                // END Persist 'Default Allocation' select2
+                // Persist 'Additional Allocations' select2
+                @if (old('allocation_additional'))
+                    const additional_allocations = [];
+                    @for ($i = 0; $i < count(old('allocation_additional')); $i++)
+                        additional_allocations.push('{{ old('allocation_additional.'.$i)}}');
+                    @endfor
+                    $('#pAllocationAdditional').val(additional_allocations).change();
+                @endif
+                // END Persist 'Additional Allocations' select2
+
+                // Persist 'Default Allocation' select2
                 @if (old('default_port'))
                     $('#pDefaultPort').val('{{ old('default_port') }}').change();
                 @endif
@@ -352,23 +375,17 @@
             @endif
             // END Persist 'Cluster' select2
 
-            // Persist 'Nest' select2
-            @if (old('nest_id'))
-                $('#pNestId').val('{{ old('nest_id') }}').change();
+            // Persist 'Launchpad' select2
+            @if (old('launchpad_id'))
+                $('#pLaunchpadId').val('{{ old('launchpad_id') }}').change();
 
-                // Persist 'Egg' select2
-                @if (old('egg_id'))
-                    $('#pEggId').val('{{ old('egg_id') }}').change();
+                // Persist 'Rocket' select2
+                @if (old('rocket_id'))
+                    $('#pRocketId').val('{{ old('rocket_id') }}').change();
                 @endif
-                // END Persist 'Egg' select2
+                // END Persist 'Rocket' select2
             @endif
-            // END Persist 'Nest' select2
-        });
-
-        $('#pAdditionalPorts').select2({
-            tags: true,
-            selectOnClose: true,
-            tokenSeparators: [',', ' '],
+            // END Persist 'Launchpad' select2
         });
     </script>
 @endsection

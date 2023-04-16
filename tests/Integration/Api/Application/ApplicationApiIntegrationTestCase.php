@@ -1,18 +1,18 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Application;
+namespace Kubectyl\Tests\Integration\Api\Application;
 
 use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
+use Kubectyl\Models\User;
 use PHPUnit\Framework\Assert;
-use Pterodactyl\Models\ApiKey;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
+use Kubectyl\Models\ApiKey;
+use Kubectyl\Services\Acl\Api\AdminAcl;
+use Kubectyl\Tests\Integration\IntegrationTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Pterodactyl\Tests\Traits\Integration\CreatesTestModels;
-use Pterodactyl\Transformers\Api\Application\BaseTransformer;
-use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
-use Pterodactyl\Tests\Traits\Http\IntegrationJsonRequestAssertions;
+use Kubectyl\Tests\Traits\Integration\CreatesTestModels;
+use Kubectyl\Transformers\Api\Application\BaseTransformer;
+use Kubectyl\Transformers\Api\Client\BaseClientTransformer;
+use Kubectyl\Tests\Traits\Http\IntegrationJsonRequestAssertions;
 
 abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
 {
@@ -85,8 +85,8 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
             'r_allocations' => AdminAcl::READ | AdminAcl::WRITE,
             'r_users' => AdminAcl::READ | AdminAcl::WRITE,
             'r_locations' => AdminAcl::READ | AdminAcl::WRITE,
-            'r_nests' => AdminAcl::READ | AdminAcl::WRITE,
-            'r_eggs' => AdminAcl::READ | AdminAcl::WRITE,
+            'r_launchpads' => AdminAcl::READ | AdminAcl::WRITE,
+            'r_rockets' => AdminAcl::READ | AdminAcl::WRITE,
             'r_database_hosts' => AdminAcl::READ | AdminAcl::WRITE,
             'r_server_databases' => AdminAcl::READ | AdminAcl::WRITE,
         ], $permissions));

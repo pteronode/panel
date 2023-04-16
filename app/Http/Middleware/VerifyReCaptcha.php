@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware;
+namespace Kubectyl\Http\Middleware;
 
 use Closure;
 use stdClass;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Pterodactyl\Events\Auth\FailedCaptcha;
+use Kubectyl\Events\Auth\FailedCaptcha;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Events\Dispatcher;
 use Symfony\Component\HttpKernel\Exception\HttpException;

@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Client\Server\Allocation;
+namespace Kubectyl\Tests\Integration\Api\Client\Server\Allocation;
 
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Allocation;
-use Pterodactyl\Models\Permission;
-use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
+use Kubectyl\Models\Allocation;
+use Kubectyl\Models\Permission;
+use Kubectyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class CreateNewAllocationTest extends ClientApiIntegrationTestCase
 {
@@ -28,7 +28,7 @@ class CreateNewAllocationTest extends ClientApiIntegrationTestCase
      */
     public function testNewAllocationCanBeAssignedToServer(array $permission)
     {
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var \Kubectyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount($permission);
         $server->update(['allocation_limit' => 2]);
 
@@ -47,7 +47,7 @@ class CreateNewAllocationTest extends ClientApiIntegrationTestCase
      */
     public function testAllocationCannotBeCreatedIfUserDoesNotHavePermission()
     {
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var \Kubectyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_ALLOCATION_UPDATE]);
         $server->update(['allocation_limit' => 2]);
 
@@ -61,7 +61,7 @@ class CreateNewAllocationTest extends ClientApiIntegrationTestCase
     {
         config()->set('kubectyl.client_features.allocations.enabled', false);
 
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var \Kubectyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount();
         $server->update(['allocation_limit' => 2]);
 
@@ -76,7 +76,7 @@ class CreateNewAllocationTest extends ClientApiIntegrationTestCase
      */
     public function testAllocationCannotBeCreatedIfServerIsAtLimit()
     {
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var \Kubectyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount();
         $server->update(['allocation_limit' => 1]);
 

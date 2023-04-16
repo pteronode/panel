@@ -1,21 +1,21 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Application\Locations;
+namespace Kubectyl\Http\Controllers\Api\Application\Locations;
 
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Location;
+use Kubectyl\Models\Location;
 use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
-use Pterodactyl\Services\Locations\LocationUpdateService;
-use Pterodactyl\Services\Locations\LocationCreationService;
-use Pterodactyl\Services\Locations\LocationDeletionService;
-use Pterodactyl\Transformers\Api\Application\LocationTransformer;
-use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
-use Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationRequest;
-use Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationsRequest;
-use Pterodactyl\Http\Requests\Api\Application\Locations\StoreLocationRequest;
-use Pterodactyl\Http\Requests\Api\Application\Locations\DeleteLocationRequest;
-use Pterodactyl\Http\Requests\Api\Application\Locations\UpdateLocationRequest;
+use Kubectyl\Services\Locations\LocationUpdateService;
+use Kubectyl\Services\Locations\LocationCreationService;
+use Kubectyl\Services\Locations\LocationDeletionService;
+use Kubectyl\Transformers\Api\Application\LocationTransformer;
+use Kubectyl\Http\Controllers\Api\Application\ApplicationApiController;
+use Kubectyl\Http\Requests\Api\Application\Locations\GetLocationRequest;
+use Kubectyl\Http\Requests\Api\Application\Locations\GetLocationsRequest;
+use Kubectyl\Http\Requests\Api\Application\Locations\StoreLocationRequest;
+use Kubectyl\Http\Requests\Api\Application\Locations\DeleteLocationRequest;
+use Kubectyl\Http\Requests\Api\Application\Locations\UpdateLocationRequest;
 
 class LocationController extends ApplicationApiController
 {
@@ -59,7 +59,7 @@ class LocationController extends ApplicationApiController
      * Store a new location on the Panel and return an HTTP/201 response code with the
      * new location attached.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Kubectyl\Exceptions\Model\DataValidationException
      */
     public function store(StoreLocationRequest $request): JsonResponse
     {
@@ -78,8 +78,8 @@ class LocationController extends ApplicationApiController
     /**
      * Update a location on the Panel and return the updated record to the user.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\Model\DataValidationException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
     public function update(UpdateLocationRequest $request, Location $location): array
     {
@@ -93,7 +93,7 @@ class LocationController extends ApplicationApiController
     /**
      * Delete a location from the Panel.
      *
-     * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveClustersException
+     * @throws \Kubectyl\Exceptions\Service\Location\HasActiveClustersException
      */
     public function delete(DeleteLocationRequest $request, Location $location): Response
     {

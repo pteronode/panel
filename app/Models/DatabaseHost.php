@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Kubectyl\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $username
  * @property string $password
  * @property int|null $max_databases
- * @property int|null $node_id
+ * @property int|null $cluster_id
  * @property \Carbon\CarbonImmutable $created_at
  * @property \Carbon\CarbonImmutable $updated_at
  */
@@ -41,7 +41,7 @@ class DatabaseHost extends Model
      * Fields that are mass assignable.
      */
     protected $fillable = [
-        'name', 'host', 'port', 'username', 'password', 'max_databases', 'node_id',
+        'name', 'host', 'port', 'username', 'password', 'max_databases', 'cluster_id',
     ];
 
     /**
@@ -50,7 +50,7 @@ class DatabaseHost extends Model
     protected $casts = [
         'id' => 'integer',
         'max_databases' => 'integer',
-        'node_id' => 'integer',
+        'cluster_id' => 'integer',
     ];
 
     /**
@@ -62,15 +62,15 @@ class DatabaseHost extends Model
         'port' => 'required|numeric|between:1,65535',
         'username' => 'required|string|max:32',
         'password' => 'nullable|string',
-        'node_id' => 'sometimes|nullable|integer|exists:nodes,id',
+        'cluster_id' => 'sometimes|nullable|integer|exists:clusters,id',
     ];
 
     /**
-     * Gets the node associated with a database host.
+     * Gets the cluster associated with a database host.
      */
-    public function node(): BelongsTo
+    public function cluster(): BelongsTo
     {
-        return $this->belongsTo(Node::class);
+        return $this->belongsTo(Cluster::class);
     }
 
     /**

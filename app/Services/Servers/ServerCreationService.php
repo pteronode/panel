@@ -1,23 +1,23 @@
 <?php
 
-namespace Pterodactyl\Services\Servers;
+namespace Kubectyl\Services\Servers;
 
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\User;
+use Kubectyl\Models\Rocket;
+use Kubectyl\Models\User;
 use Webmozart\Assert\Assert;
-use Pterodactyl\Models\Server;
+use Kubectyl\Models\Server;
 use Illuminate\Support\Collection;
-use Pterodactyl\Models\Allocation;
+use Kubectyl\Models\Allocation;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Models\Objects\DeploymentObject;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
-use Pterodactyl\Services\Deployment\FindViableClustersService;
-use Pterodactyl\Repositories\Eloquent\ServerVariableRepository;
-use Pterodactyl\Services\Deployment\AllocationSelectionService;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Kubectyl\Models\Objects\DeploymentObject;
+use Kubectyl\Repositories\Eloquent\ServerRepository;
+use Kubectyl\Repositories\Kuber\DaemonServerRepository;
+use Kubectyl\Services\Deployment\FindViableClustersService;
+use Kubectyl\Repositories\Eloquent\ServerVariableRepository;
+use Kubectyl\Services\Deployment\AllocationSelectionService;
+use Kubectyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class ServerCreationService
 {
@@ -43,11 +43,11 @@ class ServerCreationService
      * no cluster_id the cluster_is will be picked from the allocation.
      *
      * @throws \Throwable
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Kubectyl\Exceptions\DisplayException
      * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableClusterException
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\Service\Deployment\NoViableClusterException
+     * @throws \Kubectyl\Exceptions\Service\Deployment\NoViableAllocationException
      */
     public function handle(array $data, DeploymentObject $deployment = null): Server
     {
@@ -67,28 +67,29 @@ class ServerCreationService
             $data['cluster_id'] = Allocation::query()->findOrFail($data['allocation_id'])->cluster_id;
         }
 
-        if (empty($data['nest_id'])) {
-            Assert::false(empty($data['egg_id']), 'Expected a non-empty egg_id in server creation data.');
+        if (empty($data['launchpad_id'])) {
+            Assert::false(empty($data['rocket_id']), 'Expected a non-empty rocket_id in server creation data.');
 
-            $data['nest_id'] = Egg::query()->findOrFail($data['egg_id'])->nest_id;
+            $data['launchpad_id'] = Rocket::query()->findOrFail($data['rocket_id'])->launchpad_id;
         }
 
-        $eggVariableData = $this->validatorService
+        $rocketVariableData = $this->validatorService
             ->setUserLevel(User::USER_LEVEL_ADMIN)
-            ->handle(Arr::get($data, 'egg_id'), Arr::get($data, 'environment', []));
+            ->handle(Arr::get($data, 'rocket_id'), Arr::get($data, 'environment', []));
 
         // Due to the design of the Daemon, we need to persist this server to the disk
         // before we can actually create it on the Daemon.
         //
         // If that connection fails out we will attempt to perform a cleanup by just
         // deleting the server itself from the system.
-        /** @var \Pterodactyl\Models\Server $server */
-        $server = $this->connection->transaction(function () use ($data, $eggVariableData) {
+        /** @var \Kubectyl\Models\Server $server */
+        $server = $this->connection->transaction(function () use ($data, $rocketVariableData) {
             // Create the server and assign any additional allocations to it.
             $server = $this->createModel($data);
 
-            // $this->storeAssignedAllocations($server, $data);
-            $this->storeEggVariables($server, $eggVariableData);
+            // TODO: check this function
+            isset($data['allocation_id']) ? $this->storeAssignedAllocations($server, $data) : null;
+            $this->storeRocketVariables($server, $rocketVariableData);
 
             return $server;
         }, 5);
@@ -109,9 +110,9 @@ class ServerCreationService
     /**
      * Gets an allocation to use for automatic deployment.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableClusterException
+     * @throws \Kubectyl\Exceptions\DisplayException
+     * @throws \Kubectyl\Exceptions\Service\Deployment\NoViableAllocationException
+     * @throws \Kubectyl\Exceptions\Service\Deployment\NoViableClusterException
      */
     private function configureDeployment(array $data, DeploymentObject $deployment): Allocation
     {
@@ -122,7 +123,7 @@ class ServerCreationService
             ->handle();
 
         return $this->allocationSelectionService->setDedicated($deployment->isDedicated())
-            ->setNodes($clusters->pluck('id')->toArray())
+            ->setClusters($clusters->pluck('id')->toArray())
             ->setPorts($deployment->getPorts())
             ->handle();
     }
@@ -130,13 +131,13 @@ class ServerCreationService
     /**
      * Store the server in the database and return the model.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Kubectyl\Exceptions\Model\DataValidationException
      */
     private function createModel(array $data): Server
     {
         $uuid = $this->generateUniqueUuidCombo();
 
-        /** @var \Pterodactyl\Models\Server $model */
+        /** @var \Kubectyl\Models\Server $model */
         $model = $this->repository->create([
             'external_id' => Arr::get($data, 'external_id'),
             'uuid' => $uuid,
@@ -154,15 +155,17 @@ class ServerCreationService
             'cpu' => Arr::get($data, 'cpu'),
             // 'threads' => Arr::get($data, 'threads'),
             // 'oom_disabled' => Arr::get($data, 'oom_disabled') ?? true,
+            'allocation_id' => Arr::get($data, 'allocation_id'),
             'default_port' => Arr::get($data, 'default_port'),
             'additional_ports' => Arr::get($data, 'additional_ports'),
-            'nest_id' => Arr::get($data, 'nest_id'),
-            'egg_id' => Arr::get($data, 'egg_id'),
+            'launchpad_id' => Arr::get($data, 'launchpad_id'),
+            'rocket_id' => Arr::get($data, 'rocket_id'),
             'startup' => Arr::get($data, 'startup'),
             'image' => Arr::get($data, 'image'),
             'database_limit' => Arr::get($data, 'database_limit') ?? 0,
             'allocation_limit' => Arr::get($data, 'allocation_limit') ?? 0,
-            'backup_limit' => Arr::get($data, 'backup_limit') ?? 0,
+            'snapshot_limit' => Arr::get($data, 'snapshot_limit') ?? 0,
+            'node_selectors' => Arr::get($data, 'node_selectors'),
         ]);
 
         return $model;
@@ -177,7 +180,7 @@ class ServerCreationService
         if (isset($data['allocation_additional']) && is_array($data['allocation_additional'])) {
             $records = array_merge($records, $data['allocation_additional']);
         }
-
+    
         Allocation::query()->whereIn('id', $records)->update([
             'server_id' => $server->id,
         ]);
@@ -186,7 +189,7 @@ class ServerCreationService
     /**
      * Process environment variables passed for this server and store them in the database.
      */
-    private function storeEggVariables(Server $server, Collection $variables): void
+    private function storeRocketVariables(Server $server, Collection $variables): void
     {
         $records = $variables->map(function ($result) use ($server) {
             return [

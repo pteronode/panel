@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin\Clusters;
+namespace Kubectyl\Http\Controllers\Admin\Clusters;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Cluster;
+use Kubectyl\Models\Cluster;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\Wings\DaemonConfigurationRepository;
+use Kubectyl\Http\Controllers\Controller;
+use Kubectyl\Repositories\Kuber\DaemonConfigurationRepository;
 
 class SystemInformationController extends Controller
 {
@@ -21,14 +21,14 @@ class SystemInformationController extends Controller
     /**
      * Returns system information from the Daemon.
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \Kubectyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function __invoke(Request $request, Cluster $cluster): JsonResponse
     {
-        $data = $this->repository->setNode($cluster)->getSystemInformation();
+        $data = $this->repository->setCluster($cluster)->getSystemInformation();
 
         return new JsonResponse([
-            'version' => $data['version'] ?? '',
+            'version' => $data['version'] ?? 'unavailable',
             'system' => [
                 'type' => Str::title($data['os'] ?? 'Unknown'),
                 'arch' => $data['architecture'] ?? '--',

@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Services\Servers;
+namespace Kubectyl\Services\Servers;
 
-use Pterodactyl\Models\User;
+use Kubectyl\Models\User;
 use Illuminate\Support\Collection;
-use Pterodactyl\Models\EggVariable;
+use Kubectyl\Models\RocketVariable;
 use Illuminate\Validation\ValidationException;
-use Pterodactyl\Traits\Services\HasUserLevels;
+use Kubectyl\Traits\Services\HasUserLevels;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 
 class VariableValidatorService
@@ -25,16 +25,16 @@ class VariableValidatorService
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function handle(int $egg, array $fields = []): Collection
+    public function handle(int $rocket, array $fields = []): Collection
     {
-        $query = EggVariable::query()->where('egg_id', $egg);
+        $query = RocketVariable::query()->where('rocket_id', $rocket);
         if (!$this->isUserLevel(User::USER_LEVEL_ADMIN)) {
             // Don't attempt to validate variables if they aren't user editable,
             // and we're not running this at an admin level.
             $query = $query->where('user_editable', true)->where('user_viewable', true);
         }
 
-        /** @var \Pterodactyl\Models\EggVariable[] $variables */
+        /** @var \Kubectyl\Models\RocketVariable[] $variables */
         $variables = $query->get();
 
         $data = $rules = $customAttributes = [];

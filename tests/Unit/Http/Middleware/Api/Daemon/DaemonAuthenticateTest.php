@@ -1,16 +1,16 @@
 <?php
 
-namespace Pterodactyl\Tests\Unit\Http\Middleware\Api\Daemon;
+namespace Kubectyl\Tests\Unit\Http\Middleware\Api\Daemon;
 
 use Mockery as m;
 use Mockery\MockInterface;
-use Pterodactyl\Models\Cluster;
+use Kubectyl\Models\Cluster;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Repositories\Eloquent\ClusterRepository;
+use Kubectyl\Repositories\Eloquent\ClusterRepository;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Http\Middleware\Api\Daemon\DaemonAuthenticate;
-use Pterodactyl\Tests\Unit\Http\Middleware\MiddlewareTestCase;
+use Kubectyl\Exceptions\Repository\RecordNotFoundException;
+use Kubectyl\Http\Middleware\Api\Daemon\DaemonAuthenticate;
+use Kubectyl\Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -85,7 +85,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
     {
         $this->expectException(AccessDeniedHttpException::class);
 
-        /** @var \Pterodactyl\Models\Cluster $model */
+        /** @var \Kubectyl\Models\Cluster $model */
         $model = Cluster::factory()->make();
 
         $this->request->expects('route->getName')->withNoArgs()->andReturn('random.route');
@@ -101,7 +101,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
      * Test that an access denied exception is returned if the cluster is not found using
      * the token ID provided.
      */
-    public function testResponseShouldFailIfNodeIsNotFound()
+    public function testResponseShouldFailIfClusterIsNotFound()
     {
         $this->expectException(AccessDeniedHttpException::class);
 
@@ -118,7 +118,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
      */
     public function testSuccessfulMiddlewareProcess()
     {
-        /** @var \Pterodactyl\Models\Cluster $model */
+        /** @var \Kubectyl\Models\Cluster $model */
         $model = Cluster::factory()->make();
 
         $this->request->expects('route->getName')->withNoArgs()->andReturn('random.route');

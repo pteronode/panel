@@ -1,18 +1,18 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Application;
+namespace Kubectyl\Transformers\Api\Application;
 
-use Pterodactyl\Models\Location;
+use Kubectyl\Models\Location;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Kubectyl\Services\Acl\Api\AdminAcl;
 
 class LocationTransformer extends BaseTransformer
 {
     /**
      * List of resources that can be included.
      */
-    protected array $availableIncludes = ['nodes', 'servers'];
+    protected array $availableIncludes = ['clusters', 'servers'];
 
     /**
      * Return the resource name for the JSONAPI output.
@@ -37,9 +37,9 @@ class LocationTransformer extends BaseTransformer
     }
 
     /**
-     * Return the nodes associated with this location.
+     * Return the clusters associated with this location.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServers(Location $location): Collection|NullResource
     {
@@ -53,18 +53,18 @@ class LocationTransformer extends BaseTransformer
     }
 
     /**
-     * Return the nodes associated with this location.
+     * Return the clusters associated with this location.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeNodes(Location $location): Collection|NullResource
+    public function includeClusters(Location $location): Collection|NullResource
     {
-        if (!$this->authorize(AdminAcl::RESOURCE_NODES)) {
+        if (!$this->authorize(AdminAcl::RESOURCE_CLUSTERS)) {
             return $this->null();
         }
 
-        $location->loadMissing('nodes');
+        $location->loadMissing('clusters');
 
-        return $this->collection($location->getRelation('nodes'), $this->makeTransformer(ClusterTransformer::class), 'node');
+        return $this->collection($location->getRelation('clusters'), $this->makeTransformer(ClusterTransformer::class), 'cluster');
     }
 }

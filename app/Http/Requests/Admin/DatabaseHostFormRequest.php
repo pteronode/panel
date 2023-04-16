@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Admin;
+namespace Kubectyl\Http\Requests\Admin;
 
-use Pterodactyl\Models\DatabaseHost;
+use Kubectyl\Models\DatabaseHost;
 use Illuminate\Contracts\Validation\Validator;
 
 class DatabaseHostFormRequest extends AdminFormRequest
@@ -21,8 +21,8 @@ class DatabaseHostFormRequest extends AdminFormRequest
      */
     protected function getValidatorInstance(): Validator
     {
-        if (!$this->filled('node_id')) {
-            $this->merge(['node_id' => null]);
+        if (!$this->filled('cluster_id')) {
+            $this->merge(['cluster_id' => null]);
         }
 
         return parent::getValidatorInstance();

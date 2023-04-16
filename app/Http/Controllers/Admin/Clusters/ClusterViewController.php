@@ -1,21 +1,21 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin\Clusters;
+namespace Kubectyl\Http\Controllers\Admin\Clusters;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Cluster;
+use Kubectyl\Models\Cluster;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Support\Collection;
-use Pterodactyl\Models\Allocation;
-use Pterodactyl\Http\Controllers\Controller;
+use Kubectyl\Models\Allocation;
+use Kubectyl\Http\Controllers\Controller;
 use Illuminate\Contracts\View\Factory as ViewFactory;
-use Pterodactyl\Repositories\Eloquent\ClusterRepository;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
-use Pterodactyl\Traits\Controllers\JavascriptInjection;
-use Pterodactyl\Services\Helpers\SoftwareVersionService;
-use Pterodactyl\Repositories\Eloquent\LocationRepository;
-use Pterodactyl\Repositories\Eloquent\AllocationRepository;
+use Kubectyl\Repositories\Eloquent\ClusterRepository;
+use Kubectyl\Repositories\Eloquent\ServerRepository;
+use Kubectyl\Traits\Controllers\JavascriptInjection;
+use Kubectyl\Services\Helpers\SoftwareVersionService;
+use Kubectyl\Repositories\Eloquent\LocationRepository;
+use Kubectyl\Repositories\Eloquent\AllocationRepository;
 
 class ClusterViewController extends Controller
 {
@@ -70,11 +70,11 @@ class ClusterViewController extends Controller
     }
 
     /**
-     * Return the node allocation management page.
+     * Return the cluster allocation management page.
      */
     public function allocations(Request $request, Cluster $cluster): View
     {
-        $cluster = $this->repository->loadNodeAllocations($cluster);
+        $cluster = $this->repository->loadClusterAllocations($cluster);
 
         $this->plainInject(['cluster' => Collection::wrap($cluster)->only(['id'])]);
 
@@ -88,7 +88,7 @@ class ClusterViewController extends Controller
     }
 
     /**
-     * Return a listing of servers that exist for this specific node.
+     * Return a listing of servers that exist for this specific cluster.
      */
     public function servers(Request $request, Cluster $cluster): View
     {

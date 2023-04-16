@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Kubectyl\Models;
 
 use Illuminate\Validation\Rules\NotIn;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -14,9 +14,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string $target
  * @property bool $read_only
  * @property bool $user_mountable
- * @property \Pterodactyl\Models\Egg[]|\Illuminate\Database\Eloquent\Collection $eggs
- * @property \Pterodactyl\Models\Cluster[]|\Illuminate\Database\Eloquent\Collection $clusters
- * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
+ * @property \Kubectyl\Models\Rocket[]|\Illuminate\Database\Eloquent\Collection $rockets
+ * @property \Kubectyl\Models\Cluster[]|\Illuminate\Database\Eloquent\Collection $clusters
+ * @property \Kubectyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  */
 class Mount extends Model
 {
@@ -93,11 +93,12 @@ class Mount extends Model
     ];
 
     /**
-     * Returns all eggs that have this mount assigned.
+     * Returns all rockets that have this mount assigned.
      */
-    public function eggs(): BelongsToMany
+    public function rockets(): BelongsToMany
     {
-        return $this->belongsToMany(Egg::class);
+        // TODO: added custom table name rocket_mount, don't know if it's good
+        return $this->belongsToMany(Rocket::class, 'rocket_mount');
     }
 
     /**
@@ -105,7 +106,7 @@ class Mount extends Model
      */
     public function clusters(): BelongsToMany
     {
-        // TODO: added table name mount_cluster, don't know if it's good
+        // TODO: added custom table name mount_cluster, don't know if it's good
         return $this->belongsToMany(Cluster::class, 'mount_cluster');
     }
 

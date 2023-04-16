@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Remote;
+namespace Kubectyl\Tests\Integration\Api\Remote;
 
-use Pterodactyl\Models\Cluster;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Permission;
-use Pterodactyl\Models\UserSSHKey;
+use Kubectyl\Models\Cluster;
+use Kubectyl\Models\User;
+use Kubectyl\Models\Server;
+use Kubectyl\Models\Permission;
+use Kubectyl\Models\UserSSHKey;
 use phpseclib3\Crypt\EC\PrivateKey;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
+use Kubectyl\Tests\Integration\IntegrationTestCase;
 
 class SftpAuthenticationControllerTest extends IntegrationTestCase
 {
@@ -131,7 +131,7 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
      *
      * @dataProvider authorizationTypeDataProvider
      */
-    public function testRequestIsRejectedIfServerBelongsToDifferentNode(string $type)
+    public function testRequestIsRejectedIfServerBelongsToDifferentCluster(string $type)
     {
         $cluster2 = $this->createServerModel()->cluster;
 
@@ -226,7 +226,7 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
         return [
             'installing' => [Server::STATUS_INSTALLING],
             'suspended' => [Server::STATUS_SUSPENDED],
-            'restoring a backup' => [Server::STATUS_RESTORING_BACKUP],
+            'restoring a snapshot' => [Server::STATUS_RESTORING_SNAPSHOT],
         ];
     }
 

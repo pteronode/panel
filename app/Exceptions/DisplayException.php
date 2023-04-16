@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Exceptions;
+namespace Kubectyl\Exceptions;
 
 use Exception;
 use Throwable;
@@ -13,7 +13,7 @@ use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
-class DisplayException extends PterodactylException implements HttpExceptionInterface
+class DisplayException extends KubectylException implements HttpExceptionInterface
 {
     public const LEVEL_DEBUG = 'debug';
     public const LEVEL_INFO = 'info';

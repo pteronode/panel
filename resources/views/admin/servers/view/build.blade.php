@@ -68,18 +68,18 @@
                                     <p class="text-muted small">The total number of databases a user is allowed to create for this server.</p>
                                 </div>
                                 <div class="form-group col-xs-6">
-                                    <label for="additional_ports_limit" class="control-label">Additional Ports Limit</label>
+                                    <label for="allocation_limit" class="control-label">Allocation Limit</label>
                                     <div>
-                                        <input type="text" name="additional_ports_limit" class="form-control" value="{{ old('additional_ports_limit', $server->additional_ports_limit) }}"/>
+                                        <input type="text" name="allocation_limit" class="form-control" value="{{ old('allocation_limit', $server->allocation_limit) }}"/>
                                     </div>
-                                    <p class="text-muted small">The total number of additional ports a user is allowed to create for this server.</p>
+                                    <p class="text-muted small">The total number of allocations a user is allowed to create for this server.</p>
                                 </div>
                                 <div class="form-group col-xs-6">
-                                    <label for="backup_limit" class="control-label">Backup Limit</label>
+                                    <label for="snapshot_limit" class="control-label">Snapshot Limit</label>
                                     <div>
-                                        <input type="text" name="backup_limit" class="form-control" value="{{ old('backup_limit', $server->backup_limit) }}"/>
+                                        <input type="text" name="snapshot_limit" class="form-control" value="{{ old('snapshot_limit', $server->snapshot_limit) }}"/>
                                     </div>
-                                    <p class="text-muted small">The total number of backups that can be created for this server.</p>
+                                    <p class="text-muted small">The total number of snapshots that can be created for this server.</p>
                                 </div>
                             </div>
                         </div>
@@ -92,35 +92,83 @@
                         </div>
                         <div class="box-body">
                             <div class="row">
-                            <div class="form-group col-xs-6">
-                                <label for="pAllocation" class="control-label">Default Port</label>
-                                <div>
-                                    <input type="text" name="default_port" class="form-control" value="{{ old('default_port', $server->default_port) }}"/>
+                                <div class="form-group col-xs-12">
+                                    <label for="pNodeSelector" class="control-label">Node Selector</label>
+                                    <div> 
+                                        <textarea id="pNodeSelector" name="node_selectors" class="form-control" rows="4">{{ implode(PHP_EOL, $selectors) }}</textarea>
+                                        <p class="small text-muted no-margin">
+                                            You can constrain <b>Pods</b> grouped under this Launchpad so that they are <em>restricted</em> to run on particular node(s), or to prefer to run on particular nodes.
+                                            Example: <code>Key:Value</code> one per line
+                                        </p>
+                                    </div>
                                 </div>
-                                <p class="text-muted small">The default connection address that will be used for this game server.</p>
-                            </div>
-                            <div class="form-group col-xs-6">
-                                <label for="pAdditionalPorts" class="control-label">Assign Additional Ports</label>
-                                <div>
-                                    <select name="additional_ports[]" class="form-control" multiple id="pAdditionalPorts">
+                                @if ($server->allocation_id == null)
+                                    <div class="form-group col-xs-6">
+                                        <label for="pDefaultPort" class="control-label">Default Port</label>
+                                        <div>
+                                            <input type="text" name="default_port" class="form-control" value="{{ old('default_port', $server->default_port) }}"/>
+                                        </div>
+                                        <p class="text-muted small">The default connection address that will be used for this game server.</p>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label for="pAdditionalPorts" class="control-label">Assign Additional Ports</label>
+                                        <div>
+                                            <select name="add_ports[]" class="form-control" multiple id="pAdditionalPorts">
                                        
+                                            </select>
+                                        </div>
+                                        <p class="text-muted small">Please note that due to software limitations you cannot assign identical ports on different IPs to the same server.</p>
+                                    </div>
+                                    <div class="form-group col-xs-6">
+                                        <label for="pRemovePorts" class="control-label">Remove Additional Ports</label>
+                                        <div>
+                                            <select name="remove_ports[]" class="form-control" multiple id="pRemovePorts">
+                                            @if ($ports != null)
+                                                @foreach ($ports as $port)
+                                                    <option value="{{ $port }}">{{ $port }}</option>
+                                                @endforeach
+                                            @endif
+                                            </select>
+                                        </div>
+                                        <p class="text-muted small">Simply select which ports you would like to remove from the list above. If you want to assign a port on a different IP that is already in use you can select it from the left and delete it here.</p>
+                                    </div>
+                                @else
+                                <div class="form-group col-xs-6">
+                                    <label for="pAllocation" class="control-label">Game Port</label>
+                                    <select id="pAllocation" name="allocation_id" class="form-control">
+                                        @foreach ($assigned as $assignment)
+                                            <option value="{{ $assignment->id }}"
+                                                @if($assignment->id === $server->allocation_id)
+                                                    selected="selected"
+                                                @endif
+                                            >{{ $assignment->alias }}:{{ $assignment->port }}</option>
+                                        @endforeach
                                     </select>
+                                    <p class="text-muted small">The default connection address that will be used for this game server.</p>
                                 </div>
-                                <p class="text-muted small">Please note that due to software limitations you cannot assign identical ports on different IPs to the same server.</p>
-                            </div>
-                            <div class="form-group col-xs-6">
-                                <label for="pRemoveAllocations" class="control-label">Remove Additional Ports</label>
-                                <div>
-                                    <select name="remove_allocations[]" class="form-control" multiple id="pRemoveAllocations">
-                                        @if ($assigned != null)
-                                            @foreach ($assigned as $assignment)
-                                                <option value="{{ $assignment }}">{{ $assignment }}</option>
+                                <div class="form-group col-xs-6">
+                                    <label for="pAddAllocations" class="control-label">Assign Additional Ports</label>
+                                    <div>
+                                        <select name="add_allocations[]" class="form-control" multiple id="pAddAllocations">
+                                            @foreach ($unassigned as $assignment)
+                                                <option value="{{ $assignment->id }}">{{ $assignment->alias }}:{{ $assignment->port }}</option>
                                             @endforeach
-                                        @endif
-                                    </select>
+                                        </select>
+                                    </div>
+                                    <p class="text-muted small">Please note that due to software limitations you cannot assign identical ports on different IPs to the same server.</p>
                                 </div>
-                                <p class="text-muted small">Simply select which ports you would like to remove from the list above. If you want to assign a port on a different IP that is already in use you can select it from the left and delete it here.</p>
-                            </div>
+                                <div class="form-group col-xs-6">
+                                    <label for="pRemoveAllocations" class="control-label">Remove Additional Ports</label>
+                                    <div>
+                                        <select name="remove_allocations[]" class="form-control" multiple id="pRemoveAllocations">
+                                            @foreach ($assigned as $assignment)
+                                                <option value="{{ $assignment->id }}">{{ $assignment->alias }}:{{ $assignment->port }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <p class="text-muted small">Simply select which ports you would like to remove from the list above. If you want to assign a port on a different IP that is already in use you can select it from the left and delete it here.</p>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                         <div class="box-footer">
@@ -143,6 +191,8 @@
             selectOnClose: true,
             tokenSeparators: [',', ' '],
         });
+    $('#pAddAllocations').select2();
+    $('#pRemovePorts').select2();
     $('#pRemoveAllocations').select2();
     $('#pAllocation').select2();
     </script>

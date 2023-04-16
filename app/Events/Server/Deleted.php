@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Events\Server;
+namespace Kubectyl\Events\Server;
 
-use Pterodactyl\Events\Event;
-use Pterodactyl\Models\Server;
+use Kubectyl\Events\Event;
+use Kubectyl\Models\Server;
 use Illuminate\Queue\SerializesModels;
 
 class Deleted extends Event

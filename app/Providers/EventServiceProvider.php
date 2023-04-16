@@ -1,18 +1,18 @@
 <?php
 
-namespace Pterodactyl\Providers;
+namespace Kubectyl\Providers;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Subuser;
-use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Observers\UserObserver;
-use Pterodactyl\Observers\ServerObserver;
-use Pterodactyl\Observers\SubuserObserver;
-use Pterodactyl\Observers\EggVariableObserver;
-use Pterodactyl\Listeners\Auth\AuthenticationListener;
-use Pterodactyl\Events\Server\Installed as ServerInstalledEvent;
-use Pterodactyl\Notifications\ServerInstalled as ServerInstalledNotification;
+use Kubectyl\Models\User;
+use Kubectyl\Models\Server;
+use Kubectyl\Models\Subuser;
+use Kubectyl\Models\RocketVariable;
+use Kubectyl\Observers\UserObserver;
+use Kubectyl\Observers\ServerObserver;
+use Kubectyl\Observers\SubuserObserver;
+use Kubectyl\Observers\RocketVariableObserver;
+use Kubectyl\Listeners\Auth\AuthenticationListener;
+use Kubectyl\Events\Server\Installed as ServerInstalledEvent;
+use Kubectyl\Notifications\ServerInstalled as ServerInstalledNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -38,6 +38,6 @@ class EventServiceProvider extends ServiceProvider
         User::observe(UserObserver::class);
         Server::observe(ServerObserver::class);
         Subuser::observe(SubuserObserver::class);
-        EggVariable::observe(EggVariableObserver::class);
+        RocketVariable::observe(RocketVariableObserver::class);
     }
 }

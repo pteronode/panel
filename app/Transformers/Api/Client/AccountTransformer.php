@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Client;
+namespace Kubectyl\Transformers\Api\Client;
 
-use Pterodactyl\Models\User;
+use Kubectyl\Models\User;
 
 class AccountTransformer extends BaseClientTransformer
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Application;
+namespace Kubectyl\Transformers\Api\Application;
 
 use League\Fractal\Resource\Item;
-use Pterodactyl\Models\EggVariable;
+use Kubectyl\Models\RocketVariable;
 use League\Fractal\Resource\NullResource;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Kubectyl\Services\Acl\Api\AdminAcl;
 
 class ServerVariableTransformer extends BaseTransformer
 {
@@ -25,7 +25,7 @@ class ServerVariableTransformer extends BaseTransformer
     /**
      * Return a generic transformed server variable array.
      */
-    public function transform(EggVariable $variable): array
+    public function transform(RocketVariable $variable): array
     {
         return $variable->toArray();
     }
@@ -33,16 +33,16 @@ class ServerVariableTransformer extends BaseTransformer
     /**
      * Return the parent service variable data.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeParent(EggVariable $variable): Item|NullResource
+    public function includeParent(RocketVariable $variable): Item|NullResource
     {
-        if (!$this->authorize(AdminAcl::RESOURCE_EGGS)) {
+        if (!$this->authorize(AdminAcl::RESOURCE_ROCKETS)) {
             return $this->null();
         }
 
         $variable->loadMissing('variable');
 
-        return $this->item($variable->getRelation('variable'), $this->makeTransformer(EggVariableTransformer::class), 'variable');
+        return $this->item($variable->getRelation('variable'), $this->makeTransformer(RocketVariableTransformer::class), 'variable');
     }
 }

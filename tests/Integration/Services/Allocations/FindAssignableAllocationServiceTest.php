@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Services\Allocations;
+namespace Kubectyl\Tests\Integration\Services\Allocations;
 
 use Exception;
 use InvalidArgumentException;
-use Pterodactyl\Models\Allocation;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
-use Pterodactyl\Services\Allocations\FindAssignableAllocationService;
-use Pterodactyl\Exceptions\Service\Allocation\AutoAllocationNotEnabledException;
-use Pterodactyl\Exceptions\Service\Allocation\NoAutoAllocationSpaceAvailableException;
+use Kubectyl\Models\Allocation;
+use Kubectyl\Tests\Integration\IntegrationTestCase;
+use Kubectyl\Services\Allocations\FindAssignableAllocationService;
+use Kubectyl\Exceptions\Service\Allocation\AutoAllocationNotEnabledException;
+use Kubectyl\Exceptions\Service\Allocation\NoAutoAllocationSpaceAvailableException;
 
 class FindAssignableAllocationServiceTest extends IntegrationTestCase
 {

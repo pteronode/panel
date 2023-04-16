@@ -57,9 +57,16 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
     );
 
     const allocation = ServerContext.useStoreState((state) => {
-        const match = state.server.data!.service;
-
-        return !match.ip ? 'n/a' : `${ip(match.ip)}:${match.port}`;
+        const defaultAllocation = state.server.data!.allocations.find((allocation) => allocation.isDefault);
+        if (defaultAllocation) {
+            return `${defaultAllocation.alias || ip(defaultAllocation.ip)}:${defaultAllocation.port}`;
+        }
+        else if (state.server.data!.service.ip) {
+            return `${state.server.data!.service.ip}:${state.server.data!.service.port}`;
+        }
+        else {
+            return 'n/a';
+        }
     });
 
     useEffect(() => {

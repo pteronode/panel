@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Client\Server\Startup;
+namespace Kubectyl\Tests\Integration\Api\Client\Server\Startup;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Permission;
-use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
+use Kubectyl\Models\User;
+use Kubectyl\Models\Permission;
+use Kubectyl\Models\RocketVariable;
+use Kubectyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class GetStartupAndVariablesTest extends ClientApiIntegrationTestCase
 {
@@ -17,18 +17,18 @@ class GetStartupAndVariablesTest extends ClientApiIntegrationTestCase
      */
     public function testStartupVariablesAreReturnedForServer(array $permissions)
     {
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var \Kubectyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount($permissions);
 
-        $egg = $this->cloneEggAndVariables($server->egg);
+        $rocket = $this->cloneRocketAndVariables($server->rocket);
         // BUNGEE_VERSION should never be returned to the user in this API call, either in
         // the array of variables, or revealed in the startup command.
-        $egg->variables()->first()->update([
+        $rocket->variables()->first()->update([
             'user_viewable' => false,
         ]);
 
         $server->fill([
-            'egg_id' => $egg->id,
+            'rocket_id' => $rocket->id,
             'startup' => 'java {{SERVER_JARFILE}} --version {{BUNGEE_VERSION}}',
         ])->save();
         $server = $server->refresh();
@@ -41,8 +41,8 @@ class GetStartupAndVariablesTest extends ClientApiIntegrationTestCase
 
         $response->assertJsonPath('object', 'list');
         $response->assertJsonCount(1, 'data');
-        $response->assertJsonPath('data.0.object', EggVariable::RESOURCE_NAME);
-        $this->assertJsonTransformedWith($response->json('data.0.attributes'), $egg->variables[1]);
+        $response->assertJsonPath('data.0.object', RocketVariable::RESOURCE_NAME);
+        $this->assertJsonTransformedWith($response->json('data.0.attributes'), $rocket->variables[1]);
     }
 
     /**

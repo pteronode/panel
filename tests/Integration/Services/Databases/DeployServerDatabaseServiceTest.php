@@ -1,17 +1,17 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Services\Databases;
+namespace Kubectyl\Tests\Integration\Services\Databases;
 
 use Mockery;
 use Mockery\MockInterface;
-use Pterodactyl\Models\Cluster;
+use Kubectyl\Models\Cluster;
 use InvalidArgumentException;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Models\DatabaseHost;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
-use Pterodactyl\Services\Databases\DatabaseManagementService;
-use Pterodactyl\Services\Databases\DeployServerDatabaseService;
-use Pterodactyl\Exceptions\Service\Database\NoSuitableDatabaseHostException;
+use Kubectyl\Models\Database;
+use Kubectyl\Models\DatabaseHost;
+use Kubectyl\Tests\Integration\IntegrationTestCase;
+use Kubectyl\Services\Databases\DatabaseManagementService;
+use Kubectyl\Services\Databases\DeployServerDatabaseService;
+use Kubectyl\Exceptions\Service\Database\NoSuitableDatabaseHostException;
 
 class DeployServerDatabaseServiceTest extends IntegrationTestCase
 {
@@ -59,7 +59,7 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
      * Test that an error is thrown if there are no database hosts on the same cluster as the
      * server and the allow_random config value is false.
      */
-    public function testErrorIsThrownIfNoDatabaseHostsExistOnNode()
+    public function testErrorIsThrownIfNoDatabaseHostsExistOnCluster()
     {
         $server = $this->createServerModel();
 
@@ -94,7 +94,7 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
     /**
      * Test that a database host on the same cluster as the server is preferred.
      */
-    public function testDatabaseHostOnSameNodeIsPreferred()
+    public function testDatabaseHostOnSameClusterIsPreferred()
     {
         $server = $this->createServerModel();
 
@@ -121,7 +121,7 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
      * there are no same-cluster hosts and the allow_random configuration value is set to
      * true.
      */
-    public function testDatabaseHostIsSelectedIfNoSuitableHostExistsOnSameNode()
+    public function testDatabaseHostIsSelectedIfNoSuitableHostExistsOnSameCluster()
     {
         $server = $this->createServerModel();
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware\Api\Application;
+namespace Kubectyl\Http\Middleware\Api\Application;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -14,7 +14,7 @@ class AuthenticateApplicationUser
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        /** @var \Pterodactyl\Models\User|null $user */
+        /** @var \Kubectyl\Models\User|null $user */
         $user = $request->user();
         if (!$user || !$user->root_admin) {
             throw new AccessDeniedHttpException('This account does not have permission to access the API.');

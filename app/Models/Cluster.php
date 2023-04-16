@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Kubectyl\Models;
 
 use Illuminate\Support\Str;
 use Symfony\Component\Yaml\Yaml;
@@ -32,15 +32,18 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property string $host
  * @property string $bearer_token
  * @property bool $insecure
+ * @property string $metrics
  * @property string $service_type
+ * @property string $external_traffic_policy
  * @property string $storage_class
  * @property string $ns
+ * @property string $snapshot_class
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property \Pterodactyl\Models\Location $location
- * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
- * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
- * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
+ * @property \Kubectyl\Models\Location $location
+ * @property \Kubectyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
+ * @property \Kubectyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
+ * @property \Kubectyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
  */
 class Cluster extends Model
 {
@@ -86,9 +89,9 @@ class Cluster extends Model
         'public', 'name', 'location_id',
         'fqdn', 'scheme', 'behind_proxy',
         'upload_size', 'daemonBase', 'sftp_image', 'sftp_port',
-        'daemonListen', 'description', 'maintenance_mode', 'insecure',
-        'service_type', 'storage_class', 'ns', 'dns_policy', 'image_pull_policy',
-        'metallb_shared_ip'
+        'daemonListen', 'description', 'maintenance_mode', 'insecure', 'metrics',
+        'service_type', 'external_traffic_policy', 'storage_class', 'ns', 'snapshot_class',
+        'dns_policy', 'image_pull_policy', 'metallb_shared_ip'
     ];
 
     public static array $validationRules = [
@@ -106,6 +109,8 @@ class Cluster extends Model
         'maintenance_mode' => 'boolean',
         'upload_size' => 'int|between:1,1024',
         'host' => 'required|string',
+        'metrics' => 'required|in:metrics_api,prometheus',
+        'prometheus_address' => 'sometimes|required_if:metrics,prometheus',
         'bearer_token' => 'required_if:insecure,1,true',
         'insecure' => 'boolean',
         'cert_file' => 'required_if:insecure,0,false',
@@ -115,7 +120,9 @@ class Cluster extends Model
         'image_pull_policy' => 'required|string',
         'storage_class' => 'required|string',
         'ns' => 'required|string',
+        'snapshot_class' => 'required|string',
         'service_type' => 'required|string',
+        'external_traffic_policy' => 'required|string',
         'metallb_address_pool' => 'nullable|string',
         'metallb_shared_ip' => 'boolean',
     ];
@@ -150,11 +157,13 @@ class Cluster extends Model
      */
     public function getConfiguration(): array
     {
+        $encrypter = Container::getInstance()->make(Encrypter::class);
+
         return [
             'debug' => false,
             'uuid' => $this->uuid,
             'token_id' => $this->daemon_token_id,
-            'token' => Container::getInstance()->make(Encrypter::class)->decrypt($this->daemon_token),
+            'token' => $encrypter->decrypt($this->daemon_token),
             'api' => [
                 'host' => '0.0.0.0',
                 'port' => $this->daemonListen,
@@ -172,21 +181,27 @@ class Cluster extends Model
                     'sftp_image' => $this->sftp_image,
                 ],
             ],
-            'cluster' => [
+            'cluster' => array_filter([
                 'host' => $this->host,
-                'bearer_token' => Container::getInstance()->make(Encrypter::class)->decrypt($this->bearer_token),
+                'bearer_token' => $encrypter->decrypt($this->bearer_token),
+                'namespace' => $this->ns,
                 'insecure' => $this->insecure,
-                'cert_file' => $this->cert_file,
-                'key_file' => $this->key_file,
-                'ca_file' => $this->ca_file,
+                'cert_file' => ($this->insecure == false && $this->cert_file && $this->key_file && $this->ca_file) ? $this->cert_file : null,
+                'key_file' => ($this->insecure == false && $this->cert_file && $this->key_file && $this->ca_file) ? $this->key_file : null,
+                'ca_file' => ($this->insecure == false && $this->cert_file && $this->key_file && $this->ca_file) ? $this->ca_file : null,
+                'metrics' => $this->metrics,
+                'prometheus_address' => ($this->metrics == 'prometheus' && $this->prometheus_address) ? $this->prometheus_address : null,
                 'dns_policy' => $this->dns_policy,
                 'image_pull_policy' => $this->image_pull_policy,
                 'storage_class' => $this->storage_class,
-                'namespace' => $this->ns,
+                'snapshot_class' => $this->snapshot_class,
                 'service_type' => $this->service_type,
-                'metallb_address_pool' => $this->metallb_address_pool,
+                'external_traffic_policy' => $this->external_traffic_policy,
                 'metallb_shared_ip' => $this->metallb_shared_ip,
-            ],
+                'metallb_address_pool' => $this->metallb_address_pool,
+            ], function($value) {
+                return !empty($value) || ($value !== null && $value !== '');
+            }),
             'allowed_mounts' => $this->mounts->pluck('source')->toArray(),
             'remote' => route('index'),
         ];

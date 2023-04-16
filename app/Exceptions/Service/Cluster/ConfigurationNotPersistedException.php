@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Exceptions\Service\Cluster;
+namespace Kubectyl\Exceptions\Service\Cluster;
 
-use Pterodactyl\Exceptions\DisplayException;
+use Kubectyl\Exceptions\DisplayException;
 
 class ConfigurationNotPersistedException extends DisplayException
 {

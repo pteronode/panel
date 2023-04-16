@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Rules;
+namespace Kubectyl\Rules;
 
 use Illuminate\Support\Arr;
 use Illuminate\Contracts\Validation\Rule;
@@ -36,7 +36,7 @@ class Fqdn implements Rule, DataAwareRule
             //
             // Unless someone owns their IP blocks and decides to pay who knows how much for a
             // custom SSL cert, IPs will not be able to use HTTPS.  This should prevent most
-            // home users from making this mistake and wondering why their node is not working.
+            // home users from making this mistake and wondering why their daemon is not working.
             if ($this->schemeField && Arr::get($this->data, $this->schemeField) === 'https') {
                 $this->message = 'The :attribute must not be an IP address when HTTPS is enabled.';
 

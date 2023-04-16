@@ -1,11 +1,11 @@
 import useSWR, { ConfigInterface } from 'swr';
 import http, { FractalResponseList } from '@/api/http';
-import { rawDataToServerEggVariable } from '@/api/transformers';
-import { ServerEggVariable } from '@/api/server/types';
+import { rawDataToServerRocketVariable } from '@/api/transformers';
+import { ServerRocketVariable } from '@/api/server/types';
 
 interface Response {
     invocation: string;
-    variables: ServerEggVariable[];
+    variables: ServerRocketVariable[];
     dockerImages: Record<string, string>;
 }
 
@@ -15,7 +15,7 @@ export default (uuid: string, initialData?: Response | null, config?: ConfigInte
         async (): Promise<Response> => {
             const { data } = await http.get(`/api/client/servers/${uuid}/startup`);
 
-            const variables = ((data as FractalResponseList).data || []).map(rawDataToServerEggVariable);
+            const variables = ((data as FractalResponseList).data || []).map(rawDataToServerRocketVariable);
 
             return {
                 variables,

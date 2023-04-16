@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Console\Commands\Cluster;
+namespace Kubectyl\Console\Commands\Cluster;
 
-use Pterodactyl\Models\Cluster;
+use Kubectyl\Models\Cluster;
 use Illuminate\Console\Command;
 
 class ClusterListCommand extends Command

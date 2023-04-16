@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Application\Servers;
+namespace Kubectyl\Http\Requests\Api\Application\Servers;
 
-use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
+use Kubectyl\Models\Server;
+use Kubectyl\Services\Acl\Api\AdminAcl;
+use Kubectyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class UpdateServerStartupRequest extends ApplicationApiRequest
 {
@@ -22,7 +22,7 @@ class UpdateServerStartupRequest extends ApplicationApiRequest
         return [
             'startup' => $data['startup'],
             'environment' => 'present|array',
-            'egg' => $data['egg_id'],
+            'rocket' => $data['rocket_id'],
             'image' => $data['image'],
             'skip_scripts' => 'present|boolean',
         ];
@@ -36,7 +36,7 @@ class UpdateServerStartupRequest extends ApplicationApiRequest
         $data = parent::validated();
 
         return collect($data)->only(['startup', 'environment', 'skip_scripts'])->merge([
-            'egg_id' => array_get($data, 'egg'),
+            'rocket_id' => array_get($data, 'rocket'),
             'docker_image' => array_get($data, 'image'),
         ])->toArray();
     }

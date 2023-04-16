@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Application\Clusters;
+namespace Kubectyl\Http\Requests\Api\Application\Clusters;
 
-use Pterodactyl\Models\Cluster;
+use Kubectyl\Models\Cluster;
 
 class UpdateClusterRequest extends StoreClusterRequest
 {

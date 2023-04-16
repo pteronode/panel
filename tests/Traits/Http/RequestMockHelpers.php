@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Tests\Traits\Http;
+namespace Kubectyl\Tests\Traits\Http;
 
 use Mockery as m;
 use Mockery\Mock;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
+use Kubectyl\Models\User;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
@@ -38,7 +38,7 @@ trait RequestMockHelpers
      */
     public function generateRequestUserModel(array $args = []): User
     {
-        /** @var \Pterodactyl\Models\User $user */
+        /** @var \Kubectyl\Models\User $user */
         $user = User::factory()->make($args);
         $this->setRequestUserModel($user);
 

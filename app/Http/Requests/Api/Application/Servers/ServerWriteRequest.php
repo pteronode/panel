@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Application\Servers;
+namespace Kubectyl\Http\Requests\Api\Application\Servers;
 
-use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
+use Kubectyl\Services\Acl\Api\AdminAcl;
+use Kubectyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class ServerWriteRequest extends ApplicationApiRequest
 {

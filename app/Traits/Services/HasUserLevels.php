@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Traits\Services;
+namespace Kubectyl\Traits\Services;
 
-use Pterodactyl\Models\User;
+use Kubectyl\Models\User;
 
 trait HasUserLevels
 {

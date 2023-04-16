@@ -18,30 +18,96 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 $(document).ready(function() {
-    $('#pNestId').select2({
-        placeholder: 'Select a Nest',
+    $('#pLaunchpadId').select2({
+        placeholder: 'Select a Launchpad',
     }).change();
 
-    $('#pEggId').select2({
-        placeholder: 'Select a Nest Egg',
+    $('#pRocketId').select2({
+        placeholder: 'Select a Launchpad Rocket',
     });
 
     $('#pPackId').select2({
         placeholder: 'Select a Service Pack',
     });
 
-    $('#pNodeId').select2({
-        placeholder: 'Select a Node',
+    $('#pClusterId').select2({
+        placeholder: 'Select a Cluster',
     }).change();
-
-    $('#pAllocation').select2({
-        placeholder: 'Select a Default Allocation',
-    });
-
-    $('#pAllocationAdditional').select2({
-        placeholder: 'Select Additional Allocations',
-    });
 });
+
+$('input[type="radio"][name="allocation_system"]').on('load change', function() {
+    if ($(this).is(':checked') && this.value === 'manual') {
+        $('#pDefaultPort').closest('.form-group').remove();
+        $('#pAdditionalPorts').closest('.form-group').remove();
+
+        $(this).closest('.form-group').removeClass('new-element-added');
+
+        // Get the parent form group
+        var formGroup = $(this).closest('.form-group');
+
+        // Check if the new element has already been added
+        if (!formGroup.hasClass('new-element-added')) {
+            // Create the new element you want to add
+            var newElement = $('<div class="form-group col-md-6"> \
+                <label for="pAllocation">Default Allocation</label> \
+                <select id="pAllocation" name="allocation_id" class="form-control"></select> \
+                <p class="small text-muted no-margin">The main allocation that will be assigned to this server.</p> \
+            </div> \
+            <div class="form-group col-md-6"> \
+                <label for="pAllocationAdditional">Additional Allocation(s)</label> \
+                <select id="pAllocationAdditional" name="allocation_additional[]" class="form-control" multiple></select> \
+                <p class="small text-muted no-margin">Additional allocations to assign to this server on creation.</p> \
+            </div>');
+
+            // Add the new element after the form group
+            formGroup.after(newElement);
+  
+            // Add a class to the form group to indicate that the new element has been added
+            formGroup.addClass('new-element-added');
+        }
+
+        $('#pClusterId').trigger('change');
+    } else if ($(this).is(':checked') && this.value === 'automatic') {
+        $('#pAllocation').closest('.form-group').remove();
+        $('#pAllocationAdditional').closest('.form-group').remove();
+
+        $(this).closest('.form-group').removeClass('new-element-added');
+
+        // Get the parent form group
+        var formGroup = $(this).closest('.form-group');
+
+        // Check if the new element has already been added
+        if (!formGroup.hasClass('new-element-added')) {
+            // Create the new element you want to add
+            var newElement = $('<div class="form-group col-md-6"> \
+                <label for="pDefaultPort">Default Port</label> \
+                <input type="text" id="pDefaultPort" name="default_port" class="form-control" value=""></input> \
+                <p class="small text-muted no-margin">The main port that will be assigned to this server.</p> \
+            </div> \
+            <div class="form-group col-md-6"> \
+                <label for="pAdditionalPorts" class="control-label">Additional Port(s)</label> \
+                <div> \
+                    <select class="form-control" name="additional_ports[]" id="pAdditionalPorts" multiple></select> \
+                    <p class="text-muted small">Enter individual ports here separated by commas or spaces. <b>Restrictions will apply</b>, please see <a href="https://kubernetes.io/docs/reference/networking/ports-and-protocols/" target="_blank">kubernetes.io/docs/reference/networking/ports-and-protocols</a> for more info.</p> \
+                </div> \
+            </div>');
+
+            // Add the new element after the form group
+            formGroup.after(newElement);
+  
+            // Add a class to the form group to indicate that the new element has been added
+            formGroup.addClass('new-element-added');
+
+            $('#pAdditionalPorts').select2({
+                tags: true,
+                selectOnClose: true,
+                tokenSeparators: [',', ' '],
+            });
+        }
+
+        $('#pClusterId').trigger('change');
+    }
+}).change();
 
 let lastActiveBox = null;
 $(document).on('click', function (event) {
@@ -53,10 +119,10 @@ $(document).on('click', function (event) {
     lastActiveBox.addClass('box-primary');
 });
 
-$('#pNodeId').on('change', function () {
-    currentNode = $(this).val();
-    $.each(Pterodactyl.nodeData, function (i, v) {
-        if (v.id == currentNode) {
+$('#pClusterId').on('change', function () {
+    currentCluster = $(this).val();
+    $.each(Kubectyl.clusterData, function (i, v) {
+        if (v.id == currentCluster) {
             $('#pAllocation').html('').select2({
                 data: v.allocations,
                 placeholder: 'Select a Default Allocation',
@@ -67,20 +133,46 @@ $('#pNodeId').on('change', function () {
     });
 });
 
-$('#pNestId').on('change', function (event) {
-    $('#pEggId').html('').select2({
-        data: $.map(_.get(Pterodactyl.nests, $(this).val() + '.eggs', []), function (item) {
+$('#pLaunchpadId').on('change', function (event) {
+    $('#pRocketId').html('').select2({
+        data: $.map(_.get(Kubectyl.launchpads, $(this).val() + '.rockets', []), function (item) {
             return {
                 id: item.id,
                 text: item.name,
             };
         }),
     }).change();
+
+    $('#pNodeSelectorFrom').html('<option value="">None</option>').select2({
+        data: $.map(_.get(Kubectyl.launchpads, $(this).val() + '.rockets', []), function (item) {
+            return {
+                id: item.id,
+                text: item.name + ' <' + item.author + '>',
+            };
+        }),
+    });
 });
 
-$('#pEggId').on('change', function (event) {
-    let parentChain = _.get(Pterodactyl.nests, $('#pNestId').val(), null);
-    let objectChain = _.get(parentChain, 'eggs.' + $(this).val(), null);
+$('#pNodeSelectorFrom').on('select2:select', function(e) {
+    var selector = $('#pNodeSelector')
+    const itemId = e.params.data.id
+
+    selector.val('');
+
+    $.each(_.get(Kubectyl.launchpads, $('#pLaunchpadId').val() + '.rockets', []), function (index, item) {
+        if (item && item.id == itemId) {
+            var obj = item.node_selectors
+
+            $.each(obj, function(key, value) {
+                selector.val(selector.val() + key + ":" + value + "\n");
+            });
+        }
+    });
+});
+
+$('#pRocketId').on('change', function (event) {
+    let parentChain = _.get(Kubectyl.launchpads, $('#pLaunchpadId').val(), null);
+    let objectChain = _.get(parentChain, 'rockets.' + $(this).val(), null);
 
     const images = _.get(objectChain, 'docker_images', {})
     $('#pDefaultContainer').html('');
@@ -129,7 +221,7 @@ $('#pEggId').on('change', function (event) {
 
     // If you receive a warning on this line, it should be fine to ignore. this function is
     // defined in "resources/views/admin/servers/new.blade.php" near the bottom of the file.
-    serviceVariablesUpdated($('#pEggId').val(), variableIds);
+    serviceVariablesUpdated($('#pRocketId').val(), variableIds);
 });
 
 $('#pAllocation').on('change', function () {
@@ -138,10 +230,10 @@ $('#pAllocation').on('change', function () {
 
 function updateAdditionalAllocations() {
     let currentAllocation = $('#pAllocation').val();
-    let currentNode = $('#pNodeId').val();
+    let currentCluster = $('#pClusterId').val();
 
-    $.each(Pterodactyl.nodeData, function (i, v) {
-        if (v.id == currentNode) {
+    $.each(Kubectyl.clusterData, function (i, v) {
+        if (v.id == currentCluster) {
             let allocations = [];
 
             for (let i = 0; i < v.allocations.length; i++) {

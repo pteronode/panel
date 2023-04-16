@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration;
+namespace Kubectyl\Tests\Integration;
 
 use Illuminate\Http\Response;
 use Illuminate\Testing\Assert as PHPUnit;
-use Pterodactyl\Exceptions\DisplayException;
+use Kubectyl\Exceptions\DisplayException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Testing\TestResponse as IlluminateTestResponse;
 
@@ -18,6 +18,7 @@ class TestResponse extends IlluminateTestResponse
     public function assertStatus($status): TestResponse
     {
         $actual = $this->getStatusCode();
+        $url = $this;
 
         // Dump the response to the screen before making the assertion which is going
         // to fail so that debugging isn't such a nightmare.
@@ -28,6 +29,7 @@ class TestResponse extends IlluminateTestResponse
                     'exception_class' => get_class($this->exception),
                     'message' => $this->exception->getMessage(),
                     'trace' => $this->exception->getTrace(),
+                    'url' => $url,
                 ]);
             }
         }

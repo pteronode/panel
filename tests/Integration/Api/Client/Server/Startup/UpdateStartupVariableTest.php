@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Client\Server\Startup;
+namespace Kubectyl\Tests\Integration\Api\Client\Server\Startup;
 
-use Pterodactyl\Models\User;
+use Kubectyl\Models\User;
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Permission;
-use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
+use Kubectyl\Models\Permission;
+use Kubectyl\Models\RocketVariable;
+use Kubectyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class UpdateStartupVariableTest extends ClientApiIntegrationTestCase
 {
@@ -17,7 +17,7 @@ class UpdateStartupVariableTest extends ClientApiIntegrationTestCase
      */
     public function testStartupVariableCanBeUpdated(array $permissions)
     {
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var \Kubectyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount($permissions);
         $server->fill([
             'startup' => 'java {{SERVER_JARFILE}} --version {{BUNGEE_VERSION}}',
@@ -38,7 +38,7 @@ class UpdateStartupVariableTest extends ClientApiIntegrationTestCase
         ]);
 
         $response->assertOk();
-        $response->assertJsonPath('object', EggVariable::RESOURCE_NAME);
+        $response->assertJsonPath('object', RocketVariable::RESOURCE_NAME);
         $this->assertJsonTransformedWith($response->json('attributes'), $server->variables[0]);
         $response->assertJsonPath('meta.startup_command', 'java bungeecord.jar --version 123');
         $response->assertJsonPath('meta.raw_startup_command', $server->startup);
@@ -52,14 +52,14 @@ class UpdateStartupVariableTest extends ClientApiIntegrationTestCase
      */
     public function testStartupVariableCannotBeUpdatedIfNotUserViewableOrEditable(array $permissions)
     {
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var \Kubectyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount($permissions);
 
-        $egg = $this->cloneEggAndVariables($server->egg);
-        $egg->variables()->where('env_variable', 'BUNGEE_VERSION')->update(['user_viewable' => false]);
-        $egg->variables()->where('env_variable', 'SERVER_JARFILE')->update(['user_editable' => false]);
+        $rocket = $this->cloneRocketAndVariables($server->rocket);
+        $rocket->variables()->where('env_variable', 'BUNGEE_VERSION')->update(['user_viewable' => false]);
+        $rocket->variables()->where('env_variable', 'SERVER_JARFILE')->update(['user_editable' => false]);
 
-        $server->fill(['egg_id' => $egg->id])->save();
+        $server->fill(['rocket_id' => $rocket->id])->save();
         $server->refresh();
 
         $response = $this->actingAs($user)->putJson($this->link($server) . '/startup/variable', [
@@ -87,14 +87,14 @@ class UpdateStartupVariableTest extends ClientApiIntegrationTestCase
      */
     public function testHiddenVariablesAreNotReturnedInStartupCommandWhenUpdatingVariable()
     {
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var \Kubectyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount();
 
-        $egg = $this->cloneEggAndVariables($server->egg);
-        $egg->variables()->first()->update(['user_viewable' => false]);
+        $rocket = $this->cloneRocketAndVariables($server->rocket);
+        $rocket->variables()->first()->update(['user_viewable' => false]);
 
         $server->fill([
-            'egg_id' => $egg->id,
+            'rocket_id' => $rocket->id,
             'startup' => 'java {{SERVER_JARFILE}} --version {{BUNGEE_VERSION}}',
         ])->save();
 
@@ -111,20 +111,20 @@ class UpdateStartupVariableTest extends ClientApiIntegrationTestCase
     }
 
     /**
-     * Test that an egg variable with a validation rule of 'nullable|string' works if no value
+     * Test that an rocket variable with a validation rule of 'nullable|string' works if no value
      * is passed through in the request.
      *
      * @see https://github.com/pterodactyl/panel/issues/2433
      */
-    public function testEggVariableWithNullableStringIsNotRequired()
+    public function testRocketVariableWithNullableStringIsNotRequired()
     {
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var \Kubectyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount();
 
-        $egg = $this->cloneEggAndVariables($server->egg);
-        $egg->variables()->first()->update(['rules' => 'nullable|string']);
+        $rocket = $this->cloneRocketAndVariables($server->rocket);
+        $rocket->variables()->first()->update(['rules' => 'nullable|string']);
 
-        $server->fill(['egg_id' => $egg->id])->save();
+        $server->fill(['rocket_id' => $rocket->id])->save();
         $server->refresh();
 
         $response = $this->actingAs($user)->putJson($this->link($server) . '/startup/variable', [

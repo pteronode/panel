@@ -55,6 +55,11 @@ return [
             'provider' => 'users',
         ],
 
+        // 'web' => [
+        //     'driver' => 'keycloak-web',
+        //     'provider' => 'users',
+        // ],
+
         'api' => [
             'driver' => 'token',
             'provider' => 'users',
@@ -81,8 +86,13 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => Pterodactyl\Models\User::class,
+            'model' => Kubectyl\Models\User::class,
         ],
+
+        // 'users' => [
+        //     'driver' => 'keycloak-users',
+        //     'model' => Kubectyl\Models\User::class,
+        // ],
     ],
 
     /*

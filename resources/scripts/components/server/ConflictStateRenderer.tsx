@@ -26,18 +26,18 @@ export default () => {
         />
     ) : isClusterUnderMaintenance ? (
         <ScreenBlock
-            title={'Node under Maintenance'}
+            title={'Cluster under Maintenance'}
             image={ServerErrorSvg}
-            message={'The node of this server is currently under maintenance.'}
+            message={'The cluster of this server is currently under maintenance.'}
         />
     ) : (
         <ScreenBlock
-            title={isTransferring ? 'Transferring' : 'Restoring from Backup'}
+            title={isTransferring ? 'Transferring' : 'Restoring from Snapshot'}
             image={ServerRestoreSvg}
             message={
                 isTransferring
-                    ? 'Your server is being transfered to a new node, please check back later.'
-                    : 'Your server is currently being restored from a backup, please check back in a few minutes.'
+                    ? 'Your server is being transfered to a new cluster, please check back later.'
+                    : 'Your server is currently being restored from a snapshot, please check back in a few minutes.'
             }
         />
     );

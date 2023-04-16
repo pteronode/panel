@@ -1,25 +1,25 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Client;
+namespace Kubectyl\Tests\Integration\Api\Client;
 
 use ReflectionClass;
-use Pterodactyl\Models\Cluster;
-use Pterodactyl\Models\Task;
-use Pterodactyl\Models\User;
+use Kubectyl\Models\Cluster;
+use Kubectyl\Models\Task;
+use Kubectyl\Models\User;
 use InvalidArgumentException;
-use Pterodactyl\Models\Model;
-use Pterodactyl\Models\Backup;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Models\Location;
-use Pterodactyl\Models\Schedule;
+use Kubectyl\Models\Model;
+use Kubectyl\Models\Snapshot;
+use Kubectyl\Models\Server;
+use Kubectyl\Models\Database;
+use Kubectyl\Models\Location;
+use Kubectyl\Models\Schedule;
 use Illuminate\Support\Collection;
-use Pterodactyl\Models\Allocation;
-use Pterodactyl\Models\DatabaseHost;
-use Pterodactyl\Tests\Integration\TestResponse;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
+use Kubectyl\Models\Allocation;
+use Kubectyl\Models\DatabaseHost;
+use Kubectyl\Tests\Integration\TestResponse;
+use Kubectyl\Tests\Integration\IntegrationTestCase;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
-use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
+use Kubectyl\Transformers\Api\Client\BaseClientTransformer;
 
 abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
 {
@@ -30,7 +30,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
     {
         Database::query()->forceDelete();
         DatabaseHost::query()->forceDelete();
-        Backup::query()->forceDelete();
+        Snapshot::query()->forceDelete();
         Server::query()->forceDelete();
         Cluster::query()->forceDelete();
         Location::query()->forceDelete();
@@ -71,12 +71,14 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
             case Allocation::class:
                 $link = "/api/client/servers/{$model->server->uuid}/network/allocations/$model->id";
                 break;
-            case Backup::class:
-                $link = "/api/client/servers/{$model->server->uuid}/backups/$model->uuid";
+            case Snapshot::class:
+                $link = "/api/client/servers/{$model->server->uuid}/snapshots/$model->uuid";
                 break;
             default:
                 throw new InvalidArgumentException(sprintf('Cannot create link for Model of type %s', class_basename($model)));
         }
+
+        print_r($link . ($append ? '/' . ltrim($append, '/') : ''));
 
         return $link . ($append ? '/' . ltrim($append, '/') : '');
     }
@@ -88,7 +90,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
     protected function assertJsonTransformedWith(array $data, Model|EloquentModel $model)
     {
         $reflect = new ReflectionClass($model);
-        $transformer = sprintf('\\Pterodactyl\\Transformers\\Api\\Client\\%sTransformer', $reflect->getShortName());
+        $transformer = sprintf('\\Kubectyl\\Transformers\\Api\\Client\\%sTransformer', $reflect->getShortName());
 
         $transformer = new $transformer();
         $this->assertInstanceOf(BaseClientTransformer::class, $transformer);

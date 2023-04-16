@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;
-use Pterodactyl\Models\Server;
+use Kubectyl\Models\Server;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ServerFactory extends Factory
@@ -43,7 +43,7 @@ class ServerFactory extends Factory
             'default_port' => '65535',
             'allocation_limit' => null,
             'database_limit' => null,
-            'backup_limit' => 0,
+            'snapshot_limit' => 0,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

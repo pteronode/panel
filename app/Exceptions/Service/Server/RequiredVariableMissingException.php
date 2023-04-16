@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Exceptions\Service\Server;
+namespace Kubectyl\Exceptions\Service\Server;
 
-use Pterodactyl\Exceptions\PterodactylException;
+use Kubectyl\Exceptions\KubectylException;
 
-class RequiredVariableMissingException extends PterodactylException
+class RequiredVariableMissingException extends KubectylException
 {
 }

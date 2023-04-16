@@ -100,10 +100,10 @@
         <div class="col-sm-6">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Eggs</h3>
+                    <h3 class="box-title">Rockets</h3>
 
                     <div class="box-tools">
-                        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addEggsModal">Add Eggs</button>
+                        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addRocketsModal">Add Rockets</button>
                     </div>
                 </div>
 
@@ -115,12 +115,12 @@
                             <th></th>
                         </tr>
 
-                        @foreach ($mount->eggs as $egg)
+                        @foreach ($mount->rockets as $rocket)
                             <tr>
-                                <td class="col-sm-2 middle"><code>{{ $egg->id }}</code></td>
-                                <td class="middle"><a href="{{ route('admin.nests.egg.view', $egg->id) }}">{{ $egg->name }}</a></td>
+                                <td class="col-sm-2 middle"><code>{{ $rocket->id }}</code></td>
+                                <td class="middle"><a href="{{ route('admin.launchpads.rocket.view', $rocket->id) }}">{{ $rocket->name }}</a></td>
                                 <td class="col-sm-1 middle">
-                                    <button data-action="detach-egg" data-id="{{ $egg->id }}" class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i></button>
+                                    <button data-action="detach-rocket" data-id="{{ $rocket->id }}" class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i></button>
                                 </td>
                             </tr>
                         @endforeach
@@ -162,29 +162,29 @@
         </div>
     </div>
 
-    <div class="modal fade" id="addEggsModal" tabindex="-1" role="dialog">
+    <div class="modal fade" id="addRocketsModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form action="{{ route('admin.mounts.eggs', $mount->id) }}" method="POST">
+                <form action="{{ route('admin.mounts.rockets', $mount->id) }}" method="POST">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true" style="color: #FFFFFF">&times;</span>
                         </button>
 
-                        <h4 class="modal-title">Add Eggs</h4>
+                        <h4 class="modal-title">Add Rockets</h4>
                     </div>
 
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group col-md-12">
-                                <label for="pEggs">Eggs</label>
-                                <select id="pEggs" name="eggs[]" class="form-control" multiple>
-                                    @foreach ($nests as $nest)
-                                        <optgroup label="{{ $nest->name }}">
-                                            @foreach ($nest->eggs as $egg)
+                                <label for="pRockets">Rockets</label>
+                                <select id="pRockets" name="rockets[]" class="form-control" multiple>
+                                    @foreach ($launchpads as $launchpad)
+                                        <optgroup label="{{ $launchpad->name }}">
+                                            @foreach ($launchpad->rockets as $rocket)
 
-                                                @if (! in_array($egg->id, $mount->eggs->pluck('id')->toArray()))
-                                                    <option value="{{ $egg->id }}">{{ $egg->name }}</option>
+                                                @if (! in_array($rocket->id, $mount->rockets->pluck('id')->toArray()))
+                                                    <option value="{{ $rocket->id }}">{{ $rocket->name }}</option>
                                                 @endif
 
                                             @endforeach
@@ -221,8 +221,8 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="form-group col-md-12">
-                                <label for="pNodes">Clusters</label>
-                                <select id="pNodes" name="clusters[]" class="form-control" multiple>
+                                <label for="pClusters">Clusters</label>
+                                <select id="pClusters" name="clusters[]" class="form-control" multiple>
                                     @foreach ($locations as $location)
                                         <optgroup label="{{ $location->long }} ({{ $location->short }})">
                                             @foreach ($location->clusters as $cluster)
@@ -256,27 +256,27 @@
 
     <script>
         $(document).ready(function() {
-            $('#pEggs').select2({
-                placeholder: 'Select eggs..',
+            $('#pRockets').select2({
+                placeholder: 'Select rockets..',
             });
 
-            $('#pNodes').select2({
+            $('#pClusters').select2({
                 placeholder: 'Select clusters..',
             });
 
-            $('button[data-action="detach-egg"]').click(function (event) {
+            $('button[data-action="detach-rocket"]').click(function (event) {
                 event.preventDefault();
 
                 const element = $(this);
-                const eggId = $(this).data('id');
+                const rocketId = $(this).data('id');
 
                 $.ajax({
                     method: 'DELETE',
-                    url: '/admin/mounts/' + {{ $mount->id }} + '/eggs/' + eggId,
+                    url: '/admin/mounts/' + {{ $mount->id }} + '/rockets/' + rocketId,
                     headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
                 }).done(function () {
                     element.parent().parent().addClass('warning').delay(100).fadeOut();
-                    swal({ type: 'success', title: 'Egg detached.' });
+                    swal({ type: 'success', title: 'Rocket detached.' });
                 }).fail(function (jqXHR) {
                     console.error(jqXHR);
                     swal({

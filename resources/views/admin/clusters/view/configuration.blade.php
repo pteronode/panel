@@ -22,7 +22,7 @@
                 <li><a href="{{ route('admin.clusters.view', $cluster->id) }}">About</a></li>
                 <li><a href="{{ route('admin.clusters.view.settings', $cluster->id) }}">Settings</a></li>
                 <li class="active"><a href="{{ route('admin.clusters.view.configuration', $cluster->id) }}">Configuration</a></li>
-                <li class="disabled"><a href="javascript:void(0);">Allocation</a></li>
+                <li><a href="{{ route('admin.clusters.view.allocation', $cluster->id) }}">Allocation</a></li>
                 <li><a href="{{ route('admin.clusters.view.servers', $cluster->id) }}">Servers</a></li>
             </ul>
         </div>
@@ -73,7 +73,7 @@
             swal({
                 type: 'success',
                 title: 'Token created.',
-                text: '<p>To auto-configure your daemon run the following command:<br /><small><pre>cd /etc/kubectyl && sudo kuber configure --panel-url {{ config('app.url') }} --token ' + data.token + ' --node ' + data.node + '{{ config('app.debug') ? ' --allow-insecure' : '' }}</pre></small></p>',
+                text: '<p>To auto-configure your daemon run the following command:<br /><small><pre>cd /etc/kubectyl && sudo kuber configure --panel-url {{ config('app.url') }} --token ' + data.token + ' --cluster ' + data.cluster + '{{ config('app.debug') ? ' --allow-insecure' : '' }}</pre></small></p>',
                 html: true
             })
         }).fail(function () {

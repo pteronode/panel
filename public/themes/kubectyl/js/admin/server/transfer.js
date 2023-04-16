@@ -1,6 +1,6 @@
 $(document).ready(function () {
-    $('#pNodeId').select2({
-        placeholder: 'Select a Node',
+    $('#pClusterId').select2({
+        placeholder: 'Select a Cluster',
     }).change();
 
     $('#pAllocation').select2({
@@ -12,11 +12,11 @@ $(document).ready(function () {
     });
 });
 
-$('#pNodeId').on('change', function () {
-    let currentNode = $(this).val();
+$('#pClusterId').on('change', function () {
+    let currentCluster = $(this).val();
 
-    $.each(Pterodactyl.nodeData, function (i, v) {
-        if (v.id == currentNode) {
+    $.each(Kubectyl.clusterData, function (i, v) {
+        if (v.id == currentCluster) {
             $('#pAllocation').html('').select2({
                 data: v.allocations,
                 placeholder: 'Select a Default Allocation',
@@ -33,10 +33,10 @@ $('#pAllocation').on('change', function () {
 
 function updateAdditionalAllocations() {
     let currentAllocation = $('#pAllocation').val();
-    let currentNode = $('#pNodeId').val();
+    let currentCluster = $('#pClusterId').val();
 
-    $.each(Pterodactyl.nodeData, function (i, v) {
-        if (v.id == currentNode) {
+    $.each(Kubectyl.clusterData, function (i, v) {
+        if (v.id == currentCluster) {
             let allocations = [];
 
             for (let i = 0; i < v.allocations.length; i++) {

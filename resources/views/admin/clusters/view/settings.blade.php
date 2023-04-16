@@ -22,7 +22,7 @@
                 <li><a href="{{ route('admin.clusters.view', $cluster->id) }}">About</a></li>
                 <li class="active"><a href="{{ route('admin.clusters.view.settings', $cluster->id) }}">Settings</a></li>
                 <li><a href="{{ route('admin.clusters.view.configuration', $cluster->id) }}">Configuration</a></li>
-                <li class="disabled"><a href="javascript:void(0);">Allocation</a></li>
+                <li><a href="{{ route('admin.clusters.view.allocation', $cluster->id) }}">Allocation</a></li>
                 <li><a href="{{ route('admin.clusters.view.servers', $cluster->id) }}">Servers</a></li>
             </ul>
         </div>
@@ -76,7 +76,7 @@
                         <div>
                             <input type="text" autocomplete="off" name="fqdn" class="form-control" value="{{ old('fqdn', $cluster->fqdn) }}" />
                         </div>
-                        <p class="text-muted"><small>Please enter domain name (e.g <code>daemon.example.com</code>) to be used for connecting to the daemon. An IP address may only be used if you are not using SSL for this node.
+                        <p class="text-muted"><small>Please enter domain name (e.g <code>kuber.example.com</code>) to be used for connecting to the daemon. An IP address may only be used if you are not using SSL for this node.
                                 <a tabindex="0" data-toggle="popover" data-trigger="focus" title="Why do I need a FQDN?" data-content="In order to secure communications between your server and this daemon we use SSL. We cannot generate a SSL certificate for IP Addresses, and as such you will need to provide a FQDN.">Why?</a>
                             </small></p>
                     </div>
@@ -120,7 +120,7 @@
                                 <label for="pMaintenanceTrue"> Enabled</label>
                             </div>
                         </div>
-                        <p class="text-muted small">If the node is marked as 'Under Maintenance' users won't be able to access servers that are on this node.</p>
+                        <p class="text-muted small">If the cluster is marked as 'Under Maintenance' users won't be able to access servers that are on this node.</p>
                     </div>
                     <div class="form-group col-xs-12">
                         <label for="disk_overallocate" class="control-label">Maximum Web Upload Filesize</label>
@@ -206,20 +206,21 @@
                         <label class="form-label">Metrics</label>
                         <div>
                             <div class="radio radio-success radio-inline">
-                                <input type="radio" id="pMetricsAPI" value="metrics_api" name="metrics" checked>
+                                <input type="radio" id="pMetricsAPI" value="metrics_api" name="metrics" {{ (old('metrics', $cluster->metrics) == 'metrics_api') ? 'checked' : '' }}>
                                 <label for="pMetricsAPI">Metrics API</label>
                             </div>
                             <div class="radio radio-success radio-inline">
-                                <input type="radio" id="pMetricsPrometheus" value="prometheus" name="metrics" disabled>
+                                <input type="radio" id="pMetricsPrometheus" value="prometheus" name="metrics" {{ (old('metrics', $cluster->metrics) == 'prometheus') ? 'checked' : '' }}>
                                 <label for="pMetricsPrometheus">Prometheus</label>
-                            </div>
-                            <div class="radio radio-success radio-inline">
-                                <input type="radio" id="pMetricsGrafana" value="grafana" name="metrics" disabled>
-                                <label for="pMetricsGrafana">Grafana</label>
                             </div>
                         </div>
                         <p class="text-muted small">Collects metrics from various sources in the cluster.</p>
                     </div>
+                    
+                    <div class="row">
+                        <div class="metrics-form-group" style="display:none;"></div>
+                    </div>
+
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label for="pDNSPolicy" class="form-label">DNS Policy</label>
@@ -250,37 +251,15 @@
                             <input type="text" name="ns" data-multiplicator="true" class="form-control" id="pNamespace" value="{{ old('ns', $cluster->ns) }}"/>
                             <p class="text-muted small">Namespaces provides a mechanism for isolating groups of resources within a single cluster.</p>
                         </div>
-                        <!-- <div class="form-group col-md-6">
+                        <div class="form-group col-md-6">
                             <label for="pSnapshotClass" class="form-label">Volume Snapshot Class</label>
-                            <input type="text" name="ns" data-multiplicator="true" class="form-control" id="pSnapshotClass" value="csi-hostpath-snapclass" placeholder="{{ old('snapshot_class', $cluster->snapshot_class) }}"/>
+                            <input type="text" name="snapshot_class" data-multiplicator="true" class="form-control" id="pSnapshotClass" value="{{ old('snapshot_class', $cluster->snapshot_class) }}"/>
                             <p class="text-muted small">VolumeSnapshotClass provides a way to describe the "classes" of storage when provisioning a volume snapshot.</p>
-                        </div> -->
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Backup Method</label>
-                        <div>
-                            <div class="radio radio-success radio-inline">
-                                <input type="radio" id="pBuiltIn" value="buildin" name="backup_method" checked>
-                                <label for="pBuiltIn">Built-in</label>
-                            </div>
-                            <div class="radio radio-success radio-inline">
-                                <input type="radio" id="pBackupSnapshot" value="snapshot" name="backup_method" disabled>
-                                <label for="pBackupSnapshot">Snapshot</label>
-                            </div>
                         </div>
-                        <p class="text-muted small">Restore an existing volume to a previous state.</p>
                     </div>
+
                     <h4>Service</h4>
                     <div class="row">
-                        <!-- <div class="form-group col-md-12">
-                            <label for="pCustomMetadata" class="form-label">Additional Metadata</label>
-                            <select name="predefined_preset" id="pPredefinedPreset">
-                                    <option value="" selected>Choose a preset</option>
-                                    <option value="google_gke_autopilot">Google GKE Autopilot</option>
-                                    <option value="custom">Custom</option>
-                                </select>
-                            <textarea name="custom_metadata" id="pCustomMetadata" rows="4" class="form-control">{{ old('predefined_preset') }}</textarea>
-                        </div> -->
                         <div class="form-group col-md-6">
                             <label for="pServiceType" class="form-label">Service Type</label>
                             <select name="service_type" id="pServiceType">
@@ -289,40 +268,11 @@
                             </select>
                             <p class="text-muted small">ServiceTypes allow you to specify what kind of Service you want.</p>
                         </div>
-                        <!-- <div class="form-group col-md-6">
-                            <label for="pLBProvider" class="form-label">LoadBalancer Provider</label>
-                            <select name="lb_provider" id="pLBProvider">
-                                <option value="metallb" {{ (old('lb_provider', $cluster->lb_provider) == 'metallb') ? 'selected' : '' }}>MetalLB</option>
-                                <option value="gce" {{ (old('lb_provider', $cluster->lb_provider) == 'gce') ? 'selected' : '' }}>GCE</option>
-                                <option value="aws_elb" {{ (old('lb_provider', $cluster->lb_provider) == 'aws_elb') ? 'selected' : '' }}>AWS ELB</option>
-                                <option value="aws_elb" {{ (old('lb_provider', $cluster->lb_provider) == 'aws_elb') ? 'selected' : '' }}>Azure Load Balancer</option>
-                                <option value="aws_elb" {{ (old('lb_provider', $cluster->lb_provider) == 'aws_elb') ? 'selected' : '' }}>Traefik</option>
-                                <option value="aws_elb" {{ (old('lb_provider', $cluster->lb_provider) == 'aws_elb') ? 'selected' : '' }}>Nginx Ingress</option>
-                            </select>
-                            <p class="text-muted small">Each cloud provider has its own load balancing service, and each of these services has its own unique features.</p>
-                        </div> -->
+
                         <div class="provider-form-group" style="display:none;"></div>
                         <div class="lb-form-group" style="display:none;"></div>
-                        <!-- <div class="form-group col-md-6">
-                            <label for="pMetalLBAddressPool" class="form-label">MetalLB Address Pool</label>
-                            <input type="text" name="metallb_address_pool" data-multiplicator="true" class="form-control" id="pMetalLBAddressPool" value="{{ old('metallb_address_pool', $cluster->metallb_address_pool) }}"/>
-                            <p class="text-muted small">Supports requesting a specific address pool, if you want a certain kind of address but don’t care which one exactly..</p>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label class="form-label">Allow MetalLB Shared IP</label>
-                            <div>
-                                <div class="radio radio-success radio-inline">
-                                    <input type="radio" id="pMLBSIPTrue" value="1" name="metallb_shared_ip" {{ (old('metallb_shared_ip', $cluster->metallb_shared_ip)) ? 'checked' : '' }}>
-                                    <label for="pMLBSIPTrue"> True</label>
-                                </div>
-                                <div class="radio radio-danger radio-inline">
-                                    <input type="radio" id="pMLBSIPFalse" value="0" name="metallb_shared_ip" {{ !(old('metallb_shared_ip', $cluster->metallb_shared_ip)) ? 'checked' : '' }}>
-                                    <label for="pMLBSIPFalse"> False</label>
-                                </div>
-                            </div>
-                            <p class="text-muted small">MetalLB may colocate the two services on the same IP, but does not have to.</p>
-                        </div> -->
                     </div>
+                    
                     <h4>SFTP</h4>
                     <div class="row">
                         <div class="form-group col-md-6">
@@ -372,11 +322,34 @@
     $('select').select2();
 
     $(document).ready(function() {
+        $('input[type="radio"][name="metrics"]').on('load change', function() {
+            if ($('#pMetricsPrometheus').is(':checked')) {
+                $('.metrics-form-group').show();
+                $('.metrics-form-group').html('<div class="form-group col-md-6"> \
+                    <label for="pContainerSFTPPort" class="form-label">Prometheus Address</label> \
+                    <input type="text" name="prometheus_address" class="form-control" id="pPrometheusAddress" value="{{ old('prometheus_address', $cluster->prometheus_address) }}" placeholder="http://localhost:9090" /> \
+                    <p class="text-muted small">The address of the Prometheus to connect to.</p> \
+                </div>');
+                // $(this).trigger('change');
+            } else {
+                $('.metrics-form-group').hide();
+            }
+        });
+        $('input[type="radio"][name="metrics"]').trigger('change');
+
         $('#pServiceType').on('load change', function() {
             // alert(this.value)
             if (this.value === 'loadbalancer') {
                 $('.provider-form-group').show();
-                $('.provider-form-group').html('<div class="form-group col-md-6">\
+                $('.provider-form-group').html('<div class="form-group col-md-6"> \
+                <label for="pExternalTrafficPolicy" class="form-label">External Traffic Policy</label> \
+                    <select name="external_traffic_policy" id="pExternalTrafficPolicy"> \
+                        <option value="cluster" checked>Cluster</option> \
+                        <option value="local">Local</option> \
+                    </select> \
+                    <p class="text-muted small">Denotes if this Service desires to route external traffic to node-local or cluster-wide endpoints..</p> \
+                </div> \
+                <div class="form-group col-md-6">\
                 <label for="pLBProvider" class="form-label">LB Provider</label>\
                     <select name="lb_provider" id="pLBProvider">\
                         <option value="metallb" {{ (old('lb_provider', $cluster->lb_provider) == 'metallb') ? 'selected' : '' }}>MetalLB</option>\
@@ -411,6 +384,7 @@
                                 </div>\
                                 <p class="text-muted small">MetalLB may colocate the two services on the same IP, but does not have to.</p>\
                             </div>');
+                        $('#pExternalTrafficPolicy').select2();
                     }
                 });
                 $('#pLBProvider').trigger('change');
@@ -423,15 +397,16 @@
         $('#pServiceType').trigger('change');
     });
 
-    $('select[name="predefined_preset"]').change(function(){
-        if ($(this).val() == 'google_gke_autopilot') {
-            $('#pCustomMetadata').val(JSON.stringify(JSON.parse(
-                '{ "annotations": { "networking.gke.io/load-balancer-type": "Internal", "networking.gke.io/internal-load-balancer-subnet": "gke-vip-subnet" } }'
-            ),null,2));
-        } else {
-            $('#pCustomMetadata').val('');
-        }
-    })
+    // $('select[name="predefined_preset"]').change(function(){
+    //     if ($(this).val() == 'google_gke_autopilot') {
+    //         $('#pCustomMetadata').val(JSON.stringify(JSON.parse(
+    //             '{ "annotations": { "networking.gke.io/load-balancer-type": "Internal", "networking.gke.io/internal-load-balancer-subnet": "gke-vip-subnet" } }'
+    //         ),null,2));
+    //     } else {
+    //         $('#pCustomMetadata').val('');
+    //     }
+    // });
+
     $("#pToggleShow span a").on('click', function(event) {
         event.preventDefault();
         if ($('#pToggleShow input').attr("type") == "text") {

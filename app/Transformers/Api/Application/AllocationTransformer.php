@@ -1,20 +1,20 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Application;
+namespace Kubectyl\Transformers\Api\Application;
 
-use Pterodactyl\Models\Cluster;
-use Pterodactyl\Models\Server;
+use Kubectyl\Models\Cluster;
+use Kubectyl\Models\Server;
 use League\Fractal\Resource\Item;
-use Pterodactyl\Models\Allocation;
+use Kubectyl\Models\Allocation;
 use League\Fractal\Resource\NullResource;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Kubectyl\Services\Acl\Api\AdminAcl;
 
 class AllocationTransformer extends BaseTransformer
 {
     /**
      * Relationships that can be loaded onto allocation transformations.
      */
-    protected array $availableIncludes = ['node', 'server'];
+    protected array $availableIncludes = ['cluster', 'server'];
 
     /**
      * Return the resource name for the JSONAPI output.
@@ -40,27 +40,27 @@ class AllocationTransformer extends BaseTransformer
     }
 
     /**
-     * Load the node relationship onto a given transformation.
+     * Load the cluster relationship onto a given transformation.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeNode(Allocation $allocation): Item|NullResource
+    public function includeCluster(Allocation $allocation): Item|NullResource
     {
-        if (!$this->authorize(AdminAcl::RESOURCE_NODES)) {
+        if (!$this->authorize(AdminAcl::RESOURCE_CLUSTERS)) {
             return $this->null();
         }
 
         return $this->item(
-            $allocation->node,
+            $allocation->cluster,
             $this->makeTransformer(ClusterTransformer::class),
-            Node::RESOURCE_NAME
+            Cluster::RESOURCE_NAME
         );
     }
 
     /**
      * Load the server relationship onto a given transformation.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Kubectyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServer(Allocation $allocation): Item|NullResource
     {

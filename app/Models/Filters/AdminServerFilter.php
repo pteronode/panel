@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Models\Filters;
+namespace Kubectyl\Models\Filters;
 
 use BadMethodCallException;
 use Spatie\QueryBuilder\Filters\Filter;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware;
+namespace Kubectyl\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -20,7 +20,7 @@ class MaintenanceMiddleware
      */
     public function handle(Request $request, Closure $next): mixed
     {
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var \Kubectyl\Models\Server $server */
         $server = $request->attributes->get('server');
         $cluster = $server->getRelation('cluster');
 

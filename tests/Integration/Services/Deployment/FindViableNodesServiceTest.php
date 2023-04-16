@@ -1,17 +1,17 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Services\Deployment;
+namespace Kubectyl\Tests\Integration\Services\Deployment;
 
 use Exception;
-use Pterodactyl\Models\Cluster;
+use Kubectyl\Models\Cluster;
 use InvalidArgumentException;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Models\Location;
+use Kubectyl\Models\Server;
+use Kubectyl\Models\Database;
+use Kubectyl\Models\Location;
 use Illuminate\Support\Collection;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
-use Pterodactyl\Services\Deployment\FindViableClustersService;
-use Pterodactyl\Exceptions\Service\Deployment\NoViableClusterException;
+use Kubectyl\Tests\Integration\IntegrationTestCase;
+use Kubectyl\Services\Deployment\FindViableClustersService;
+use Kubectyl\Exceptions\Service\Deployment\NoViableClusterException;
 
 class FindViableClustersServiceTest extends IntegrationTestCase
 {
@@ -68,12 +68,12 @@ class FindViableClustersServiceTest extends IntegrationTestCase
         }
     }
 
-    public function testExpectedNodeIsReturnedForLocation()
+    public function testExpectedClusterIsReturnedForLocation()
     {
-        /** @var \Pterodactyl\Models\Location[] $locations */
+        /** @var \Kubectyl\Models\Location[] $locations */
         $locations = Location::factory()->times(2)->create();
 
-        /** @var \Pterodactyl\Models\Cluster[] $clusters */
+        /** @var \Kubectyl\Models\Cluster[] $clusters */
         $clusters = [
             // This cluster should never be returned once we've completed the initial test which
             // runs without a location filter.

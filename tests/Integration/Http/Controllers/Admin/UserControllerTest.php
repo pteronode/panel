@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Http\Controllers\Admin;
+namespace Kubectyl\Tests\Integration\Http\Controllers\Admin;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Subuser;
+use Kubectyl\Models\User;
+use Kubectyl\Models\Subuser;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Pterodactyl\Http\Controllers\Admin\UserController;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
+use Kubectyl\Http\Controllers\Admin\UserController;
+use Kubectyl\Tests\Integration\IntegrationTestCase;
 
 class UserControllerTest extends IntegrationTestCase
 {
@@ -37,7 +37,7 @@ class UserControllerTest extends IntegrationTestCase
         Subuser::query()->forceCreate(['server_id' => $servers[0]->id, 'user_id' => $users[1]->id]);
         Subuser::query()->forceCreate(['server_id' => $servers[1]->id, 'user_id' => $users[1]->id]);
 
-        /** @var \Pterodactyl\Http\Controllers\Admin\UserController $controller */
+        /** @var \Kubectyl\Http\Controllers\Admin\UserController $controller */
         $controller = $this->app->make(UserController::class);
 
         $request = Request::create('/admin/users?filter[username]=' . $unique);
@@ -47,7 +47,7 @@ class UserControllerTest extends IntegrationTestCase
         $this->assertArrayHasKey('users', $data);
         $this->assertInstanceOf(LengthAwarePaginator::class, $data['users']);
 
-        /** @var \Pterodactyl\Models\User[] $response */
+        /** @var \Kubectyl\Models\User[] $response */
         $response = $data['users']->items();
         $this->assertCount(2, $response);
         $this->assertInstanceOf(User::class, $response[0]);

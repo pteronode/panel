@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Console\Commands\Environment;
+namespace Kubectyl\Console\Commands\Environment;
 
 use DateTimeZone;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Kernel;
-use Pterodactyl\Traits\Commands\EnvironmentWriterTrait;
+use Kubectyl\Traits\Commands\EnvironmentWriterTrait;
 
 class AppSettingsCommand extends Command
 {
@@ -60,7 +60,7 @@ class AppSettingsCommand extends Command
     /**
      * Handle command execution.
      *
-     * @throws \Pterodactyl\Exceptions\PterodactylException
+     * @throws \Kubectyl\Exceptions\KubectylException
      */
     public function handle(): int
     {
@@ -68,9 +68,9 @@ class AppSettingsCommand extends Command
             $this->variables['HASHIDS_SALT'] = str_random(20);
         }
 
-        $this->output->comment('Provide the email address that eggs exported by this Panel should be from. This should be a valid email address.');
+        $this->output->comment('Provide the email address that rockets exported by this Panel should be from. This should be a valid email address.');
         $this->variables['APP_SERVICE_AUTHOR'] = $this->option('author') ?? $this->ask(
-            'Egg Author Email',
+            'Rocket Author Email',
             config('kubectyl.service.author', 'unknown@unknown.com')
         );
 

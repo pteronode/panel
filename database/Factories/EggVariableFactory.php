@@ -3,17 +3,17 @@
 namespace Database\Factories;
 
 use Illuminate\Support\Str;
-use Pterodactyl\Models\EggVariable;
+use Kubectyl\Models\RocketVariable;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class EggVariableFactory extends Factory
+class RocketVariableFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = EggVariable::class;
+    protected $model = RocketVariable::class;
 
     /**
      * Define the model's default state.
@@ -32,7 +32,7 @@ class EggVariableFactory extends Factory
     }
 
     /**
-     * Indicate that the egg variable is viewable.
+     * Indicate that the rocket variable is viewable.
      */
     public function viewable(): Factory
     {
@@ -44,7 +44,7 @@ class EggVariableFactory extends Factory
     }
 
     /**
-     * Indicate that the egg variable is editable.
+     * Indicate that the rocket variable is editable.
      */
     public function editable(): Factory
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Providers;
+namespace Kubectyl\Providers;
 
-use Pterodactyl\Models;
+use Kubectyl\Models;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Pagination\Paginator;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use Pterodactyl\Extensions\Themes\Theme;
+use Kubectyl\Extensions\Themes\Theme;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
 class AppServiceProvider extends ServiceProvider
@@ -39,10 +39,10 @@ class AppServiceProvider extends ServiceProvider
         Relation::enforceMorphMap([
             'allocation' => Models\Allocation::class,
             'api_key' => Models\ApiKey::class,
-            'backup' => Models\Backup::class,
+            'snapshot' => Models\Snapshot::class,
             'database' => Models\Database::class,
-            'egg' => Models\Egg::class,
-            'egg_variable' => Models\EggVariable::class,
+            'rocket' => Models\Rocket::class,
+            'rocket_variable' => Models\RocketVariable::class,
             'schedule' => Models\Schedule::class,
             'server' => Models\Server::class,
             'ssh_key' => Models\UserSSHKey::class,
@@ -56,6 +56,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->register(\Lord\Laroute\LarouteServiceProvider::class);
+
         // Only load the settings service provider if the environment
         // is configured to allow it.
         if (!config('kubectyl.load_environment_only', false) && $this->app->environment() !== 'testing') {

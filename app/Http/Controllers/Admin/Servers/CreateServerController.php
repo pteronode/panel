@@ -1,19 +1,20 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin\Servers;
+namespace Kubectyl\Http\Controllers\Admin\Servers;
 
 use JavaScript;
 use Illuminate\View\View;
-use Pterodactyl\Models\Cluster;
-use Pterodactyl\Models\Location;
+use Kubectyl\Models\Cluster;
+use Kubectyl\Models\Location;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\View\Factory as ViewFactory;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\Eloquent\NestRepository;
-use Pterodactyl\Repositories\Eloquent\ClusterRepository;
-use Pterodactyl\Http\Requests\Admin\ServerFormRequest;
-use Pterodactyl\Services\Servers\ServerCreationService;
+use Kubectyl\Http\Controllers\Controller;
+use Kubectyl\Repositories\Eloquent\LaunchpadRepository;
+use Kubectyl\Repositories\Eloquent\ServerRepository;
+use Kubectyl\Repositories\Eloquent\ClusterRepository;
+use Kubectyl\Http\Requests\Admin\ServerFormRequest;
+use Kubectyl\Services\Servers\ServerCreationService;
 
 class CreateServerController extends Controller
 {
@@ -22,7 +23,8 @@ class CreateServerController extends Controller
      */
     public function __construct(
         private AlertsMessageBag $alert,
-        private NestRepository $nestRepository,
+        private LaunchpadRepository $launchpadRepository,
+        private ServerRepository $serverRepository,
         private ClusterRepository $clusterRepository,
         private ServerCreationService $creationService,
         private ViewFactory $view
@@ -32,31 +34,31 @@ class CreateServerController extends Controller
     /**
      * Displays the create server page.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
     public function index(): View|RedirectResponse
     {
         $clusters = Cluster::all();
         if (count($clusters) < 1) {
-            $this->alert->warning(trans('admin/server.alerts.node_required'))->flash();
+            $this->alert->warning(trans('admin/server.alerts.cluster_required'))->flash();
 
             return redirect()->route('admin.clusters');
         }
 
-        $nests = $this->nestRepository->getWithEggs();
+        $launchpads = $this->launchpadRepository->getWithRockets();
 
         JavaScript::put([
-            'nodeData' => $this->clusterRepository->getClustersForServerCreation(),
-            'nests' => $nests->map(function ($item) {
+            'clusterData' => $this->clusterRepository->getClustersForServerCreation(),
+            'launchpads' => $launchpads->map(function ($item) {
                 return array_merge($item->toArray(), [
-                    'eggs' => $item->eggs->keyBy('id')->toArray(),
+                    'rockets' => $item->rockets->keyBy('id')->toArray(),
                 ]);
             })->keyBy('id'),
         ]);
 
         return $this->view->make('admin.servers.new', [
             'locations' => Location::all(),
-            'nests' => $nests,
+            'launchpads' => $launchpads,
         ]);
     }
 
@@ -64,9 +66,9 @@ class CreateServerController extends Controller
      * Create a new server on the remote system.
      *
      * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableClusterException
+     * @throws \Kubectyl\Exceptions\DisplayException
+     * @throws \Kubectyl\Exceptions\Service\Deployment\NoViableAllocationException
+     * @throws \Kubectyl\Exceptions\Service\Deployment\NoViableClusterException
      * @throws \Throwable
      */
     public function store(ServerFormRequest $request): RedirectResponse
@@ -77,10 +79,30 @@ class CreateServerController extends Controller
             unset($data['custom_image']);
         }
 
+        $data['node_selectors'] = $this->normalizeNodeSelectors($data['node_selectors'] ?? null);
+        
         $server = $this->creationService->handle($data);
 
         $this->alert->success(trans('admin/server.alerts.server_created'))->flash();
 
         return new RedirectResponse('/admin/servers/view/' . $server->id);
+    }
+
+    /**
+     * Normalizes a string of node selectors data into the expected rocket format.
+     */
+    protected function normalizeNodeSelectors(string $input = null): array
+    {
+        $data = array_map(fn ($value) => trim($value), explode("\n", $input ?? ''));
+
+        $images = [];
+        // Iterate over the selector data provided and convert it into a key => value
+        // pairing that is used to improve the display on the front-end.
+        foreach ($data as $value) {
+            $parts = explode(':', $value, 2);
+            $images[$parts[0]] = empty($parts[1]) ? $parts[0] : $parts[1];
+        }
+
+        return $images;
     }
 }

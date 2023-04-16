@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Application\Clusters;
+namespace Kubectyl\Http\Requests\Api\Application\Clusters;
 
-use Pterodactyl\Models\Cluster;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
+use Kubectyl\Models\Cluster;
+use Kubectyl\Services\Acl\Api\AdminAcl;
+use Kubectyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class StoreClusterRequest extends ApplicationApiRequest
 {
-    protected ?string $resource = AdminAcl::RESOURCE_NODES;
+    protected ?string $resource = AdminAcl::RESOURCE_CLUSTERS;
 
     protected int $permission = AdminAcl::WRITE;
 

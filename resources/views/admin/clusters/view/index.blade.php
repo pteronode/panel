@@ -21,7 +21,7 @@
                 <li class="active"><a href="{{ route('admin.clusters.view', $cluster->id) }}">About</a></li>
                 <li><a href="{{ route('admin.clusters.view.settings', $cluster->id) }}">Settings</a></li>
                 <li><a href="{{ route('admin.clusters.view.configuration', $cluster->id) }}">Configuration</a></li>
-                <li class="disabled"><a href="javascript:void(0);">Allocation</a></li>
+                <li><a href="{{ route('admin.clusters.view.allocation', $cluster->id) }}">Allocation</a></li>
                 <li><a href="{{ route('admin.clusters.view.servers', $cluster->id) }}">Servers</a></li>
             </ul>
         </div>
@@ -100,7 +100,7 @@
                         <div class="info-box bg-orange">
                             <span class="info-box-icon"><i class="ion ion-wrench"></i></span>
                             <div class="info-box-content" style="padding: 23px 10px 0;">
-                                <span class="info-box-text">This node is under</span>
+                                <span class="info-box-text">This cluster is under</span>
                                 <span class="info-box-number">Maintenance</span>
                             </div>
                         </div>
@@ -111,7 +111,7 @@
                             <span class="info-box-icon"><i class="ion ion-ios-folder-outline"></i></span>
                             <div class="info-box-content" style="padding: 25px 10px 0;">
                                 <span class="info-box-text">Disk Space Used</span>
-                                <!-- <span class="info-box-number">1024 MiB</span> -->
+                                <span class="info-box-number">X MiB</span>
                             </div>
                         </div>
                     </div>
@@ -120,7 +120,7 @@
                             <span class="info-box-icon"><i class="ion ion-ios-barcode-outline"></i></span>
                             <div class="info-box-content" style="padding: 15px 10px 0;">
                                 <span class="info-box-text">Memory Used</span>
-                                <!-- <span class="info-box-number">1024 / 1024 MiB</span> -->
+                                <span class="info-box-number">X / X MiB</span>
                             </div>
                         </div>
                     </div>

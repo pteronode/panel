@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace Kubectyl\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Pterodactyl\Models\Allocation.
+ * Kubectyl\Models\Allocation.
  *
  * @property int $id
  * @property int $cluster_id
@@ -18,8 +18,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Carbon\Carbon|null $updated_at
  * @property string $alias
  * @property bool $has_alias
- * @property \Pterodactyl\Models\Server|null $server
- * @property \Pterodactyl\Models\Cluster $cluster
+ * @property \Kubectyl\Models\Server|null $server
+ * @property \Kubectyl\Models\Cluster $cluster
  * @property string $hashid
  *
  * @method static \Database\Factories\AllocationFactory factory(...$parameters)

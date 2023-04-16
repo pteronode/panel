@@ -192,16 +192,16 @@ return [
         /*
          * Application Service Providers...
          */
-        Pterodactyl\Providers\ActivityLogServiceProvider::class,
-        Pterodactyl\Providers\AppServiceProvider::class,
-        Pterodactyl\Providers\AuthServiceProvider::class,
-        Pterodactyl\Providers\BackupsServiceProvider::class,
-        Pterodactyl\Providers\BladeServiceProvider::class,
-        Pterodactyl\Providers\EventServiceProvider::class,
-        Pterodactyl\Providers\HashidsServiceProvider::class,
-        Pterodactyl\Providers\RouteServiceProvider::class,
-        Pterodactyl\Providers\RepositoryServiceProvider::class,
-        Pterodactyl\Providers\ViewComposerServiceProvider::class,
+        Kubectyl\Providers\ActivityLogServiceProvider::class,
+        Kubectyl\Providers\AppServiceProvider::class,
+        Kubectyl\Providers\AuthServiceProvider::class,
+        Kubectyl\Providers\BackupsServiceProvider::class,
+        Kubectyl\Providers\BladeServiceProvider::class,
+        Kubectyl\Providers\EventServiceProvider::class,
+        Kubectyl\Providers\HashidsServiceProvider::class,
+        Kubectyl\Providers\RouteServiceProvider::class,
+        Kubectyl\Providers\RepositoryServiceProvider::class,
+        Kubectyl\Providers\ViewComposerServiceProvider::class,
 
         /*
          * Additional Dependencies
@@ -224,11 +224,11 @@ return [
         'Alert' => Prologue\Alerts\Facades\Alert::class,
         'Carbon' => Carbon\Carbon::class,
         'JavaScript' => Laracasts\Utilities\JavaScript\JavaScriptFacade::class,
-        'Theme' => Pterodactyl\Extensions\Facades\Theme::class,
+        'Theme' => Kubectyl\Extensions\Facades\Theme::class,
 
         // Custom Facades
-        'Activity' => Pterodactyl\Facades\Activity::class,
-        'LogBatch' => Pterodactyl\Facades\LogBatch::class,
-        'LogTarget' => Pterodactyl\Facades\LogTarget::class,
+        'Activity' => Kubectyl\Facades\Activity::class,
+        'LogBatch' => Kubectyl\Facades\LogBatch::class,
+        'LogTarget' => Kubectyl\Facades\LogTarget::class,
     ])->toArray(),
 ];

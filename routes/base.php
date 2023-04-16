@@ -1,8 +1,29 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Pterodactyl\Http\Controllers\Base;
-use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
+use Kubectyl\Http\Controllers\Base;
+use Kubectyl\Http\Middleware\RequireTwoFactorAuthentication;
+// use Kubectyl\Http\Controllers\Auth;
+use Illuminate\Support\Facades\Auth;
+
+Route::get('/keycloak', function () {
+    $credentials = KeycloakWeb::retrieveToken();
+    if (empty($credentials)) {
+        return false;
+    }
+
+    $user = KeycloakWeb::getUserProfile($credentials);
+
+    return $user;
+})->name('keycloak');
+
+Route::get('/protected', function () {
+    return Auth::roles();
+    // return KeycloakWeb::retrieveToken();
+    // return 'This is a protected route!';
+});
+
+// Route::get('/callback', [Auth\AuthController::class, 'callback'])->name('keycloak.callback');
 
 Route::get('/', [Base\IndexController::class, 'index'])->name('index')->fallback();
 Route::get('/account', [Base\IndexController::class, 'index'])

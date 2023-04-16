@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Admin;
+namespace Kubectyl\Http\Requests\Admin;
 
-use Pterodactyl\Models\Server;
+use Kubectyl\Models\Server;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
@@ -16,6 +16,7 @@ class ServerFormRequest extends AdminFormRequest
         $rules = Server::getRules();
         $rules['description'][] = 'nullable';
         $rules['custom_image'] = 'sometimes|nullable|string';
+        $rules['node_selectors'] = 'nullable|string';
 
         return $rules;
     }

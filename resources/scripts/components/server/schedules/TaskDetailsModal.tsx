@@ -70,7 +70,7 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
 
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const appendSchedule = ServerContext.useStoreActions((actions) => actions.schedules.appendSchedule);
-    const backupLimit = ServerContext.useStoreState((state) => state.server.data!.featureLimits.backups);
+    const snapshotLimit = ServerContext.useStoreState((state) => state.server.data!.featureLimits.snapshots);
 
     useEffect(() => {
         return () => {
@@ -80,10 +80,10 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
 
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('schedule:task');
-        if (backupLimit === 0 && values.action === 'backup') {
+        if (snapshotLimit === 0 && values.action === 'snapshot') {
             setSubmitting(false);
             addError({
-                message: "A backup task cannot be created when the server's backup limit is set to 0.",
+                message: "A snapshot task cannot be created when the server's snapshot limit is set to 0.",
                 key: 'schedule:task',
             });
         } else {
@@ -128,7 +128,7 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                                 <FormikField as={Select} name={'action'}>
                                     <option value={'command'}>Send command</option>
                                     <option value={'power'}>Send power action</option>
-                                    <option value={'backup'}>Create backup</option>
+                                    <option value={'snapshot'}>Create snapshot</option>
                                 </FormikField>
                             </FormikFieldWrapper>
                         </div>

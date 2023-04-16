@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace Kubectyl\Repositories\Eloquent;
 
 use Illuminate\Support\Collection;
-use Pterodactyl\Models\DatabaseHost;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
+use Kubectyl\Models\DatabaseHost;
+use Kubectyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class DatabaseHostRepository extends EloquentRepository implements DatabaseHostRepositoryInterface
 {
@@ -17,11 +17,11 @@ class DatabaseHostRepository extends EloquentRepository implements DatabaseHostR
     }
 
     /**
-     * Return database hosts with a count of databases and the node
+     * Return database hosts with a count of databases and the cluster
      * information for which it is attached.
      */
     public function getWithViewDetails(): Collection
     {
-        return $this->getBuilder()->withCount('databases')->with('node')->get();
+        return $this->getBuilder()->withCount('databases')->with('cluster')->get();
     }
 }
