@@ -35,6 +35,38 @@ $(document).ready(function() {
     }).change();
 });
 
+// Protect against admin mistakes
+$('#pCPULimit').on('input', function() {
+    const value = Number($(this).val());
+    const dividedValue = value / 8;
+    $('#pCPURequest').val(dividedValue);
+});
+$('#pCPURequest').on('input', function() {
+    const input1Value = Number($(this).val());
+    const input2Value = Number($('#pCPULimit').val());
+
+    if (input1Value > input2Value) {
+        $(this).val(input2Value);
+    } else if (input1Value == 0) {
+        $(this).val(input2Value / 8);
+    }
+});
+$('#pMemoryLimit').on('input', function() {
+    const value = Number($(this).val());
+    const dividedValue = value / 2;
+    $('#pMemoryRequest').val(dividedValue);
+});
+$('#pMemoryRequest').on('input', function() {
+    const input1Value = Number($(this).val());
+    const input2Value = Number($('#pMemoryLimit').val());
+
+    if (input1Value > input2Value) {
+        $(this).val(input2Value);
+    } else if (input1Value == 0) {
+        $(this).val(input2Value / 2);
+    }
+});
+
 $('input[type="radio"][name="allocation_system"]').on('load change', function() {
     if ($(this).is(':checked') && this.value === 'manual') {
         $('#pDefaultPort').closest('.form-group').remove();

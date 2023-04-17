@@ -89,7 +89,10 @@
                         <select name="config_from" id="pNodeSelectorFrom" class="form-control">
                             <option value="">None</option>
                         </select>
-                        <p class="text-muted small">If you would like to default nodeSelector settings from an existing Rocket select it from the menu above.</p>
+                        <p class="text-muted small">
+                            If you would like to add node selector values from an existing Rocket select it from the menu above. <br>
+                            <em>To change the Launchpad scroll down to Configuration.</em>
+                        </p>
                     </div>
 
                     <div class="form-group col-md-4">
@@ -163,8 +166,7 @@
                     <h3 class="box-title">Resource Management</h3>
                 </div>
 
-                <div class="box-body row">
-                    <div class="form-group col-xs-6">
+                <!-- <div class="form-group col-xs-6">
                         <label for="pCPU">CPU Limit</label>
 
                         <div class="input-group">
@@ -173,17 +175,55 @@
                         </div>
 
                         <p class="text-muted small">If you do not want to limit CPU usage, set the value to <code>0</code>. To determine a value, take the number of threads and multiply it by 100. For example, on a quad core system without hyperthreading <code>(4 * 100 = 400)</code> there is <code>400%</code> available. To limit a server to using half of a single thread, you would set the value to <code>50</code>. To allow a server to use up to two threads, set the value to <code>200</code>.<p>
-                    </div>
+                    </div> -->
 
+                <div class="box-body">
+                    <div class="row">
                     <div class="form-group col-xs-6">
-                        <label for="pMemory">Memory</label>
+                        <label for="pCPURequest">CPU Request</label>
 
                         <div class="input-group">
-                            <input type="text" id="pMemory" name="memory" class="form-control" value="{{ old('memory', 128) }}" />
+                            <input type="text" id="pCPURequest" name="cpu_request" class="form-control" value="{{ old('cpu_request', 0) }}" />
+                            <span class="input-group-addon">%</span>
+                        </div>
+
+                        <p class="text-muted small">Specifies the minimum amount of CPU resources that the pod requires. The value cannot be greater than the CPU limit or <code>0</code> if limit is specified.<p>
+                    </div>
+                    
+                    <div class="form-group col-xs-6">
+                        <label for="pCPULimit">CPU Limit</label>
+
+                        <div class="input-group">
+                            <input type="text" id="pCPULimit" name="cpu_limit" class="form-control" value="{{ old('cpu_limit', 0) }}" />
+                            <span class="input-group-addon">%</span>
+                        </div>
+
+                        <p class="text-muted small">If you do not want to limit CPU usage, set the value to <code>0</code>. To determine a value, take the number of threads and multiply it by 100. For example, on a quad core system without hyperthreading <code>(4 * 100 = 400)</code> there is <code>400%</code> available. To limit a server to using half of a single thread, you would set the value to <code>50</code>. To allow a server to use up to two threads, set the value to <code>200</code>.<p>
+                    </div>
+                    </div>
+
+                    <div class="row">
+                    <div class="form-group col-xs-6">
+                        <label for="pMemoryRequest">Memory Request</label>
+
+                        <div class="input-group">
+                            <input type="text" id="pMemoryRequest" name="memory_request" class="form-control" value="{{ old('memory_request', 64) }}" />
                             <span class="input-group-addon">MiB</span>
                         </div>
 
-                        <p class="text-muted small">The maximum amount of memory allowed for this container. Minimum value is <code>128</code>.</p>
+                        <p class="text-muted small">The minimum amount of memory resources that the pod requires. The value cannot be greater than the Memory limit or <code>0</code> if limit is specified.</p>
+                    </div>
+
+                    <div class="form-group col-xs-6">
+                        <label for="pMemoryLimit">Memory Limit</label>
+
+                        <div class="input-group">
+                            <input type="text" id="pMemoryLimit" name="memory_limit" class="form-control" value="{{ old('memory_limit', 128) }}" />
+                            <span class="input-group-addon">MiB</span>
+                        </div>
+
+                        <p class="text-muted small">The maximum amount of memory resources that the pod can use. Minimum value is <code>128</code>.</p>
+                    </div>
                     </div>
                 </div>
 
