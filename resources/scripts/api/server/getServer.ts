@@ -34,12 +34,9 @@ export interface Server {
     dockerImage: string;
     description: string;
     limits: {
-        memory: number;
-        swap: number;
+        memory_limit: number;
         disk: number;
-        io: number;
-        cpu: number;
-        threads: string;
+        cpu_limit: number;
     };
     eggFeatures: string[];
     featureLimits: {

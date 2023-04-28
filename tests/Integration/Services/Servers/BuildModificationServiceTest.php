@@ -115,24 +115,21 @@ class BuildModificationServiceTest extends IntegrationTestCase
         $this->daemonServerRepository->expects('sync')->withNoArgs()->andReturnUndefined();
 
         $response = $this->getService()->handle($server, [
-            // 'oom_disabled' => false,
-            'memory' => 256,
-            // 'swap' => 128,
-            // 'io' => 600,
-            'cpu' => 150,
-            // 'threads' => '1,2',
+            'memory_request' => 256,
+            'memory_limit' => 512,
+            'cpu_request' => 13,
+            'cpu_limit' => 100,
             'disk' => 1024,
             'snapshot_limit' => null,
             'database_limit' => 10,
+            'node_selectors' => null,
             'allocation_limit' => 20,
         ]);
 
-        // $this->assertFalse($response->oom_disabled);
-        $this->assertSame(256, $response->memory);
-        // $this->assertSame(128, $response->swap);
-        // $this->assertSame(600, $response->io);
-        $this->assertSame(150, $response->cpu);
-        // $this->assertSame('1,2', $response->threads);
+        $this->assertSame(256, $response->memory_request);
+        $this->assertSame(512, $response->memory_limit);
+        $this->assertSame(13, $response->cpu_request);
+        $this->assertSame(100, $response->cpu_limit);
         $this->assertSame(1024, $response->disk);
         $this->assertSame(0, $response->snapshot_limit);
         $this->assertSame(10, $response->database_limit);
@@ -154,13 +151,14 @@ class BuildModificationServiceTest extends IntegrationTestCase
             )
         );
 
-        $response = $this->getService()->handle($server, ['memory' => 256, 'disk' => 10240]);
+        $response = $this->getService()->handle($server, ['memory_request' => 256, 'memory_limit' => 512, 'disk' => 10240]);
 
         $this->assertInstanceOf(Server::class, $response);
-        $this->assertSame(256, $response->memory);
+        $this->assertSame(256, $response->memory_request);
+        $this->assertSame(512, $response->memory_limit);
         $this->assertSame(10240, $response->disk);
 
-        $this->assertDatabaseHas('servers', ['id' => $response->id, 'memory' => 256, 'disk' => 10240]);
+        $this->assertDatabaseHas('servers', ['id' => $response->id, 'memory_request' => 256, 'memory_limit' => 512, 'disk' => 10240]);
     }
 
     /**

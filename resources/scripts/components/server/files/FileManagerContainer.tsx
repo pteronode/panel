@@ -56,7 +56,17 @@ export default () => {
     };
 
     if (error) {
-        return <ServerError message={httpErrorToHuman(error)} onRetry={() => mutate()} />;
+        if (error.response.status === 503) {
+            return (
+                <ServerError
+                    title={'Please wait ...'}
+                    message={'Server is performing a power operation and is not yet ready to accept requests.'}
+                    image={null}
+                />
+            );
+        } else {
+            return <ServerError message={httpErrorToHuman(error)} onRetry={() => mutate()} />;
+        }
     }
 
     return (

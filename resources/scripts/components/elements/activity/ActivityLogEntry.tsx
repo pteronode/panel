@@ -11,6 +11,7 @@ import style from './style.module.css';
 import Avatar from '@/components/Avatar';
 import useLocationHash from '@/plugins/useLocationHash';
 import { getObjectKeys, isObject } from '@/lib/objects';
+import tw from 'twin.macro';
 
 interface Props {
     activity: ActivityLog;
@@ -90,6 +91,7 @@ export default ({ activity, children }: Props) => {
                         <Tooltip placement={'right'} content={format(activity.timestamp, 'MMM do, yyyy H:mm:ss')}>
                             <span>{formatDistanceToNowStrict(activity.timestamp, { addSuffix: true })}</span>
                         </Tooltip>
+                        <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}> </code>
                     </div>
                 </div>
                 {activity.hasAdditionalMetadata && <ActivityLogMetaButton meta={activity.properties} />}

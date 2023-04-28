@@ -27,7 +27,6 @@ class MakeClusterCommand extends Command
                             {--namespace= : Test}
                             {--metrics= : Test}
                             {--snapshot_class= : Test}
-                            {--namespace= : Test}
                             {--external_traffic_policy= : Test}';
 
     protected $description = 'Creates a new cluster on the system via the CLI.';

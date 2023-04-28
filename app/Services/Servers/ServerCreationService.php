@@ -119,7 +119,7 @@ class ServerCreationService
         /** @var \Illuminate\Support\Collection $clusters */
         $clusters = $this->findViableClustersService->setLocations($deployment->getLocations())
             ->setDisk(Arr::get($data, 'disk'))
-            ->setMemory(Arr::get($data, 'memory'))
+            ->setMemory(Arr::get($data, 'memory_limit'))
             ->handle();
 
         return $this->allocationSelectionService->setDedicated($deployment->isDedicated())
@@ -148,13 +148,11 @@ class ServerCreationService
             'status' => Server::STATUS_INSTALLING,
             'skip_scripts' => Arr::get($data, 'skip_scripts') ?? isset($data['skip_scripts']),
             'owner_id' => Arr::get($data, 'owner_id'),
-            'memory' => Arr::get($data, 'memory'),
-            // 'swap' => Arr::get($data, 'swap'),
+            'memory_request' => Arr::get($data, 'memory_request'),
+            'memory_limit' => Arr::get($data, 'memory_limit'),
             'disk' => Arr::get($data, 'disk'),
-            // 'io' => Arr::get($data, 'io'),
-            'cpu' => Arr::get($data, 'cpu'),
-            // 'threads' => Arr::get($data, 'threads'),
-            // 'oom_disabled' => Arr::get($data, 'oom_disabled') ?? true,
+            'cpu_request' => Arr::get($data, 'cpu_request'),
+            'cpu_limit' => Arr::get($data, 'cpu_limit'),
             'allocation_id' => Arr::get($data, 'allocation_id'),
             'default_port' => Arr::get($data, 'default_port'),
             'additional_ports' => Arr::get($data, 'additional_ports'),

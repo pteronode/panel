@@ -163,10 +163,10 @@ class FindViableClustersServiceTest extends IntegrationTestCase
         // Create four servers so that the memory used for the second cluster is equal to the total
         // limit for that cluster (pre-overallocate calculation).
         Collection::make([
-            $this->createServerModel(['cluster_id' => $clusters[2]->id, 'memory' => 1024]),
-            $this->createServerModel(['cluster_id' => $clusters[2]->id, 'memory' => 1024]),
-            $this->createServerModel(['cluster_id' => $clusters[2]->id, 'memory' => 1024]),
-            $this->createServerModel(['cluster_id' => $clusters[2]->id, 'memory' => 1024]),
+            $this->createServerModel(['cluster_id' => $clusters[2]->id, 'memory_limit' => 1024]),
+            $this->createServerModel(['cluster_id' => $clusters[2]->id, 'memory_limit' => 1024]),
+            $this->createServerModel(['cluster_id' => $clusters[2]->id, 'memory_limit' => 1024]),
+            $this->createServerModel(['cluster_id' => $clusters[2]->id, 'memory_limit' => 1024]),
         ]);
 
         // Expect that either cluster can support this server when we account for the overallocate

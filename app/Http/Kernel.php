@@ -96,6 +96,6 @@ class Kernel extends HttpKernel
         'can' => Authorize::class,
         'bindings' => SubstituteBindings::class,
         'recaptcha' => VerifyReCaptcha::class,
-        'node.maintenance' => MaintenanceMiddleware::class,
+        'cluster.maintenance' => MaintenanceMiddleware::class,
     ];
 }

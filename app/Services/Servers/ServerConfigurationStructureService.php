@@ -53,8 +53,10 @@ class ServerConfigurationStructureService
             'invocation' => $server->startup,
             'skip_rocket_scripts' => $server->skip_scripts,
             'build' => [
-                'memory_limit' => $server->memory,
-                'cpu_limit' => $server->cpu,
+                'memory_request' => $server->memory_request,
+                'memory_limit' => $server->memory_limit,
+                'cpu_request' => $server->cpu_request,
+                'cpu_limit' => $server->cpu_limit,
                 'disk_space' => $server->disk,
             ],
             'container' => [
@@ -106,23 +108,14 @@ class ServerConfigurationStructureService
         return [
             'uuid' => $server->uuid,
             'build' => [
-                // 'default' => [
-                //     'ip' => $server->allocation->ip,
-                //     'port' => $server->allocation->port,
-                // ],
                 'default' => [
                     'port' => $server->default_port,
                 ],
-                // 'ports' => $server->allocations->groupBy('ip')->map(function ($item) {
-                //     return $item->pluck('port');
-                // })->toArray(),
                 'env' => $this->environment->handle($server),
-                // 'oom_disabled' => $server->oom_disabled,
-                'memory' => (int) $server->memory,
-                // 'swap' => (int) $server->swap,
-                // 'io' => (int) $server->io,
-                'cpu' => (int) $server->cpu,
-                // 'threads' => $server->threads,
+                'memory_request' => (int) $server->memory_request,
+                'memory_limit' => (int) $server->memory_limit,
+                'cpu_request' => (int) $server->cpu_request,
+                'cpu_limit' => (int) $server->cpu_limit,
                 'disk' => (int) $server->disk,
                 'image' => $server->image,
             ],

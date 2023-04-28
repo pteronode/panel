@@ -25,11 +25,11 @@ use Kubectyl\Exceptions\Http\Server\ServerStateConflictException;
  * @property string|null $status
  * @property bool $skip_scripts
  * @property int $owner_id
- * @property int $memory
+ * @property int $memory_request
+ * @property int $memory_limit
  * @property int $disk
- * @property int $cpu
- * @property string|null $threads
- * @property bool $oom_disabled
+ * @property int $cpu_request
+ * @property int $cpu_limit
  * @property int $allocation_id
  * @property int $default_port
  * @property array $additional_ports
@@ -130,7 +130,6 @@ class Server extends Model
      */
     protected $attributes = [
         'status' => self::STATUS_INSTALLING,
-        'oom_disabled' => true,
         'installed_at' => null,
         'node_selectors' => null,
     ];
@@ -157,10 +156,10 @@ class Server extends Model
         'cluster_id' => 'required|exists:clusters,id',
         'description' => 'string',
         'status' => 'nullable|string',
-        'memory' => 'required|numeric|min:128',
-        'cpu' => 'required|numeric|min:0',
-        'threads' => 'nullable|regex:/^[0-9-,]+$/',
-        'oom_disabled' => 'sometimes|boolean',
+        'memory_request' => 'required|numeric|min:128',
+        'memory_limit' => 'required|numeric|min:128',
+        'cpu_request' => 'required|numeric|min:0',
+        'cpu_limit' => 'required|numeric|min:0',
         'disk' => 'required|numeric|min:0',
         'allocation_id' => 'required_without:default_port|nullable|bail|unique:servers|exists:allocations,id',
         'default_port' => 'required_without:allocation_id|nullable|numeric|between:1,65535',
@@ -184,10 +183,11 @@ class Server extends Model
         'cluster_id' => 'integer',
         'skip_scripts' => 'boolean',
         'owner_id' => 'integer',
-        'memory' => 'integer',
+        'memory_request' => 'integer',
+        'memory_limit' => 'integer',
         'disk' => 'integer',
-        'cpu' => 'integer',
-        'oom_disabled' => 'boolean',
+        'cpu_request' => 'integer',
+        'cpu_limit' => 'integer',
         'allocation_id' => 'integer',
         'default_port' => 'integer',
         'additional_ports' => 'array',

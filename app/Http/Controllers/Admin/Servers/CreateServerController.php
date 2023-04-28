@@ -79,7 +79,7 @@ class CreateServerController extends Controller
             unset($data['custom_image']);
         }
 
-        $data['node_selectors'] = $this->normalizeNodeSelectors($data['node_selectors'] ?? null);
+        $data['node_selectors'] = $data['node_selectors'] ? $this->normalizeNodeSelectors($data['node_selectors']) : null;
         
         $server = $this->creationService->handle($data);
 

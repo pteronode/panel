@@ -24,21 +24,37 @@
                     <h3 class="box-title">Resource Management</h3>
                 </div>
                 <div class="box-body">
-                <div class="form-group">
-                        <label for="cpu" class="control-label">CPU Limit</label>
+                    <div class="form-group">
+                        <label for="cpu_request" class="control-label">CPU Request</label>
                         <div class="input-group">
-                            <input type="text" name="cpu" class="form-control" value="{{ old('cpu', $server->cpu) }}"/>
+                            <input type="text" id="pCPURequest" name="cpu_request" class="form-control" value="{{ old('cpu_request', $server->cpu_request) }}"/>
+                            <span class="input-group-addon">%</span>
+                        </div>
+                        <p class="text-muted small">Specifies the minimum amount of CPU resources that the pod requires. The value cannot be greater than the CPU limit or <code>0</code> if limit is specified.<p>
+                    </div>
+                    <div class="form-group">
+                        <label for="cpu_limit" class="control-label">CPU Limit</label>
+                        <div class="input-group">
+                            <input type="text" id="pCPULimit" name="cpu_limit" class="form-control" value="{{ old('cpu_limit', $server->cpu_limit) }}"/>
                             <span class="input-group-addon">%</span>
                         </div>
                         <p class="text-muted small">Each <em>virtual</em> core (thread) on the system is considered to be <code>100%</code>. Setting this value to <code>0</code> will allow a server to use CPU time without restrictions.</p>
                     </div>
                     <div class="form-group">
-                        <label for="memory" class="control-label">Allocated Memory</label>
+                        <label for="memory_request" class="control-label">Memory Request</label>
                         <div class="input-group">
-                            <input type="text" name="memory" data-multiplicator="true" class="form-control" value="{{ old('memory', $server->memory) }}"/>
+                            <input type="text" id="pMemoryRequest" name="memory_request" data-multiplicator="true" class="form-control" value="{{ old('memory_request', $server->memory_request) }}"/>
                             <span class="input-group-addon">MiB</span>
                         </div>
-                        <p class="text-muted small">The maximum amount of memory allowed for this container. Setting this to <code>0</code> will allow unlimited memory in a container.</p>
+                        <p class="text-muted small">The minimum amount of memory resources that the pod requires. The value cannot be greater than the Memory limit or <code>0</code> if limit is specified.</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="memory_limit" class="control-label">Memory Limit</label>
+                        <div class="input-group">
+                            <input type="text" id="pMemoryLimit" name="memory_limit" data-multiplicator="true" class="form-control" value="{{ old('memory_limit', $server->memory_limit) }}"/>
+                            <span class="input-group-addon">MiB</span>
+                        </div>
+                        <p class="text-muted small">The maximum amount of memory resources that the pod can use. Minimum value is <code>128</code>.</p>
                     </div>
                     <div class="form-group">
                         <label for="cpu" class="control-label">Disk Space Limit</label>
@@ -46,7 +62,7 @@
                             <input type="text" name="disk" class="form-control" value="{{ old('disk', $server->disk) }}"/>
                             <span class="input-group-addon">MiB</span>
                         </div>
-                        <p class="text-muted small">This server will not be allowed to boot if it is using more than this amount of space. If a server goes over this limit while running it will be safely stopped and locked until enough space is available. Set to <code>0</code> to allow unlimited disk usage.</p>
+                        <p class="text-muted small">This server will not be allowed to boot if it is using more than this amount of space. If a server goes over this limit while running it will be safely stopped and locked until enough space is available. Minimum value is <code>128</code>.</p>
                     </div>
                 </div>
             </div>
@@ -97,7 +113,7 @@
                                     <div> 
                                         <textarea id="pNodeSelector" name="node_selectors" class="form-control" rows="4">{{ implode(PHP_EOL, $selectors) }}</textarea>
                                         <p class="small text-muted no-margin">
-                                            You can constrain <b>Pods</b> grouped under this Launchpad so that they are <em>restricted</em> to run on particular node(s), or to prefer to run on particular nodes.
+                                            You can constrain a <b>Pod</b> so that it is <em>restricted</em> to run on particular node(s), or to prefer to run on particular nodes.
                                             Example: <code>Key:Value</code> one per line
                                         </p>
                                     </div>
@@ -195,5 +211,37 @@
     $('#pRemovePorts').select2();
     $('#pRemoveAllocations').select2();
     $('#pAllocation').select2();
+
+    // Protect against admin mistakes
+$('#pCPULimit').on('input', function() {
+    const value = Number($(this).val());
+    const dividedValue = value / 8;
+    $('#pCPURequest').val(parseFloat(dividedValue).toFixed(0));
+});
+$('#pCPURequest').on('input', function() {
+    const input1Value = Number($(this).val());
+    const input2Value = Number($('#pCPULimit').val());
+
+    if (input1Value > input2Value) {
+        $(this).val(input2Value);
+    } else if (input1Value == 0) {
+        $(this).val(parseFloat(input2Value / 8).toFixed(0));
+    }
+});
+$('#pMemoryLimit').on('input', function() {
+    const value = Number($(this).val());
+    const dividedValue = value / 2;
+    $('#pMemoryRequest').val(parseFloat(dividedValue).toFixed(0));
+});
+$('#pMemoryRequest').on('input', function() {
+    const input1Value = Number($(this).val());
+    const input2Value = Number($('#pMemoryLimit').val());
+
+    if (input1Value > input2Value) {
+        $(this).val(input2Value);
+    } else if (input1Value == 0) {
+        parseFloat($(this).val(input2Value / 2)).toFixed(2);
+    }
+});
     </script>
 @endsection

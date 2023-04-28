@@ -8,7 +8,7 @@ use Kubectyl\Services\Telemetry\TelemetryCollectionService;
 
 class TelemetryCommand extends Command
 {
-    protected $description = 'Displays all the data that would be sent to the Pterodactyl Telemetry Service if telemetry collection is enabled.';
+    protected $description = 'Displays all the data that would be sent to the Kubectyl Telemetry Service if telemetry collection is enabled.';
 
     protected $signature = 'p:telemetry';
 

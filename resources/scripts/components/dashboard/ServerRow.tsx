@@ -79,14 +79,15 @@ export default ({ server, className }: { server: Server; className?: string }) =
 
     const alarms = { cpu: false, memory: false, disk: false };
     if (stats) {
-        alarms.cpu = server.limits.cpu === 0 ? false : stats.cpuUsagePercent >= server.limits.cpu * 0.9;
-        alarms.memory = isAlarmState(stats.memoryUsageInBytes, server.limits.memory);
+        alarms.cpu = server.limits.cpu_limit === 0 ? false : stats.cpuUsagePercent >= server.limits.cpu_limit * 0.9;
+        alarms.memory = isAlarmState(stats.memoryUsageInBytes, server.limits.memory_limit);
         alarms.disk = server.limits.disk === 0 ? false : isAlarmState(stats.diskUsageInBytes, server.limits.disk);
     }
 
     const diskLimit = server.limits.disk !== 0 ? bytesToString(mbToBytes(server.limits.disk)) : 'Unlimited';
-    const memoryLimit = server.limits.memory !== 0 ? bytesToString(mbToBytes(server.limits.memory)) : 'Unlimited';
-    const cpuLimit = server.limits.cpu !== 0 ? server.limits.cpu + ' %' : 'Unlimited';
+    const memoryLimit =
+        server.limits.memory_limit !== 0 ? bytesToString(mbToBytes(server.limits.memory_limit)) : 'Unlimited';
+    const cpuLimit = server.limits.cpu_limit !== 0 ? server.limits.cpu_limit + ' %' : 'Unlimited';
 
     const defaultAllocation = server.allocations.find((alloc) => alloc.isDefault);
 
@@ -107,14 +108,15 @@ export default ({ server, className }: { server: Server; className?: string }) =
                 <div css={tw`flex justify-center`}>
                     <FontAwesomeIcon icon={faEthernet} css={tw`text-neutral-500`} />
                     <p css={tw`text-sm text-neutral-400 ml-2`}>
-                    {defaultAllocation
-                        ? <React.Fragment key={defaultAllocation.ip + defaultAllocation.port.toString()}>
-                            {defaultAllocation.alias || ip(defaultAllocation.ip)}:{defaultAllocation.port}
-                          </React.Fragment>
-                        : server.service.ip
-                           ? `${server.service.ip}:${server.service.port}`
-                           : 'not available'
-                    }
+                        {defaultAllocation ? (
+                            <React.Fragment key={defaultAllocation.ip + defaultAllocation.port.toString()}>
+                                {defaultAllocation.alias || ip(defaultAllocation.ip)}:{defaultAllocation.port}
+                            </React.Fragment>
+                        ) : server.service.ip ? (
+                            `${server.service.ip}:${server.service.port}`
+                        ) : (
+                            'not available'
+                        )}
                     </p>
                 </div>
             </div>

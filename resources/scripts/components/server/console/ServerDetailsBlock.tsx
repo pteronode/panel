@@ -17,7 +17,7 @@ import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import classNames from 'classnames';
 import { capitalize } from '@/lib/strings';
 
-type Stats = Record<'memory' | 'cpu' | 'disk' | 'uptime' | 'rx' | 'tx', number>;
+type Stats = Record<'memory_limit' | 'cpu_limit' | 'disk' | 'uptime' | 'rx' | 'tx', number>;
 
 const getBackgroundColor = (value: number, max: number | null): string | undefined => {
     const delta = !max ? 0 : value / max;
@@ -40,7 +40,7 @@ const Limit = ({ limit, children }: { limit: string | null; children: React.Reac
 );
 
 const ServerDetailsBlock = ({ className }: { className?: string }) => {
-    const [stats, setStats] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0, tx: 0, rx: 0 });
+    const [stats, setStats] = useState<Stats>({ memory_limit: 0, cpu_limit: 0, disk: 0, uptime: 0, tx: 0, rx: 0 });
 
     const status = ServerContext.useStoreState((state) => state.status.value);
     const connected = ServerContext.useStoreState((state) => state.socket.connected);
@@ -49,8 +49,8 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
 
     const textLimits = useMemo(
         () => ({
-            cpu: limits?.cpu ? `${limits.cpu}%` : null,
-            memory: limits?.memory ? bytesToString(mbToBytes(limits.memory)) : null,
+            cpu_limit: limits?.cpu_limit ? `${limits.cpu_limit}%` : null,
+            memory_limit: limits?.memory_limit ? bytesToString(mbToBytes(limits.memory_limit)) : null,
             disk: limits?.disk ? bytesToString(mbToBytes(limits.disk)) : null,
         }),
         [limits]
@@ -60,11 +60,9 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
         const defaultAllocation = state.server.data!.allocations.find((allocation) => allocation.isDefault);
         if (defaultAllocation) {
             return `${defaultAllocation.alias || ip(defaultAllocation.ip)}:${defaultAllocation.port}`;
-        }
-        else if (state.server.data!.service.ip) {
+        } else if (state.server.data!.service.ip) {
             return `${state.server.data!.service.ip}:${state.server.data!.service.port}`;
-        }
-        else {
+        } else {
             return 'n/a';
         }
     });
@@ -86,8 +84,8 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
         }
 
         setStats({
-            memory: stats.memory_bytes,
-            cpu: stats.cpu_absolute,
+            memory_limit: stats.memory_bytes,
+            cpu_limit: stats.cpu_absolute,
             disk: stats.disk_bytes,
             tx: stats.network.tx_bytes,
             rx: stats.network.rx_bytes,
@@ -113,22 +111,26 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
                     capitalize(status)
                 )}
             </StatBlock>
-            <StatBlock icon={faMicrochip} title={'CPU Load'} color={getBackgroundColor(stats.cpu, limits.cpu)}>
+            <StatBlock
+                icon={faMicrochip}
+                title={'CPU Load'}
+                color={getBackgroundColor(stats.cpu_limit, limits.cpu_limit)}
+            >
                 {status === 'offline' ? (
                     <span className={'text-gray-400'}>Offline</span>
                 ) : (
-                    <Limit limit={textLimits.cpu}>{stats.cpu.toFixed(2)}%</Limit>
+                    <Limit limit={textLimits.cpu_limit}>{stats.cpu_limit.toFixed(2)}%</Limit>
                 )}
             </StatBlock>
             <StatBlock
                 icon={faMemory}
                 title={'Memory'}
-                color={getBackgroundColor(stats.memory / 1024, limits.memory * 1024)}
+                color={getBackgroundColor(stats.memory_limit / 1024, limits.memory_limit * 1024)}
             >
                 {status === 'offline' ? (
                     <span className={'text-gray-400'}>Offline</span>
                 ) : (
-                    <Limit limit={textLimits.memory}>{bytesToString(stats.memory)}</Limit>
+                    <Limit limit={textLimits.memory_limit}>{bytesToString(stats.memory_limit)}</Limit>
                 )}
             </StatBlock>
             <StatBlock icon={faHdd} title={'Disk'} color={getBackgroundColor(stats.disk / 1024, limits.disk * 1024)}>

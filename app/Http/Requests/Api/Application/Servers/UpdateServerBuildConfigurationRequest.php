@@ -16,25 +16,22 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
 
         return [
             'allocation' => $rules['allocation_id'],
-            // 'oom_disabled' => $rules['oom_disabled'],
 
             'limits' => 'sometimes|array',
-            'limits.memory' => $this->requiredToOptional('memory', $rules['memory'], true),
-            // 'limits.swap' => $this->requiredToOptional('swap', $rules['swap'], true),
-            // 'limits.io' => $this->requiredToOptional('io', $rules['io'], true),
-            'limits.cpu' => $this->requiredToOptional('cpu', $rules['cpu'], true),
-            // 'limits.threads' => $this->requiredToOptional('threads', $rules['threads'], true),
+            'limits.memory_request' => $this->requiredToOptional('memory_request', $rules['memory_request'], true),
+            'limits.memory_limit' => $this->requiredToOptional('memory_limit', $rules['memory_limit'], true),
+            'limits.cpu_request' => $this->requiredToOptional('cpu_request', $rules['cpu_request'], true),
+            'limits.cpu_limit' => $this->requiredToOptional('cpu_limit', $rules['cpu_limit'], true),
             'limits.disk' => $this->requiredToOptional('disk', $rules['disk'], true),
 
             // Legacy rules to maintain backwards compatable API support without requiring
             // a major version bump.
             //
             // @see https://github.com/pterodactyl/panel/issues/1500
-            'memory' => $this->requiredToOptional('memory', $rules['memory']),
-            // 'swap' => $this->requiredToOptional('swap', $rules['swap']),
-            // 'io' => $this->requiredToOptional('io', $rules['io']),
-            'cpu' => $this->requiredToOptional('cpu', $rules['cpu']),
-            // 'threads' => $this->requiredToOptional('threads', $rules['threads']),
+            'memory_request' => $this->requiredToOptional('memory_request', $rules['memory_request']),
+            'memory_limit' => $this->requiredToOptional('memory_limit', $rules['memory_limit']),
+            'cpu_request' => $this->requiredToOptional('cpu_request', $rules['cpu_request']),
+            'cpu_limit' => $this->requiredToOptional('cpu_limit', $rules['cpu_limit']),
             'disk' => $this->requiredToOptional('disk', $rules['disk']),
 
             'add_ports' => 'bail|array',

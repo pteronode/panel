@@ -119,7 +119,7 @@ class ServerTransformer extends BaseClientTransformer
             'is_cluster_under_maintenance' => $server->cluster->isUnderMaintenance(),
             'sftp_details' => [
                 'ip' => $this->array_column_recursive($services, 'ip') ? current($this->array_column_recursive($services, 'ip')) : current($this->array_column_recursive($services, 'clusterIP')),
-                'port' => 2022,
+                'port' => current($this->array_column_recursive($services, 'port')),
             ],
             'service' => [
                 'ip' => $this->array_column_recursive($services, 'ip') ? current($this->array_column_recursive($services, 'ip')) : current($this->array_column_recursive($services, 'clusterIP')),
@@ -130,13 +130,11 @@ class ServerTransformer extends BaseClientTransformer
             'additional_ports' => $server->additional_ports ? $this->setPorts($server->additional_ports) : [],
             'description' => $server->description,
             'limits' => [
-                'memory' => $server->memory,
-                // 'swap' => $server->swap,
+                'memory_request' => $server->memory_request,
+                'memory_limit' => $server->memory_limit,
                 'disk' => $server->disk,
-                // 'io' => $server->io,
-                'cpu' => $server->cpu,
-                // 'threads' => $server->threads,
-                // 'oom_disabled' => $server->oom_disabled,
+                'cpu_request' => $server->cpu_request,
+                'cpu_limit' => $server->cpu_limit,
             ],
             'invocation' => $service->handle($server, !$user->can(Permission::ACTION_STARTUP_READ, $server)),
             'docker_image' => $server->image,

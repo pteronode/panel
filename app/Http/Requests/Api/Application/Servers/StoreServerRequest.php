@@ -32,16 +32,14 @@ class StoreServerRequest extends ApplicationApiRequest
             'startup' => $rules['startup'],
             'environment' => 'present|array',
             'skip_scripts' => 'sometimes|boolean',
-            'oom_disabled' => 'sometimes|boolean',
 
             // Resource limitations
             'limits' => 'required|array',
-            'limits.memory' => $rules['memory'],
-            // 'limits.swap' => $rules['swap'],
+            'limits.memory_request' => $rules['memory_request'],
+            'limits.memory_limit' => $rules['memory_limit'],
             'limits.disk' => $rules['disk'],
-            'limits.io' => $rules['io'],
-            'limits.threads' => $rules['threads'],
-            'limits.cpu' => $rules['cpu'],
+            'limits.cpu_request' => $rules['cpu_request'],
+            'limits.cpu_limit' => $rules['cpu_limit'],
 
             // Application Resource Limits
             'feature_limits' => 'required|array',
@@ -81,12 +79,11 @@ class StoreServerRequest extends ApplicationApiRequest
             'image' => array_get($data, 'docker_image'),
             'startup' => array_get($data, 'startup'),
             'environment' => array_get($data, 'environment'),
-            'memory' => array_get($data, 'limits.memory'),
-            // 'swap' => array_get($data, 'limits.swap'),
+            'memory_request' => array_get($data, 'limits.memory_request'),
+            'memory_limit' => array_get($data, 'limits.memory_limit'),
             'disk' => array_get($data, 'limits.disk'),
-            'io' => array_get($data, 'limits.io'),
-            'cpu' => array_get($data, 'limits.cpu'),
-            'threads' => array_get($data, 'limits.threads'),
+            'cpu_request' => array_get($data, 'limits.cpu_request'),
+            'cpu_limit' => array_get($data, 'limits.cpu_limit'),
             'skip_scripts' => array_get($data, 'skip_scripts', false),
             'allocation_id' => array_get($data, 'allocation.default'),
             'allocation_additional' => array_get($data, 'allocation.additional'),
@@ -94,7 +91,6 @@ class StoreServerRequest extends ApplicationApiRequest
             'database_limit' => array_get($data, 'feature_limits.databases'),
             'allocation_limit' => array_get($data, 'feature_limits.allocations'),
             'snapshot_limit' => array_get($data, 'feature_limits.snapshots'),
-            'oom_disabled' => array_get($data, 'oom_disabled'),
         ];
     }
 

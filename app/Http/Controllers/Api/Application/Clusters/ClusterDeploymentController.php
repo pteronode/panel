@@ -28,7 +28,6 @@ class ClusterDeploymentController extends ApplicationApiController
     {
         $data = $request->validated();
         $clusters = $this->viableClustersService->setLocations($data['location_ids'] ?? [])
-            ->setMemory($data['memory'])
             ->setDisk($data['disk'])
             ->handle($request->query('per_page'), $request->query('page'));
 
