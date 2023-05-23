@@ -21,7 +21,8 @@ return new class () extends Migration {
         });
 
         Schema::table('clusters', function (Blueprint $table) {
-            $table->renameColumn('memory', 'memory_limit');
+            $table->dropColumn('memory');
+            $table->dropColumn('disk');
         });
     }
 
@@ -38,10 +39,6 @@ return new class () extends Migration {
 
             $table->renameColumn('memory_request', 'memory');
             $table->renameColumn('cpu_request', 'cpu');
-        });
-
-        Schema::table('clusters', function (Blueprint $table) {
-            $table->renameColumn('memory_limit', 'memory');
         });
     }
 };
