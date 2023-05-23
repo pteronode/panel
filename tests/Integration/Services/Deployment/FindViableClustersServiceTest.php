@@ -9,7 +9,6 @@ use Kubectyl\Models\Location;
 use Illuminate\Support\Collection;
 use Kubectyl\Tests\Integration\IntegrationTestCase;
 use Kubectyl\Services\Deployment\FindViableClustersService;
-use Kubectyl\Exceptions\Service\Deployment\NoViableClusterException;
 
 class FindViableClustersServiceTest extends IntegrationTestCase
 {

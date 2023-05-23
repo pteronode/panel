@@ -14,11 +14,11 @@ use Kubectyl\Models\Allocation;
 use Illuminate\Foundation\Testing\WithFaker;
 use Kubectyl\Models\Objects\DeploymentObject;
 use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Validation\ValidationException;
 use Kubectyl\Tests\Integration\IntegrationTestCase;
 use Kubectyl\Services\Servers\ServerCreationService;
 use Kubectyl\Repositories\Kuber\DaemonServerRepository;
 use Kubectyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Illuminate\Validation\ValidationException;
 
 class ServerCreationServiceTest extends IntegrationTestCase
 {
