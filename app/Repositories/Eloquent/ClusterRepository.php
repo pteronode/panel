@@ -17,62 +17,6 @@ class ClusterRepository extends EloquentRepository implements ClusterRepositoryI
     }
 
     /**
-     * Return the usage stats for a single cluster.
-     */
-    public function getUsageStats(Cluster $cluster): array
-    {
-        $stats = $this->getBuilder()
-            ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
-            ->join('servers', 'servers.cluster_id', '=', 'clusters.id')
-            ->where('cluster_id', '=', $cluster->id)
-            ->first();
-
-        return Collection::make(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])
-            ->mapWithKeys(function ($value, $key) use ($cluster) {
-                $maxUsage = $cluster->{$key};
-                if ($cluster->{$key . '_overallocate'} > 0) {
-                    $maxUsage = $cluster->{$key} * (1 + ($cluster->{$key . '_overallocate'} / 100));
-                }
-
-                $percent = ($value / $maxUsage) * 100;
-
-                return [
-                    $key => [
-                        'value' => number_format($value),
-                        'max' => number_format($maxUsage),
-                        'percent' => $percent,
-                        'css' => ($percent <= self::THRESHOLD_PERCENTAGE_LOW) ? 'green' : (($percent > self::THRESHOLD_PERCENTAGE_MEDIUM) ? 'red' : 'yellow'),
-                    ],
-                ];
-            })
-            ->toArray();
-    }
-
-    /**
-     * Return the usage stats for a single cluster.
-     */
-    public function getUsageStatsRaw(Cluster $cluster): array
-    {
-        $stats = $this->getBuilder()->select(
-            $this->getBuilder()->raw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
-        )->join('servers', 'servers.cluster_id', '=', 'clusters.id')->where('cluster_id', $cluster->id)->first();
-
-        return collect(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])->mapWithKeys(function ($value, $key) use ($cluster) {
-            $maxUsage = $cluster->{$key};
-            if ($cluster->{$key . '_overallocate'} > 0) {
-                $maxUsage = $cluster->{$key} * (1 + ($cluster->{$key . '_overallocate'} / 100));
-            }
-
-            return [
-                $key => [
-                    'value' => $value,
-                    'max' => $maxUsage,
-                ],
-            ];
-        })->toArray();
-    }
-
-    /**
      * Return a single cluster with location and server information.
      */
     public function loadLocationAndServerCount(Cluster $cluster, bool $refresh = false): Cluster

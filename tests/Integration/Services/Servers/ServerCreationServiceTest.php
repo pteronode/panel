@@ -18,6 +18,7 @@ use Kubectyl\Tests\Integration\IntegrationTestCase;
 use Kubectyl\Services\Servers\ServerCreationService;
 use Kubectyl\Repositories\Kuber\DaemonServerRepository;
 use Kubectyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Illuminate\Validation\ValidationException;
 
 class ServerCreationServiceTest extends IntegrationTestCase
 {
@@ -144,7 +145,6 @@ class ServerCreationServiceTest extends IntegrationTestCase
         $this->assertSame($allocations[4]->id, $response->allocations[1]->id);
 
         $this->assertFalse($response->isSuspended());
-        $this->assertFalse($response->oom_killer);
         $this->assertSame(0, $response->database_limit);
         $this->assertSame(0, $response->allocation_limit);
         $this->assertSame(0, $response->snapshot_limit);

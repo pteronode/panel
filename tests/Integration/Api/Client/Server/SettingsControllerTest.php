@@ -89,7 +89,10 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
             ->expects('reinstall')
             ->andReturnUndefined();
 
-        $this->actingAs($user)->postJson("/api/client/servers/$server->uuid/settings/reinstall")
+        $this->actingAs($user)
+            ->postJson("/api/client/servers/$server->uuid/settings/reinstall", [
+                'delete_files' => true,
+            ])
             ->assertStatus(Response::HTTP_ACCEPTED);
 
         $server = $server->refresh();

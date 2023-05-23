@@ -41,7 +41,7 @@ class DeleteSnapshotTest extends ClientApiIntegrationTestCase
     {
         Event::fake([ActivityLogged::class]);
 
-        [$user, $server] = $this->generateTestAccount([Permission::ACTION_BSNAPSHOT_DELETE]);
+        [$user, $server] = $this->generateTestAccount([Permission::ACTION_SNAPSHOT_DELETE]);
 
         /** @var \Kubectyl\Models\Snapshot $snapshot */
         $snapshot = Snapshot::factory()->create(['server_id' => $server->id]);

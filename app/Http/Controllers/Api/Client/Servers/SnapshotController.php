@@ -149,34 +149,6 @@ class SnapshotController extends ClientApiController
     }
 
     /**
-     * Download the snapshot for a given server instance. For daemon local files, the file
-     * will be streamed back through the Panel. For AWS S3 files, a signed URL will be generated
-     * which the user is redirected to.
-     *
-     * @throws \Throwable
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     */
-    // public function download(Request $request, Server $server, Snapshot $snapshot): JsonResponse
-    // {
-    //     if (!$request->user()->can(Permission::ACTION_SNAPSHOT_DOWNLOAD, $server)) {
-    //         throw new AuthorizationException();
-    //     }
-
-    //     if ($snapshot->disk !== Snapshot::ADAPTER_AWS_S3 && $snapshot->disk !== Snapshot::ADAPTER_KUBER) {
-    //         throw new BadRequestHttpException('The snapshot requested references an unknown disk driver type and cannot be downloaded.');
-    //     }
-
-    //     $url = $this->downloadLinkService->handle($snapshot, $request->user());
-
-    //     Activity::event('server:snapshot.download')->subject($snapshot)->property('name', $snapshot->name)->log();
-
-    //     return new JsonResponse([
-    //         'object' => 'signed_url',
-    //         'attributes' => ['url' => $url],
-    //     ]);
-    // }
-
-    /**
      * Handles restoring a snapshot by making a request to the Kuber instance telling it
      * to begin the process of finding (or downloading) the snapshot and unpacking it
      * over the server files.

@@ -118,8 +118,6 @@ class ServerCreationService
     {
         /** @var \Illuminate\Support\Collection $clusters */
         $clusters = $this->findViableClustersService->setLocations($deployment->getLocations())
-            ->setDisk(Arr::get($data, 'disk'))
-            ->setMemory(Arr::get($data, 'memory_limit'))
             ->handle();
 
         return $this->allocationSelectionService->setDedicated($deployment->isDedicated())

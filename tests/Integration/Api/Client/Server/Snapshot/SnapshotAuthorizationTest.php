@@ -58,7 +58,6 @@ class SnapshotAuthorizationTest extends ClientApiIntegrationTestCase
     {
         return [
             ['GET', ''],
-            ['GET', '/download'],
             ['DELETE', ''],
         ];
     }

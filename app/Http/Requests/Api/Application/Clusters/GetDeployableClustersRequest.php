@@ -8,8 +8,6 @@ class GetDeployableClustersRequest extends GetClustersRequest
     {
         return [
             'page' => 'integer',
-            'memory' => 'required|integer|min:0',
-            'disk' => 'required|integer|min:0',
             'location_ids' => 'array',
             'location_ids.*' => 'integer',
         ];

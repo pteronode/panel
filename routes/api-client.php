@@ -123,7 +123,6 @@ Route::group([
         Route::get('/', [Client\Servers\SnapshotController::class, 'index']);
         Route::post('/', [Client\Servers\SnapshotController::class, 'store']);
         Route::get('/{snapshot}', [Client\Servers\SnapshotController::class, 'view']);
-        // Route::get('/{snapshot}/download', [Client\Servers\SnapshotController::class, 'download']);
         Route::post('/{snapshot}/lock', [Client\Servers\SnapshotController::class, 'toggleLock']);
         Route::post('/{snapshot}/restore', [Client\Servers\SnapshotController::class, 'restore']);
         Route::delete('/{snapshot}', [Client\Servers\SnapshotController::class, 'delete']);

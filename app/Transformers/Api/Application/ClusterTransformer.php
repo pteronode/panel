@@ -40,13 +40,6 @@ class ClusterTransformer extends BaseTransformer
         $response[$cluster->getUpdatedAtColumn()] = $this->formatTimestamp($cluster->updated_at);
         $response[$cluster->getCreatedAtColumn()] = $this->formatTimestamp($cluster->created_at);
 
-        $resources = $cluster->servers()->select(['memory', 'disk'])->get();
-
-        $response['allocated_resources'] = [
-            'memory' => $resources->sum('memory'),
-            'disk' => $resources->sum('disk'),
-        ];
-
         return $response;
     }
 
