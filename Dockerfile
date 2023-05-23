@@ -18,6 +18,7 @@ RUN apk add --no-cache --update ca-certificates dcron curl git supervisor tar un
     && docker-php-ext-configure zip \
     && docker-php-ext-install bcmath gd pdo_mysql zip \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && apk add --no-cache jq \
     && cp .env.example .env \
     && mkdir -p bootstrap/cache/ storage/logs storage/framework/sessions storage/framework/views storage/framework/cache \
     && chmod 777 -R bootstrap storage \
