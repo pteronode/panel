@@ -2,13 +2,13 @@
 
 namespace Kubectyl\Http\Controllers\Admin;
 
+use Kubectyl\Models\ApiKey;
 use Illuminate\Http\Request;
 use Kubectyl\Models\Cluster;
-use Kubectyl\Models\ApiKey;
 use Illuminate\Http\JsonResponse;
 use Kubectyl\Http\Controllers\Controller;
-use Illuminate\Contracts\Encryption\Encrypter;
 use Kubectyl\Services\Api\KeyCreationService;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Kubectyl\Repositories\Eloquent\ApiKeyRepository;
 
 class ClusterAutoDeployController extends Controller

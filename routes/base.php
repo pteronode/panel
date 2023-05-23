@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use Kubectyl\Http\Controllers\Base;
-use Kubectyl\Http\Middleware\RequireTwoFactorAuthentication;
-// use Kubectyl\Http\Controllers\Auth;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+// use Kubectyl\Http\Controllers\Auth;
+use Kubectyl\Http\Middleware\RequireTwoFactorAuthentication;
 
 Route::get('/keycloak', function () {
     $credentials = KeycloakWeb::retrieveToken();

@@ -1,34 +1,31 @@
 <?php
 
-namespace Kubectyl\Services\Backups;
+namespace Kubectyl\Services\Snapshots;
 
 use Ramsey\Uuid\Uuid;
 use Carbon\CarbonImmutable;
-use Webmozart\Assert\Assert;
-use Kubectyl\Models\Snapshot;
 use Kubectyl\Models\Server;
+use Kubectyl\Models\Snapshot;
 use Illuminate\Database\ConnectionInterface;
-use Kubectyl\Extensions\Backups\BackupManager;
-use Kubectyl\Repositories\Eloquent\BackupRepository;
-use Kubectyl\Repositories\Kuber\DaemonBackupRepository;
-use Kubectyl\Exceptions\Service\Backup\TooManyBackupsException;
+use Kubectyl\Extensions\Snapshots\SnapshotManager;
+use Kubectyl\Repositories\Eloquent\SnapshotRepository;
+use Kubectyl\Repositories\Kuber\DaemonSnapshotRepository;
+use Kubectyl\Exceptions\Service\Snapshot\TooManySnapshotsException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
-class InitiateBackupService
+class InitiateSnapshotService
 {
-    private ?array $ignoredFiles;
-
     private bool $isLocked = false;
 
     /**
-     * InitiateBackupService constructor.
+     * InitiateSnapshotService constructor.
      */
     public function __construct(
-        private BackupRepository $repository,
+        private SnapshotRepository $repository,
         private ConnectionInterface $connection,
-        private DaemonBackupRepository $daemonBackupRepository,
-        private DeleteBackupService $deleteBackupService,
-        private BackupManager $backupManager
+        private DaemonSnapshotRepository $daemonSnapshotRepository,
+        private DeleteSnapshotService $deleteSnapshotService,
+        private SnapshotManager $snapshotManager
     ) {
     }
 
@@ -44,33 +41,10 @@ class InitiateBackupService
     }
 
     /**
-     * Sets the files to be ignored by this snapshot.
-     *
-     * @param string[]|null $ignored
-     */
-    public function setIgnoredFiles(?array $ignored): self
-    {
-        if (is_array($ignored)) {
-            foreach ($ignored as $value) {
-                Assert::string($value);
-            }
-        }
-
-        // Set the ignored files to be any values that are not empty in the array. Don't use
-        // the PHP empty function here incase anything that is "empty" by default (0, false, etc.)
-        // were passed as a file or folder name.
-        $this->ignoredFiles = is_null($ignored) ? [] : array_filter($ignored, function ($value) {
-            return strlen($value) > 0;
-        });
-
-        return $this;
-    }
-
-    /**
      * Initiates the snapshot process for a server on Wings.
      *
      * @throws \Throwable
-     * @throws \Kubectyl\Exceptions\Service\Backup\TooManyBackupsException
+     * @throws \Kubectyl\Exceptions\Service\Snapshot\TooManySnapshotsException
      * @throws \Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException
      */
     public function handle(Server $server, string $name = null, bool $override = false): Snapshot
@@ -78,7 +52,7 @@ class InitiateBackupService
         $limit = config('snapshots.throttles.limit');
         $period = config('snapshots.throttles.period');
         if ($period > 0) {
-            $previous = $this->repository->getBackupsGeneratedDuringTimespan($server->id, $period);
+            $previous = $this->repository->getSnapshotsGeneratedDuringTimespan($server->id, $period);
             if ($previous->count() >= $limit) {
                 $message = sprintf('Only %d snapshots may be generated within a %d second span of time.', $limit, $period);
 
@@ -88,11 +62,11 @@ class InitiateBackupService
 
         // Check if the server has reached or exceeded its snapshot limit.
         // completed_at == null will cover any ongoing snapshots, while is_successful == true will cover any completed snapshots.
-        $successful = $this->repository->getNonFailedBackups($server);
+        $successful = $this->repository->getNonFailedSnapshots($server);
         if (!$server->snapshot_limit || $successful->count() >= $server->snapshot_limit) {
             // Do not allow the user to continue if this server is already at its limit and can't override.
             if (!$override || $server->snapshot_limit <= 0) {
-                throw new TooManyBackupsException($server->snapshot_limit);
+                throw new TooManySnapshotsException($server->snapshot_limit);
             }
 
             // Get the oldest snapshot the server has that is not "locked" (indicating a snapshot that should
@@ -101,10 +75,10 @@ class InitiateBackupService
             /** @var \Kubectyl\Models\Snapshot $oldest */
             $oldest = $successful->where('is_locked', false)->orderBy('created_at')->first();
             if (!$oldest) {
-                throw new TooManyBackupsException($server->snapshot_limit);
+                throw new TooManySnapshotsException($server->snapshot_limit);
             }
 
-            $this->deleteBackupService->handle($oldest);
+            $this->deleteSnapshotService->handle($oldest);
         }
 
         return $this->connection->transaction(function () use ($server, $name) {
@@ -112,14 +86,13 @@ class InitiateBackupService
             $snapshot = $this->repository->create([
                 'server_id' => $server->id,
                 'uuid' => Uuid::uuid4()->toString(),
-                'name' => trim($name) ?: sprintf('Backup at %s', CarbonImmutable::now()->toDateTimeString()),
-                'ignored_files' => array_values($this->ignoredFiles ?? []),
-                'disk' => $this->backupManager->getDefaultAdapter(),
+                'name' => trim($name) ?: sprintf('Snapshot at %s', CarbonImmutable::now()->toDateTimeString()),
+                'disk' => $this->snapshotManager->getDefaultAdapter(),
                 'is_locked' => $this->isLocked,
             ], true, true);
 
-            $this->daemonBackupRepository->setServer($server)
-                ->setBackupAdapter($this->backupManager->getDefaultAdapter())
+            $this->daemonSnapshotRepository->setServer($server)
+                ->setSnapshotAdapter($this->snapshotManager->getDefaultAdapter())
                 ->snapshot($snapshot);
 
             return $snapshot;

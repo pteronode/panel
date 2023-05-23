@@ -6,12 +6,12 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Kubectyl\Models\Snapshot;
 use GuzzleHttp\Exception\ClientException;
-use Kubectyl\Extensions\Backups\BackupManager;
 use Kubectyl\Extensions\Filesystem\S3Filesystem;
-use Kubectyl\Services\Backups\DeleteBackupService;
+use Kubectyl\Extensions\Snapshots\SnapshotManager;
 use Kubectyl\Tests\Integration\IntegrationTestCase;
-use Kubectyl\Repositories\Kuber\DaemonBackupRepository;
-use Kubectyl\Exceptions\Service\Backup\BackupLockedException;
+use Kubectyl\Services\Snapshots\DeleteSnapshotService;
+use Kubectyl\Repositories\Kuber\DaemonSnapshotRepository;
+use Kubectyl\Exceptions\Service\Snapshot\SnapshotLockedException;
 use Kubectyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class DeleteSnapshotServiceTest extends IntegrationTestCase
@@ -24,9 +24,9 @@ class DeleteSnapshotServiceTest extends IntegrationTestCase
             'is_locked' => true,
         ]);
 
-        $this->expectException(BackupLockedException::class);
+        $this->expectException(SnapshotLockedException::class);
 
-        $this->app->make(DeleteBackupService::class)->handle($snapshot);
+        $this->app->make(DeleteSnapshotService::class)->handle($snapshot);
     }
 
     public function testFailedSnapshotThatIsLockedCanBeDeleted()
@@ -38,10 +38,10 @@ class DeleteSnapshotServiceTest extends IntegrationTestCase
             'is_successful' => false,
         ]);
 
-        $mock = $this->mock(DaemonBackupRepository::class);
+        $mock = $this->mock(DaemonSnapshotRepository::class);
         $mock->expects('setServer->delete')->with($snapshot)->andReturn(new Response());
 
-        $this->app->make(DeleteBackupService::class)->handle($snapshot);
+        $this->app->make(DeleteSnapshotService::class)->handle($snapshot);
 
         $snapshot->refresh();
 
@@ -53,14 +53,14 @@ class DeleteSnapshotServiceTest extends IntegrationTestCase
         $server = $this->createServerModel();
         $snapshot = Snapshot::factory()->create(['server_id' => $server->id]);
 
-        $mock = $this->mock(DaemonBackupRepository::class);
+        $mock = $this->mock(DaemonSnapshotRepository::class);
         $mock->expects('setServer->delete')->with($snapshot)->andThrow(
             new DaemonConnectionException(
                 new ClientException('', new Request('DELETE', '/'), new Response(404))
             )
         );
 
-        $this->app->make(DeleteBackupService::class)->handle($snapshot);
+        $this->app->make(DeleteSnapshotService::class)->handle($snapshot);
 
         $snapshot->refresh();
 
@@ -72,7 +72,7 @@ class DeleteSnapshotServiceTest extends IntegrationTestCase
         $server = $this->createServerModel();
         $snapshot = Snapshot::factory()->create(['server_id' => $server->id]);
 
-        $mock = $this->mock(DaemonBackupRepository::class);
+        $mock = $this->mock(DaemonSnapshotRepository::class);
         $mock->expects('setServer->delete')->with($snapshot)->andThrow(
             new DaemonConnectionException(
                 new ClientException('', new Request('DELETE', '/'), new Response(500))
@@ -81,7 +81,7 @@ class DeleteSnapshotServiceTest extends IntegrationTestCase
 
         $this->expectException(DaemonConnectionException::class);
 
-        $this->app->make(DeleteBackupService::class)->handle($snapshot);
+        $this->app->make(DeleteSnapshotService::class)->handle($snapshot);
 
         $snapshot->refresh();
 
@@ -96,7 +96,7 @@ class DeleteSnapshotServiceTest extends IntegrationTestCase
             'server_id' => $server->id,
         ]);
 
-        $manager = $this->mock(BackupManager::class);
+        $manager = $this->mock(SnapshotManager::class);
         $adapter = $this->mock(S3Filesystem::class);
 
         $manager->expects('adapter')->with(Snapshot::ADAPTER_AWS_S3)->andReturn($adapter);
@@ -107,7 +107,7 @@ class DeleteSnapshotServiceTest extends IntegrationTestCase
             'Key' => sprintf('%s/%s.tar.gz', $server->uuid, $snapshot->uuid),
         ]);
 
-        $this->app->make(DeleteBackupService::class)->handle($snapshot);
+        $this->app->make(DeleteSnapshotService::class)->handle($snapshot);
 
         $this->assertSoftDeleted($snapshot);
     }

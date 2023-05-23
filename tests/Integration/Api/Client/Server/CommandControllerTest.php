@@ -2,10 +2,9 @@
 
 namespace Kubectyl\Tests\Integration\Api\Client\Server;
 
-use Mockery;
+use Kubectyl\Models\Server;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\Response;
-use Kubectyl\Models\Server;
 use Kubectyl\Models\Permission;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
@@ -55,7 +54,7 @@ class CommandControllerTest extends ClientApiIntegrationTestCase
 
         $mock = $this->mock(DaemonCommandRepository::class);
         $mock->expects('setServer')
-            ->with(Mockery::on(fn (Server $value) => $value->is($server)))
+            ->with(\Mockery::on(fn (Server $value) => $value->is($server)))
             ->andReturnSelf();
 
         $mock->expects('send')->with('say Test')->andReturn(new GuzzleResponse());

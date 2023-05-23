@@ -1,25 +1,24 @@
 <?php
 
-namespace Kubectyl\Extensions\Backups;
+namespace Kubectyl\Extensions\Snapshots;
 
 use Closure;
 use Aws\S3\S3Client;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Webmozart\Assert\Assert;
-use InvalidArgumentException;
 use Illuminate\Foundation\Application;
 use League\Flysystem\FilesystemAdapter;
 use Kubectyl\Extensions\Filesystem\S3Filesystem;
 use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
-class BackupManager
+class SnapshotManager
 {
     protected ConfigRepository $config;
 
     /**
-     * The array of resolved backup drivers.
+     * The array of resolved snapshot drivers.
      */
     protected array $adapters = [];
 
@@ -29,7 +28,7 @@ class BackupManager
     protected array $customCreators;
 
     /**
-     * BackupManager constructor.
+     * SnapshotManager constructor.
      */
     public function __construct(protected Application $app)
     {
@@ -37,7 +36,7 @@ class BackupManager
     }
 
     /**
-     * Returns a backup adapter instance.
+     * Returns a snapshot adapter instance.
      */
     public function adapter(string $name = null): FilesystemAdapter
     {
@@ -45,7 +44,7 @@ class BackupManager
     }
 
     /**
-     * Set the given backup adapter instance.
+     * Set the given snapshot adapter instance.
      */
     public function set(string $name, FilesystemAdapter $disk): self
     {
@@ -55,7 +54,7 @@ class BackupManager
     }
 
     /**
-     * Gets a backup adapter.
+     * Gets a snapshot adapter.
      */
     protected function get(string $name): FilesystemAdapter
     {
@@ -63,14 +62,14 @@ class BackupManager
     }
 
     /**
-     * Resolve the given backup disk.
+     * Resolve the given snapshot disk.
      */
     protected function resolve(string $name): FilesystemAdapter
     {
         $config = $this->getConfig($name);
 
         if (empty($config['adapter'])) {
-            throw new InvalidArgumentException("Backup disk [$name] does not have a configured adapter.");
+            throw new \InvalidArgumentException("Snapshot disk [$name] does not have a configured adapter.");
         }
 
         $adapter = $config['adapter'];
@@ -88,7 +87,7 @@ class BackupManager
             return $instance;
         }
 
-        throw new InvalidArgumentException("Adapter [$adapter] is not supported.");
+        throw new \InvalidArgumentException("Adapter [$adapter] is not supported.");
     }
 
     /**
@@ -164,7 +163,7 @@ class BackupManager
     /**
      * Register a custom adapter creator closure.
      */
-    public function extend(string $adapter, Closure $callback): self
+    public function extend(string $adapter, \Closure $callback): self
     {
         $this->customCreators[$adapter] = $callback;
 

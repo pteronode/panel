@@ -7,12 +7,12 @@ use Kubectyl\Models\Rocket;
 use Kubectyl\Models\RocketVariable;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Illuminate\View\Factory as ViewFactory;
 use Kubectyl\Http\Controllers\Controller;
+use Illuminate\View\Factory as ViewFactory;
 use Kubectyl\Contracts\Repository\RocketRepositoryInterface;
 use Kubectyl\Services\Rockets\Variables\VariableUpdateService;
-use Kubectyl\Http\Requests\Admin\Rocket\RocketVariableFormRequest;
 use Kubectyl\Services\Rockets\Variables\VariableCreationService;
+use Kubectyl\Http\Requests\Admin\Rocket\RocketVariableFormRequest;
 use Kubectyl\Contracts\Repository\RocketVariableRepositoryInterface;
 
 class RocketVariableController extends Controller

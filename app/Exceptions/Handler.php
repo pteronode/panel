@@ -3,8 +3,6 @@
 namespace Kubectyl\Exceptions;
 
 use Exception;
-use Throwable;
-use PDOException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\JsonResponse;
@@ -81,7 +79,7 @@ class Handler extends ExceptionHandler
             $this->dontReport = [];
         }
 
-        $this->reportable(function (PDOException $ex) {
+        $this->reportable(function (\PDOException $ex) {
             $ex = $this->generateCleanedExceptionStack($ex);
         });
 
@@ -90,7 +88,7 @@ class Handler extends ExceptionHandler
         });
     }
 
-    private function generateCleanedExceptionStack(Throwable $exception): string
+    private function generateCleanedExceptionStack(\Throwable $exception): string
     {
         $cleanedStack = '';
         foreach ($exception->getTrace() as $index => $item) {
@@ -123,7 +121,7 @@ class Handler extends ExceptionHandler
      *
      * @throws \Throwable
      */
-    public function render($request, Throwable $e): Response
+    public function render($request, \Throwable $e): Response
     {
         $connections = $this->container->make(Connection::class);
 
@@ -189,7 +187,7 @@ class Handler extends ExceptionHandler
     /**
      * Return the exception as a JSONAPI representation for use on API requests.
      */
-    protected function convertExceptionToArray(Throwable $e, array $override = []): array
+    protected function convertExceptionToArray(\Throwable $e, array $override = []): array
     {
         $match = self::$exceptionResponseCodes[get_class($e)] ?? null;
 
@@ -235,7 +233,7 @@ class Handler extends ExceptionHandler
     /**
      * Return an array of exceptions that should not be reported.
      */
-    public static function isReportable(Exception $exception): bool
+    public static function isReportable(\Exception $exception): bool
     {
         return (new static(Container::getInstance()))->shouldReport($exception);
     }
@@ -252,6 +250,7 @@ class Handler extends ExceptionHandler
         }
 
         return redirect()->guest('/auth/login');
+
         return null;
     }
 
@@ -261,11 +260,11 @@ class Handler extends ExceptionHandler
      *
      * @return \Throwable[]
      */
-    protected function extractPrevious(Throwable $e): array
+    protected function extractPrevious(\Throwable $e): array
     {
         $previous = [];
         while ($value = $e->getPrevious()) {
-            if (!$value instanceof Throwable) {
+            if (!$value instanceof \Throwable) {
                 break;
             }
             $previous[] = $value;
@@ -279,7 +278,7 @@ class Handler extends ExceptionHandler
      * Helper method to allow reaching into the handler to convert an exception
      * into the expected array response type.
      */
-    public static function toArray(Throwable $e): array
+    public static function toArray(\Throwable $e): array
     {
         return (new self(app()))->convertExceptionToArray($e);
     }

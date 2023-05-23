@@ -5,8 +5,8 @@ namespace Kubectyl\Http\Controllers\Api\Application\Launchpads;
 use Kubectyl\Models\Launchpad;
 use Kubectyl\Contracts\Repository\LaunchpadRepositoryInterface;
 use Kubectyl\Transformers\Api\Application\LaunchpadTransformer;
-use Kubectyl\Http\Requests\Api\Application\Launchpads\GetLaunchpadsRequest;
 use Kubectyl\Http\Controllers\Api\Application\ApplicationApiController;
+use Kubectyl\Http\Requests\Api\Application\Launchpads\GetLaunchpadsRequest;
 
 class LaunchpadController extends ApplicationApiController
 {

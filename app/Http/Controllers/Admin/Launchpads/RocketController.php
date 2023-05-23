@@ -2,13 +2,12 @@
 
 namespace Kubectyl\Http\Controllers\Admin\Launchpads;
 
-use JavaScript;
 use Illuminate\View\View;
 use Kubectyl\Models\Rocket;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Illuminate\View\Factory as ViewFactory;
 use Kubectyl\Http\Controllers\Controller;
+use Illuminate\View\Factory as ViewFactory;
 use Kubectyl\Services\Rockets\RocketUpdateService;
 use Kubectyl\Services\Rockets\RocketCreationService;
 use Kubectyl\Services\Rockets\RocketDeletionService;
@@ -40,7 +39,7 @@ class RocketController extends Controller
     public function create(): View
     {
         $launchpads = $this->launchpadRepository->getWithRockets();
-        JavaScript::put(['launchpads' => $launchpads->keyBy('id')]);
+        \JavaScript::put(['launchpads' => $launchpads->keyBy('id')]);
 
         return $this->view->make('admin.rockets.new', ['launchpads' => $launchpads]);
     }

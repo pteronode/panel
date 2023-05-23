@@ -2,8 +2,8 @@
 
 namespace Kubectyl\Repositories\Kuber;
 
-use Webmozart\Assert\Assert;
 use Kubectyl\Models\Server;
+use Webmozart\Assert\Assert;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\TransferException;
 use Kubectyl\Exceptions\Http\Connection\DaemonConnectionException;
@@ -88,15 +88,19 @@ class DaemonServerRepository extends DaemonRepository
      *
      * @throws \Kubectyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function reinstall(): void
+    public function reinstall(bool $deleteFiles = false): void
     {
         Assert::isInstanceOf($this->server, Server::class);
 
         try {
-            $this->getHttpClient()->post(sprintf(
-                '/api/servers/%s/reinstall',
-                $this->server->uuid
-            ));
+            $this->getHttpClient()->post(
+                sprintf('/api/servers/%s/reinstall', $this->server->uuid),
+                ['json' => ['delete_files' => $deleteFiles]]
+            );
+            // $this->getHttpClient()->post(sprintf(
+            //     '/api/servers/%s/reinstall',
+            //     $this->server->uuid
+            // ));
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);
         }

@@ -2,19 +2,18 @@
 
 namespace Kubectyl\Tests\Integration\Services\Servers;
 
-use Mockery;
+use Kubectyl\Models\User;
 use Mockery\MockInterface;
 use Kubectyl\Models\Rocket;
+use Kubectyl\Models\Server;
 use GuzzleHttp\Psr7\Request;
 use Kubectyl\Models\Cluster;
-use Kubectyl\Models\User;
 use GuzzleHttp\Psr7\Response;
-use Kubectyl\Models\Server;
 use Kubectyl\Models\Location;
 use Kubectyl\Models\Allocation;
 use Illuminate\Foundation\Testing\WithFaker;
-use GuzzleHttp\Exception\BadResponseException;
 use Kubectyl\Models\Objects\DeploymentObject;
+use GuzzleHttp\Exception\BadResponseException;
 use Kubectyl\Tests\Integration\IntegrationTestCase;
 use Kubectyl\Services\Servers\ServerCreationService;
 use Kubectyl\Repositories\Kuber\DaemonServerRepository;
@@ -41,7 +40,7 @@ class ServerCreationServiceTest extends IntegrationTestCase
             ->where('name', 'Bungeecord')
             ->firstOrFail();
 
-        $this->daemonServerRepository = Mockery::mock(DaemonServerRepository::class);
+        $this->daemonServerRepository = \Mockery::mock(DaemonServerRepository::class);
         $this->swap(DaemonServerRepository::class, $this->daemonServerRepository);
     }
 
@@ -148,7 +147,7 @@ class ServerCreationServiceTest extends IntegrationTestCase
         $this->assertFalse($response->oom_killer);
         $this->assertSame(0, $response->database_limit);
         $this->assertSame(0, $response->allocation_limit);
-        $this->assertSame(0, $response->backup_limit);
+        $this->assertSame(0, $response->snapshot_limit);
     }
 
     /**

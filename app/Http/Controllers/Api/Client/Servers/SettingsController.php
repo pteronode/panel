@@ -2,10 +2,10 @@
 
 namespace Kubectyl\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Http\Response;
 use Kubectyl\Models\Server;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Kubectyl\Facades\Activity;
+use Illuminate\Http\JsonResponse;
 use Kubectyl\Repositories\Eloquent\ServerRepository;
 use Kubectyl\Services\Servers\ReinstallServerService;
 use Kubectyl\Http\Controllers\Api\Client\ClientApiController;
@@ -63,7 +63,10 @@ class SettingsController extends ClientApiController
      */
     public function reinstall(ReinstallServerRequest $request, Server $server): JsonResponse
     {
-        $this->reinstallServerService->handle($server);
+        $deleteFiles = $request->input('delete_files');
+        $options = ['deleteFiles' => $deleteFiles];
+
+        $this->reinstallServerService->handle($server, $options);
 
         Activity::event('server:reinstall')->log();
 

@@ -3,9 +3,8 @@
 namespace Kubectyl\Models;
 
 use Carbon\Carbon;
-use LogicException;
-use Illuminate\Support\Facades\Event;
 use Kubectyl\Events\ActivityLogged;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -124,7 +123,7 @@ class ActivityLog extends Model
     public function prunable()
     {
         if (is_null(config('activity.prune_days'))) {
-            throw new LogicException('Cannot prune activity logs: no "prune_days" configuration value is set.');
+            throw new \LogicException('Cannot prune activity logs: no "prune_days" configuration value is set.');
         }
 
         return static::where('timestamp', '<=', Carbon::now()->subDays(config('activity.prune_days')));

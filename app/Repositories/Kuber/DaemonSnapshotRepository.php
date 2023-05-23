@@ -2,21 +2,21 @@
 
 namespace Kubectyl\Repositories\Kuber;
 
+use Kubectyl\Models\Server;
 use Webmozart\Assert\Assert;
 use Kubectyl\Models\Snapshot;
-use Kubectyl\Models\Server;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\TransferException;
 use Kubectyl\Exceptions\Http\Connection\DaemonConnectionException;
 
-class DaemonBackupRepository extends DaemonRepository
+class DaemonSnapshotRepository extends DaemonRepository
 {
     protected ?string $adapter;
 
     /**
      * Sets the snapshot adapter for this execution instance.
      */
-    public function setBackupAdapter(string $adapter): self
+    public function setSnapshotAdapter(string $adapter): self
     {
         $this->adapter = $adapter;
 

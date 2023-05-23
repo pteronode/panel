@@ -2,12 +2,12 @@
 
 namespace Kubectyl\Providers;
 
-use Laravel\Sanctum\Sanctum;
 use Kubectyl\Models\ApiKey;
 use Kubectyl\Models\Server;
+use Laravel\Sanctum\Sanctum;
 use Kubectyl\Policies\ServerPolicy;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
 {

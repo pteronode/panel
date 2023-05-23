@@ -33,7 +33,7 @@ return [
         'output_line' => 'Dispatching job for first task in `:schedule` (:hash).',
     ],
     'maintenance' => [
-        'deleting_service_backup' => 'Deleting service backup file :file.',
+        'deleting_service_snapshot' => 'Deleting service snapshot file :file.',
     ],
     'server' => [
         'rebuild_failed' => 'Rebuild request for ":name" (#:id) on cluster ":cluster" failed with error: :message',

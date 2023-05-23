@@ -37,11 +37,11 @@ class Permission extends Model
     public const ACTION_USER_UPDATE = 'user.update';
     public const ACTION_USER_DELETE = 'user.delete';
 
-    public const ACTION_BACKUP_READ = 'backup.read';
-    public const ACTION_BACKUP_CREATE = 'backup.create';
-    public const ACTION_BACKUP_DELETE = 'backup.delete';
-    public const ACTION_BACKUP_DOWNLOAD = 'backup.download';
-    public const ACTION_BACKUP_RESTORE = 'backup.restore';
+    public const ACTION_SNAPSHOT_READ = 'snapshot.read';
+    public const ACTION_SNAPSHOT_CREATE = 'snapshot.create';
+    public const ACTION_SNAPSHOT_DELETE = 'snapshot.delete';
+    public const ACTION_SNAPSHOT_DOWNLOAD = 'snapshot.download';
+    public const ACTION_SNAPSHOT_RESTORE = 'snapshot.restore';
 
     public const ACTION_ALLOCATION_READ = 'allocation.read';
     public const ACTION_ALLOCATION_CREATE = 'allocation.create';
@@ -142,11 +142,11 @@ class Permission extends Model
         'snapshot' => [
             'description' => 'Permissions that control a user\'s ability to generate and manage server snapshots.',
             'keys' => [
-                'create' => 'Allows a user to create new backups for this server.',
-                'read' => 'Allows a user to view all backups that exist for this server.',
-                'delete' => 'Allows a user to remove backups from the system.',
-                'download' => 'Allows a user to download a backup for the server. Danger: this allows a user to access all files for the server in the backup.',
-                'restore' => 'Allows a user to restore a backup for the server. Danger: this allows the user to delete all of the server files in the process.',
+                'create' => 'Allows a user to create new snapshots for this server.',
+                'read' => 'Allows a user to view all snapshots that exist for this server.',
+                'delete' => 'Allows a user to remove snapshots from the system.',
+                'download' => 'Allows a user to download a snapshot for the server. Danger: this allows a user to access all files for the server in the snapshot.',
+                'restore' => 'Allows a user to restore a snapshot for the server. Danger: this allows the user to delete all of the server files in the process.',
             ],
         ],
 

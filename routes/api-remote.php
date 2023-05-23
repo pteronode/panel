@@ -22,7 +22,7 @@ Route::group(['prefix' => '/servers/{uuid}'], function () {
 });
 
 Route::group(['prefix' => '/snapshots'], function () {
-    Route::get('/{snapshot}', Remote\Backups\BackupRemoteUploadController::class);
-    Route::post('/{snapshot}', [Remote\Backups\BackupStatusController::class, 'index']);
-    Route::post('/{snapshot}/restore', [Remote\Backups\BackupStatusController::class, 'restore']);
+    Route::get('/{snapshot}', Remote\Snapshots\SnapshotRemoteUploadController::class);
+    Route::post('/{snapshot}', [Remote\Snapshots\SnapshotStatusController::class, 'index']);
+    Route::post('/{snapshot}/restore', [Remote\Snapshots\SnapshotStatusController::class, 'restore']);
 });

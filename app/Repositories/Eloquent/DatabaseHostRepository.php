@@ -2,8 +2,8 @@
 
 namespace Kubectyl\Repositories\Eloquent;
 
-use Illuminate\Support\Collection;
 use Kubectyl\Models\DatabaseHost;
+use Illuminate\Support\Collection;
 use Kubectyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class DatabaseHostRepository extends EloquentRepository implements DatabaseHostRepositoryInterface

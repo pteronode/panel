@@ -2,13 +2,13 @@
 
 namespace Kubectyl\Services\Servers;
 
+use Kubectyl\Models\User;
 use Illuminate\Support\Arr;
 use Kubectyl\Models\Rocket;
-use Kubectyl\Models\User;
 use Kubectyl\Models\Server;
 use Kubectyl\Models\ServerVariable;
-use Illuminate\Database\ConnectionInterface;
 use Kubectyl\Traits\Services\HasUserLevels;
+use Illuminate\Database\ConnectionInterface;
 
 class StartupModificationService
 {

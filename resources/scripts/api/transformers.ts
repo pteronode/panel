@@ -1,7 +1,7 @@
 import { Allocation } from '@/api/server/getServer';
 import { FractalResponseData } from '@/api/http';
 import { FileObject } from '@/api/server/files/loadDirectory';
-import { ServerBackup, ServerRocketVariable } from '@/api/server/types';
+import { ServerSnapshot, ServerRocketVariable } from '@/api/server/types';
 
 export const rawDataToServerAllocation = (data: FractalResponseData): Allocation => ({
     id: data.attributes.id,
@@ -53,7 +53,7 @@ export const rawDataToFileObject = (data: FractalResponseData): FileObject => ({
     },
 });
 
-export const rawDataToServerBackup = ({ attributes }: FractalResponseData): ServerBackup => ({
+export const rawDataToServerSnapshot = ({ attributes }: FractalResponseData): ServerSnapshot => ({
     uuid: attributes.uuid,
     isSuccessful: attributes.is_successful,
     isLocked: attributes.is_locked,

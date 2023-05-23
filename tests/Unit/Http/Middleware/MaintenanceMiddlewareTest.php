@@ -4,9 +4,9 @@ namespace Kubectyl\Tests\Unit\Http\Middleware;
 
 use Mockery as m;
 use Mockery\MockInterface;
+use Kubectyl\Models\Server;
 use Kubectyl\Models\Cluster;
 use Illuminate\Http\Response;
-use Kubectyl\Models\Server;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Kubectyl\Http\Middleware\MaintenanceMiddleware;
 

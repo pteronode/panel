@@ -4,16 +4,15 @@ namespace Kubectyl\Jobs\Schedule;
 
 use Exception;
 use Kubectyl\Jobs\Job;
-use Carbon\CarbonImmutable;
 use Kubectyl\Models\Task;
-use InvalidArgumentException;
+use Carbon\CarbonImmutable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use Kubectyl\Services\Backups\InitiateBackupService;
 use Kubectyl\Repositories\Kuber\DaemonPowerRepository;
 use Kubectyl\Repositories\Kuber\DaemonCommandRepository;
+use Kubectyl\Services\Snapshots\InitiateSnapshotService;
 use Kubectyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class RunTaskJob extends Job implements ShouldQueue
@@ -37,7 +36,7 @@ class RunTaskJob extends Job implements ShouldQueue
      */
     public function handle(
         DaemonCommandRepository $commandRepository,
-        InitiateBackupService $backupService,
+        InitiateSnapshotService $snapshotService,
         DaemonPowerRepository $powerRepository
     ) {
         // Do not process a task that is not set to active, unless it's been manually triggered.
@@ -68,13 +67,13 @@ class RunTaskJob extends Job implements ShouldQueue
                 case Task::ACTION_COMMAND:
                     $commandRepository->setServer($server)->send($this->task->payload);
                     break;
-                case Task::ACTION_BACKUP:
-                    $backupService->setIgnoredFiles(explode(PHP_EOL, $this->task->payload))->handle($server, null, true);
+                case Task::ACTION_SNAPSHOT:
+                    $snapshotService->handle($server, null, true);
                     break;
                 default:
-                    throw new InvalidArgumentException('Invalid task action provided: ' . $this->task->action);
+                    throw new \InvalidArgumentException('Invalid task action provided: ' . $this->task->action);
             }
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             // If this isn't a DaemonConnectionException on a task that allows for failures
             // throw the exception back up the chain so that the task is stopped.
             if (!($this->task->continue_on_failure && $exception instanceof DaemonConnectionException)) {
@@ -89,7 +88,7 @@ class RunTaskJob extends Job implements ShouldQueue
     /**
      * Handle a failure while sending the action to the daemon or otherwise processing the job.
      */
-    public function failed(Exception $exception = null)
+    public function failed(\Exception $exception = null)
     {
         $this->markTaskNotQueued();
         $this->markScheduleComplete();

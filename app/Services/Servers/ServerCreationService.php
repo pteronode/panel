@@ -3,13 +3,13 @@
 namespace Kubectyl\Services\Servers;
 
 use Ramsey\Uuid\Uuid;
+use Kubectyl\Models\User;
 use Illuminate\Support\Arr;
 use Kubectyl\Models\Rocket;
-use Kubectyl\Models\User;
-use Webmozart\Assert\Assert;
 use Kubectyl\Models\Server;
-use Illuminate\Support\Collection;
+use Webmozart\Assert\Assert;
 use Kubectyl\Models\Allocation;
+use Illuminate\Support\Collection;
 use Illuminate\Database\ConnectionInterface;
 use Kubectyl\Models\Objects\DeploymentObject;
 use Kubectyl\Repositories\Eloquent\ServerRepository;
@@ -178,7 +178,7 @@ class ServerCreationService
         if (isset($data['allocation_additional']) && is_array($data['allocation_additional'])) {
             $records = array_merge($records, $data['allocation_additional']);
         }
-    
+
         Allocation::query()->whereIn('id', $records)->update([
             'server_id' => $server->id,
         ]);

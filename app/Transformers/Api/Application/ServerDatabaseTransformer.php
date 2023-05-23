@@ -3,10 +3,10 @@
 namespace Kubectyl\Transformers\Api\Application;
 
 use Kubectyl\Models\Database;
-use League\Fractal\Resource\Item;
 use Kubectyl\Models\DatabaseHost;
-use League\Fractal\Resource\NullResource;
+use League\Fractal\Resource\Item;
 use Kubectyl\Services\Acl\Api\AdminAcl;
+use League\Fractal\Resource\NullResource;
 use Illuminate\Contracts\Encryption\Encrypter;
 
 class ServerDatabaseTransformer extends BaseTransformer

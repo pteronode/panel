@@ -3,8 +3,8 @@
 namespace Kubectyl\Transformers\Api\Client;
 
 use Kubectyl\Models\Database;
-use League\Fractal\Resource\Item;
 use Kubectyl\Models\Permission;
+use League\Fractal\Resource\Item;
 use League\Fractal\Resource\NullResource;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Kubectyl\Contracts\Extensions\HashidsInterface;

@@ -2,8 +2,8 @@
 
 namespace Kubectyl\Http\Requests\Api\Application\Servers\Databases;
 
-use Webmozart\Assert\Assert;
 use Kubectyl\Models\Server;
+use Webmozart\Assert\Assert;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Query\Builder;
 use Kubectyl\Services\Acl\Api\AdminAcl;

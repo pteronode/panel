@@ -4,8 +4,8 @@ namespace Kubectyl\Http\Controllers\Api\Client\Servers;
 
 use Carbon\CarbonImmutable;
 use Kubectyl\Models\Server;
-use Illuminate\Http\JsonResponse;
 use Kubectyl\Models\Permission;
+use Illuminate\Http\JsonResponse;
 use Kubectyl\Services\Clusters\ClusterJWTService;
 use Kubectyl\Exceptions\Http\HttpForbiddenException;
 use Kubectyl\Http\Requests\Api\Client\ClientApiRequest;

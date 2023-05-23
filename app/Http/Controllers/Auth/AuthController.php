@@ -3,26 +3,24 @@
 namespace Kubectyl\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
-use Vizir\KeycloakWebGuard\Exceptions\KeycloakCallbackException;
 use Vizir\KeycloakWebGuard\Facades\KeycloakWeb;
-
+use Vizir\KeycloakWebGuard\Exceptions\KeycloakCallbackException;
 use Vizir\KeycloakWebGuard\Controllers\AuthController as KeycloakAuthController;
 
 class AuthController extends KeycloakAuthController
 {
     /**
-     * Keycloak callback page
-     *
-     * @throws KeycloakCallbackException
+     * Keycloak callback page.
      *
      * @return view
+     *
+     * @throws KeycloakCallbackException
      */
     public function callback(Request $request)
     {
         // Check for errors from Keycloak
-        if (! empty($request->input('error'))) {
+        if (!empty($request->input('error'))) {
             $error = $request->input('error_description');
             $error = ($error) ?: $request->input('error');
 
@@ -31,7 +29,7 @@ class AuthController extends KeycloakAuthController
 
         // Check given state to mitigate CSRF attack
         $state = $request->input('state');
-        if (empty($state) || ! KeycloakWeb::validateState($state)) {
+        if (empty($state) || !KeycloakWeb::validateState($state)) {
             KeycloakWeb::forgetState();
 
             throw new KeycloakCallbackException('Invalid state');
@@ -39,7 +37,7 @@ class AuthController extends KeycloakAuthController
 
         // Change code for token
         $code = $request->input('code');
-        if (! empty($code)) {
+        if (!empty($code)) {
             $token = KeycloakWeb::getAccessToken($code);
 
             // $credentials = KeycloakWeb::retrieveToken();
@@ -51,6 +49,7 @@ class AuthController extends KeycloakAuthController
 
             if (Auth::validate($token)) {
                 $url = config('keycloak-web.redirect_url', '/admin');
+
                 return redirect()->intended($url);
             }
         }
@@ -64,7 +63,7 @@ class AuthController extends KeycloakAuthController
             return false;
         }
 
-        /**
+        /*
          * Store the section
          */
         $credentials['refresh_token'] = $credentials['refresh_token'] ?? '';
@@ -75,10 +74,11 @@ class AuthController extends KeycloakAuthController
     }
 
     /**
-     * Try to authenticate the user
+     * Try to authenticate the user.
+     *
+     * @return bool
      *
      * @throws KeycloakCallbackException
-     * @return boolean
      */
     public function authenticate()
     {

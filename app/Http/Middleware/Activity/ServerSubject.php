@@ -2,9 +2,8 @@
 
 namespace Kubectyl\Http\Middleware\Activity;
 
-use Closure;
-use Illuminate\Http\Request;
 use Kubectyl\Models\Server;
+use Illuminate\Http\Request;
 use Kubectyl\Facades\LogTarget;
 
 class ServerSubject
@@ -17,7 +16,7 @@ class ServerSubject
      * If no server is found this is a no-op as the activity log service can always
      * set the user based on the authmanager response.
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, \Closure $next)
     {
         $server = $request->route()->parameter('server');
         if ($server instanceof Server) {

@@ -109,7 +109,8 @@ class ServerConfigurationStructureService
             'uuid' => $server->uuid,
             'build' => [
                 'default' => [
-                    'port' => $server->default_port,
+                    'ip' => !empty($server->allocation) ? $server->allocation->ip : '0.0.0.0',
+                    'port' => $server->default_port ? $server->default_port : $server->allocation->port,
                 ],
                 'env' => $this->environment->handle($server),
                 'memory_request' => (int) $server->memory_request,

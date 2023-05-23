@@ -6,7 +6,7 @@ use Ramsey\Uuid\Uuid;
 use Kubectyl\Models\Launchpad;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class NestFactory extends Factory
+class LaunchpadFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.

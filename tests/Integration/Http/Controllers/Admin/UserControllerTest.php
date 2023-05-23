@@ -2,9 +2,9 @@
 
 namespace Kubectyl\Tests\Integration\Http\Controllers\Admin;
 
+use Kubectyl\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Kubectyl\Models\User;
 use Kubectyl\Models\Subuser;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Kubectyl\Http\Controllers\Admin\UserController;

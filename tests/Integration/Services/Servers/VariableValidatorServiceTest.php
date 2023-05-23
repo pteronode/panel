@@ -2,8 +2,8 @@
 
 namespace Kubectyl\Tests\Integration\Services\Servers;
 
-use Kubectyl\Models\Rocket;
 use Kubectyl\Models\User;
+use Kubectyl\Models\Rocket;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
 use Kubectyl\Tests\Integration\IntegrationTestCase;

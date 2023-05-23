@@ -18,7 +18,7 @@ const ServerConsoleContainer = () => {
     const description = ServerContext.useStoreState((state) => state.server.data!.description);
     const isInstalling = ServerContext.useStoreState((state) => state.server.isInstalling);
     const isTransferring = ServerContext.useStoreState((state) => state.server.data!.isTransferring);
-    const eggFeatures = ServerContext.useStoreState((state) => state.server.data!.eggFeatures, isEqual);
+    const rocketFeatures = ServerContext.useStoreState((state) => state.server.data!.rocketFeatures, isEqual);
     const isUnderMaintenance = ServerContext.useStoreState((state) => state.server.data!.isClusterUnderMaintenance);
 
     return (
@@ -56,7 +56,7 @@ const ServerConsoleContainer = () => {
                     <StatGraphs />
                 </Spinner.Suspense>
             </div>
-            <Features enabled={eggFeatures} />
+            <Features enabled={rocketFeatures} />
         </ServerContentBlock>
     );
 };

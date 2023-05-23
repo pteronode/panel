@@ -2,12 +2,12 @@
 
 namespace Kubectyl\Http\Controllers\Auth;
 
+use Kubectyl\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Kubectyl\Models\User;
-use Illuminate\Http\JsonResponse;
 use Kubectyl\Facades\Activity;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\View\View;
 use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

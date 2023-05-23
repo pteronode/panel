@@ -4,8 +4,8 @@ namespace Kubectyl\Exceptions\Model;
 
 use Illuminate\Support\MessageBag;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Contracts\Validation\Validator;
 use Kubectyl\Exceptions\KubectylException;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Contracts\Support\MessageProvider;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 

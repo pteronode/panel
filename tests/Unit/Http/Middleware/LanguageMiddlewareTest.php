@@ -3,8 +3,8 @@
 namespace Kubectyl\Tests\Unit\Http\Middleware;
 
 use Mockery as m;
-use Mockery\MockInterface;
 use Kubectyl\Models\User;
+use Mockery\MockInterface;
 use Illuminate\Foundation\Application;
 use Kubectyl\Http\Middleware\LanguageMiddleware;
 

@@ -4,7 +4,7 @@ namespace Kubectyl\Transformers\Api\Client;
 
 use Kubectyl\Models\Snapshot;
 
-class BackupTransformer extends BaseClientTransformer
+class SnapshotTransformer extends BaseClientTransformer
 {
     public function getResourceName(): string
     {

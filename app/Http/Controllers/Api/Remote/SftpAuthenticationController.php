@@ -2,12 +2,12 @@
 
 namespace Kubectyl\Http\Controllers\Api\Remote;
 
-use Illuminate\Http\Request;
 use Kubectyl\Models\User;
 use Kubectyl\Models\Server;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Kubectyl\Facades\Activity;
 use Kubectyl\Models\Permission;
+use Illuminate\Http\JsonResponse;
 use phpseclib3\Crypt\PublicKeyLoader;
 use Kubectyl\Http\Controllers\Controller;
 use phpseclib3\Exception\NoKeyLoadedException;

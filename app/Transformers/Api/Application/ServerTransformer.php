@@ -4,9 +4,9 @@ namespace Kubectyl\Transformers\Api\Application;
 
 use Kubectyl\Models\Server;
 use League\Fractal\Resource\Item;
+use Kubectyl\Services\Acl\Api\AdminAcl;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
-use Kubectyl\Services\Acl\Api\AdminAcl;
 use Kubectyl\Services\Servers\EnvironmentService;
 
 class ServerTransformer extends BaseTransformer

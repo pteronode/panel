@@ -91,7 +91,7 @@ class Cluster extends Model
         'upload_size', 'daemonBase', 'sftp_image', 'sftp_port',
         'daemonListen', 'description', 'maintenance_mode', 'insecure', 'metrics',
         'service_type', 'external_traffic_policy', 'storage_class', 'ns', 'snapshot_class',
-        'dns_policy', 'image_pull_policy', 'metallb_shared_ip'
+        'dns_policy', 'image_pull_policy', 'metallb_shared_ip',
     ];
 
     public static array $validationRules = [
@@ -139,8 +139,8 @@ class Cluster extends Model
         'daemonListen' => 8080,
         'maintenance_mode' => false,
         'insecure' => false,
-        'dns_policy' => "clusterfirst",
-        'image_pull_policy' => "ifnotpresent",
+        'dns_policy' => 'clusterfirst',
+        'image_pull_policy' => 'ifnotpresent',
         'metallb_shared_ip' => true,
     ];
 
@@ -199,7 +199,7 @@ class Cluster extends Model
                 'external_traffic_policy' => $this->external_traffic_policy,
                 'metallb_shared_ip' => $this->metallb_shared_ip,
                 'metallb_address_pool' => $this->metallb_address_pool,
-            ], function($value) {
+            ], function ($value) {
                 return !empty($value) || ($value !== null && $value !== '');
             }),
             'allowed_mounts' => $this->mounts->pluck('source')->toArray(),

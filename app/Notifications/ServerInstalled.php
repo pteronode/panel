@@ -3,9 +3,9 @@
 namespace Kubectyl\Notifications;
 
 use Kubectyl\Models\User;
-use Illuminate\Bus\Queueable;
 use Kubectyl\Events\Event;
 use Kubectyl\Models\Server;
+use Illuminate\Bus\Queueable;
 use Illuminate\Container\Container;
 use Kubectyl\Events\Server\Installed;
 use Illuminate\Notifications\Notification;

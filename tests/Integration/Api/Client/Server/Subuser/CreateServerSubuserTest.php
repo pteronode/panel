@@ -2,10 +2,10 @@
 
 namespace Kubectyl\Tests\Integration\Api\Client\Server\Subuser;
 
-use Illuminate\Support\Str;
 use Kubectyl\Models\User;
-use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 use Kubectyl\Models\Subuser;
+use Illuminate\Http\Response;
 use Kubectyl\Models\Permission;
 use Illuminate\Foundation\Testing\WithFaker;
 use Kubectyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;

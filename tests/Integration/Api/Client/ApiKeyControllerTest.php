@@ -3,10 +3,10 @@
 namespace Kubectyl\Tests\Integration\Api\Client;
 
 use Kubectyl\Models\User;
-use Illuminate\Http\Response;
 use Kubectyl\Models\ApiKey;
-use Illuminate\Support\Facades\Event;
+use Illuminate\Http\Response;
 use Kubectyl\Events\ActivityLogged;
+use Illuminate\Support\Facades\Event;
 
 class ApiKeyControllerTest extends ClientApiIntegrationTestCase
 {

@@ -2,34 +2,34 @@
 
 namespace Kubectyl\Http\Controllers\Api\Client\Servers;
 
+use Kubectyl\Models\Server;
 use Illuminate\Http\Request;
 use Kubectyl\Models\Snapshot;
-use Kubectyl\Models\Server;
-use Illuminate\Http\JsonResponse;
 use Kubectyl\Facades\Activity;
 use Kubectyl\Models\Permission;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Auth\Access\AuthorizationException;
-use Kubectyl\Services\Backups\DeleteBackupService;
-use Kubectyl\Services\Backups\DownloadLinkService;
-use Kubectyl\Repositories\Eloquent\BackupRepository;
-use Kubectyl\Services\Backups\InitiateBackupService;
-use Kubectyl\Repositories\Kuber\DaemonBackupRepository;
-use Kubectyl\Transformers\Api\Client\BackupTransformer;
+use Kubectyl\Services\Snapshots\DownloadLinkService;
+use Kubectyl\Repositories\Eloquent\SnapshotRepository;
+use Kubectyl\Services\Snapshots\DeleteSnapshotService;
+use Kubectyl\Services\Snapshots\InitiateSnapshotService;
+use Kubectyl\Repositories\Kuber\DaemonSnapshotRepository;
+use Kubectyl\Transformers\Api\Client\SnapshotTransformer;
 use Kubectyl\Http\Controllers\Api\Client\ClientApiController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Kubectyl\Http\Requests\Api\Client\Servers\Backups\StoreBackupRequest;
+use Kubectyl\Http\Requests\Api\Client\Servers\Snapshots\StoreSnapshotRequest;
 
-class BackupController extends ClientApiController
+class SnapshotController extends ClientApiController
 {
     /**
-     * BackupController constructor.
+     * SnapshotController constructor.
      */
     public function __construct(
-        private DaemonBackupRepository $daemonRepository,
-        private DeleteBackupService $deleteBackupService,
-        private InitiateBackupService $initiateBackupService,
+        private DaemonSnapshotRepository $daemonRepository,
+        private DeleteSnapshotService $deleteSnapshotService,
+        private InitiateSnapshotService $initiateSnapshotService,
         private DownloadLinkService $downloadLinkService,
-        private BackupRepository $repository
+        private SnapshotRepository $repository
     ) {
         parent::__construct();
     }
@@ -42,16 +42,16 @@ class BackupController extends ClientApiController
      */
     public function index(Request $request, Server $server): array
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_READ, $server)) {
+        if (!$request->user()->can(Permission::ACTION_SNAPSHOT_READ, $server)) {
             throw new AuthorizationException();
         }
 
         $limit = min($request->query('per_page') ?? 20, 50);
 
         return $this->fractal->collection($server->snapshots()->paginate($limit))
-            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->transformWith($this->getTransformer(SnapshotTransformer::class))
             ->addMeta([
-                'snapshot_count' => $this->repository->getNonFailedBackups($server)->count(),
+                'snapshot_count' => $this->repository->getNonFailedSnapshots($server)->count(),
             ])
             ->toArray();
     }
@@ -63,16 +63,15 @@ class BackupController extends ClientApiController
      * @throws \Spatie\Fractalistic\Exceptions\NoTransformerSpecified
      * @throws \Throwable
      */
-    public function store(StoreBackupRequest $request, Server $server): array
+    public function store(StoreSnapshotRequest $request, Server $server): array
     {
-        $action = $this->initiateBackupService
-            ->setIgnoredFiles(explode(PHP_EOL, $request->input('ignored') ?? ''));
+        $action = $this->initiateSnapshotService;
 
         // Only set the lock status if the user even has permission to delete snapshots,
         // otherwise ignore this status. This gets a little funky since it isn't clear
         // how best to allow a user to create a snapshot that is locked without also preventing
         // them from just filling up a server with snapshots that can never be deleted?
-        if ($request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
+        if ($request->user()->can(Permission::ACTION_SNAPSHOT_DELETE, $server)) {
             $action->setIsLocked((bool) $request->input('is_locked'));
         }
 
@@ -84,7 +83,7 @@ class BackupController extends ClientApiController
             ->log();
 
         return $this->fractal->item($snapshot)
-            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->transformWith($this->getTransformer(SnapshotTransformer::class))
             ->toArray();
     }
 
@@ -96,7 +95,7 @@ class BackupController extends ClientApiController
      */
     public function toggleLock(Request $request, Server $server, Snapshot $snapshot): array
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
+        if (!$request->user()->can(Permission::ACTION_SNAPSHOT_DELETE, $server)) {
             throw new AuthorizationException();
         }
 
@@ -107,7 +106,7 @@ class BackupController extends ClientApiController
         Activity::event($action)->subject($snapshot)->property('name', $snapshot->name)->log();
 
         return $this->fractal->item($snapshot)
-            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->transformWith($this->getTransformer(SnapshotTransformer::class))
             ->toArray();
     }
 
@@ -118,12 +117,12 @@ class BackupController extends ClientApiController
      */
     public function view(Request $request, Server $server, Snapshot $snapshot): array
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_READ, $server)) {
+        if (!$request->user()->can(Permission::ACTION_SNAPSHOT_READ, $server)) {
             throw new AuthorizationException();
         }
 
         return $this->fractal->item($snapshot)
-            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->transformWith($this->getTransformer(SnapshotTransformer::class))
             ->toArray();
     }
 
@@ -135,11 +134,11 @@ class BackupController extends ClientApiController
      */
     public function delete(Request $request, Server $server, Snapshot $snapshot): JsonResponse
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
+        if (!$request->user()->can(Permission::ACTION_SNAPSHOT_DELETE, $server)) {
             throw new AuthorizationException();
         }
 
-        $this->deleteBackupService->handle($snapshot);
+        $this->deleteSnapshotService->handle($snapshot);
 
         Activity::event('server:snapshot.delete')
             ->subject($snapshot)
@@ -157,25 +156,25 @@ class BackupController extends ClientApiController
      * @throws \Throwable
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function download(Request $request, Server $server, Snapshot $snapshot): JsonResponse
-    {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_DOWNLOAD, $server)) {
-            throw new AuthorizationException();
-        }
+    // public function download(Request $request, Server $server, Snapshot $snapshot): JsonResponse
+    // {
+    //     if (!$request->user()->can(Permission::ACTION_SNAPSHOT_DOWNLOAD, $server)) {
+    //         throw new AuthorizationException();
+    //     }
 
-        if ($snapshot->disk !== Snapshot::ADAPTER_AWS_S3 && $snapshot->disk !== Snapshot::ADAPTER_KUBER) {
-            throw new BadRequestHttpException('The snapshot requested references an unknown disk driver type and cannot be downloaded.');
-        }
+    //     if ($snapshot->disk !== Snapshot::ADAPTER_AWS_S3 && $snapshot->disk !== Snapshot::ADAPTER_KUBER) {
+    //         throw new BadRequestHttpException('The snapshot requested references an unknown disk driver type and cannot be downloaded.');
+    //     }
 
-        $url = $this->downloadLinkService->handle($snapshot, $request->user());
+    //     $url = $this->downloadLinkService->handle($snapshot, $request->user());
 
-        Activity::event('server:snapshot.download')->subject($snapshot)->property('name', $snapshot->name)->log();
+    //     Activity::event('server:snapshot.download')->subject($snapshot)->property('name', $snapshot->name)->log();
 
-        return new JsonResponse([
-            'object' => 'signed_url',
-            'attributes' => ['url' => $url],
-        ]);
-    }
+    //     return new JsonResponse([
+    //         'object' => 'signed_url',
+    //         'attributes' => ['url' => $url],
+    //     ]);
+    // }
 
     /**
      * Handles restoring a snapshot by making a request to the Kuber instance telling it
@@ -190,7 +189,7 @@ class BackupController extends ClientApiController
      */
     public function restore(Request $request, Server $server, Snapshot $snapshot): JsonResponse
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_RESTORE, $server)) {
+        if (!$request->user()->can(Permission::ACTION_SNAPSHOT_RESTORE, $server)) {
             throw new AuthorizationException();
         }
 

@@ -2,8 +2,8 @@
 
 namespace Kubectyl\Http\Requests\Api\Client\Servers\Subusers;
 
-use Illuminate\Http\Request;
 use Kubectyl\Models\User;
+use Illuminate\Http\Request;
 use Kubectyl\Models\Subuser;
 use Kubectyl\Exceptions\Http\HttpForbiddenException;
 use Kubectyl\Http\Requests\Api\Client\ClientApiRequest;

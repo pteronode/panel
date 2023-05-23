@@ -6,8 +6,8 @@ use Kubectyl\Models\Rocket;
 use Webmozart\Assert\Assert;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Kubectyl\Contracts\Repository\RocketRepositoryInterface;
 use Kubectyl\Exceptions\Repository\RecordNotFoundException;
+use Kubectyl\Contracts\Repository\RocketRepositoryInterface;
 
 class RocketRepository extends EloquentRepository implements RocketRepositoryInterface
 {

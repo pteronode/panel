@@ -4,9 +4,9 @@ namespace Kubectyl\Transformers\Api\Application;
 
 use Kubectyl\Models\Cluster;
 use League\Fractal\Resource\Item;
+use Kubectyl\Services\Acl\Api\AdminAcl;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
-use Kubectyl\Services\Acl\Api\AdminAcl;
 
 class ClusterTransformer extends BaseTransformer
 {

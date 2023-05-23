@@ -2,7 +2,6 @@
 
 namespace Kubectyl\Tests\Integration\Api\Client\Server\Subuser;
 
-use Mockery;
 use Ramsey\Uuid\Uuid;
 use Kubectyl\Models\User;
 use Kubectyl\Models\Subuser;
@@ -25,7 +24,7 @@ class DeleteSubuserTest extends ClientApiIntegrationTestCase
      */
     public function testCorrectSubuserIsDeletedFromServer()
     {
-        $this->swap(DaemonServerRepository::class, $mock = Mockery::mock(DaemonServerRepository::class));
+        $this->swap(DaemonServerRepository::class, $mock = \Mockery::mock(DaemonServerRepository::class));
 
         [$user, $server] = $this->generateTestAccount();
 

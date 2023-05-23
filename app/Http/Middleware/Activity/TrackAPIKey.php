@@ -2,9 +2,8 @@
 
 namespace Kubectyl\Http\Middleware\Activity;
 
-use Closure;
-use Illuminate\Http\Request;
 use Kubectyl\Models\ApiKey;
+use Illuminate\Http\Request;
 use Kubectyl\Facades\LogTarget;
 
 class TrackAPIKey
@@ -15,7 +14,7 @@ class TrackAPIKey
      * request singleton so that all tracked activity log events are properly associated
      * with the given API key.
      */
-    public function handle(Request $request, Closure $next): mixed
+    public function handle(Request $request, \Closure $next): mixed
     {
         if ($request->user()) {
             $token = $request->user()->currentAccessToken();

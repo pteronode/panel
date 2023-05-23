@@ -6,10 +6,10 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Console\Kernel;
-use Illuminate\View\Factory as ViewFactory;
 use Kubectyl\Http\Controllers\Controller;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Illuminate\View\Factory as ViewFactory;
 use Kubectyl\Contracts\Repository\SettingsRepositoryInterface;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Kubectyl\Http\Requests\Admin\Settings\AdvancedSettingsFormRequest;
 
 class AdvancedController extends Controller

@@ -3,8 +3,8 @@
 namespace Kubectyl\Http\Controllers\Api\Application\Clusters;
 
 use Kubectyl\Models\Cluster;
-use Illuminate\Http\JsonResponse;
 use Kubectyl\Models\Allocation;
+use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Illuminate\Database\Eloquent\Builder;

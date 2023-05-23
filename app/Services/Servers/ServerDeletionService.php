@@ -2,9 +2,8 @@
 
 namespace Kubectyl\Services\Servers;
 
-use Exception;
-use Illuminate\Http\Response;
 use Kubectyl\Models\Server;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\ConnectionInterface;
 use Kubectyl\Repositories\Kuber\DaemonServerRepository;
@@ -61,7 +60,7 @@ class ServerDeletionService
             foreach ($server->databases as $database) {
                 try {
                     $this->databaseManagementService->delete($database);
-                } catch (Exception $exception) {
+                } catch (\Exception $exception) {
                     if (!$this->force) {
                         throw $exception;
                     }

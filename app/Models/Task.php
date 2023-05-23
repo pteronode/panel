@@ -4,8 +4,8 @@ namespace Kubectyl\Models;
 
 use Illuminate\Container\Container;
 use Znck\Eloquent\Traits\BelongsToThrough;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Kubectyl\Contracts\Extensions\HashidsInterface;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
@@ -37,7 +37,7 @@ class Task extends Model
      */
     public const ACTION_POWER = 'power';
     public const ACTION_COMMAND = 'command';
-    public const ACTION_BACKUP = 'backup';
+    public const ACTION_SNAPSHOT = 'snapshot';
 
     /**
      * The table associated with the model.
@@ -87,7 +87,7 @@ class Task extends Model
         'schedule_id' => 'required|numeric|exists:schedules,id',
         'sequence_id' => 'required|numeric|min:1',
         'action' => 'required|string',
-        'payload' => 'required_unless:action,backup|string',
+        'payload' => 'required_unless:action,snapshot|string',
         'time_offset' => 'required|numeric|between:0,900',
         'is_queued' => 'boolean',
         'continue_on_failure' => 'boolean',

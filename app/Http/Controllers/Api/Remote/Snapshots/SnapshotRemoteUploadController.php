@@ -1,36 +1,36 @@
 <?php
 
-namespace Kubectyl\Http\Controllers\Api\Remote\Backups;
+namespace Kubectyl\Http\Controllers\Api\Remote\Snapshots;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Kubectyl\Models\Snapshot;
 use Illuminate\Http\JsonResponse;
 use Kubectyl\Http\Controllers\Controller;
-use Kubectyl\Extensions\Backups\BackupManager;
 use Kubectyl\Extensions\Filesystem\S3Filesystem;
+use Kubectyl\Extensions\Snapshots\SnapshotManager;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class BackupRemoteUploadController extends Controller
+class SnapshotRemoteUploadController extends Controller
 {
     public const DEFAULT_MAX_PART_SIZE = 5 * 1024 * 1024 * 1024;
 
     /**
-     * BackupRemoteUploadController constructor.
+     * SnapshotRemoteUploadController constructor.
      */
-    public function __construct(private BackupManager $backupManager)
+    public function __construct(private SnapshotManager $snapshotManager)
     {
     }
 
     /**
-     * Returns the required presigned urls to upload a backup to S3 cloud storage.
+     * Returns the required presigned urls to upload a snapshot to S3 cloud storage.
      *
      * @throws \Exception
      * @throws \Throwable
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function __invoke(Request $request, string $backup): JsonResponse
+    public function __invoke(Request $request, string $snapshot): JsonResponse
     {
         // Get the size query parameter.
         $size = (int) $request->query('size');
@@ -39,22 +39,22 @@ class BackupRemoteUploadController extends Controller
         }
 
         /** @var \Kubectyl\Models\Snapshot $snapshot */
-        $backup = Snapshot::query()->where('uuid', $backup)->firstOrFail();
+        $snapshot = Snapshot::query()->where('uuid', $snapshot)->firstOrFail();
 
         // Prevent snapshots that have already been completed from trying to
         // be uploaded again.
-        if (!is_null($backup->completed_at)) {
+        if (!is_null($snapshot->completed_at)) {
             throw new ConflictHttpException('This snapshot is already in a completed state.');
         }
 
         // Ensure we are using the S3 adapter.
-        $adapter = $this->backupManager->adapter();
+        $adapter = $this->snapshotManager->adapter();
         if (!$adapter instanceof S3Filesystem) {
-            throw new BadRequestHttpException('The configured backup adapter is not an S3 compatible adapter.');
+            throw new BadRequestHttpException('The configured snapshot adapter is not an S3 compatible adapter.');
         }
 
-        // The path where backup will be uploaded to
-        $path = sprintf('%s/%s.tar.gz', $backup->server->uuid, $backup->uuid);
+        // The path where snapshot will be uploaded to
+        $path = sprintf('%s/%s.tar.gz', $snapshot->server->uuid, $snapshot->uuid);
 
         // Get the S3 client
         $client = $adapter->getClient();
@@ -91,8 +91,8 @@ class BackupRemoteUploadController extends Controller
             )->getUri()->__toString();
         }
 
-        // Set the upload_id on the backup in the database.
-        $backup->update(['upload_id' => $params['UploadId']]);
+        // Set the upload_id on the snapshot in the database.
+        $snapshot->update(['upload_id' => $params['UploadId']]);
 
         return new JsonResponse([
             'parts' => $parts,
@@ -109,7 +109,7 @@ class BackupRemoteUploadController extends Controller
      * Note if the received config cannot be converted to int (0), is zero or is negative,
      * the fallback value will be used too.
      *
-     * The fallback value is {@see BackupRemoteUploadController::DEFAULT_MAX_PART_SIZE}.
+     * The fallback value is {@see SnapshotRemoteUploadController::DEFAULT_MAX_PART_SIZE}.
      */
     private function getConfiguredMaxPartSize(): int
     {

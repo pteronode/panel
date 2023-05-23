@@ -2,10 +2,8 @@
 
 namespace Kubectyl\Tests\Integration\Services\Databases;
 
-use Mockery;
 use Mockery\MockInterface;
 use Kubectyl\Models\Cluster;
-use InvalidArgumentException;
 use Kubectyl\Models\Database;
 use Kubectyl\Models\DatabaseHost;
 use Kubectyl\Tests\Integration\IntegrationTestCase;
@@ -24,7 +22,7 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->managementService = Mockery::mock(DatabaseManagementService::class);
+        $this->managementService = \Mockery::mock(DatabaseManagementService::class);
         $this->swap(DatabaseManagementService::class, $this->managementService);
     }
 
@@ -50,7 +48,7 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessageMatches('/^Expected a non-empty value\. Got: /');
         $this->getService()->handle($server, $data);
     }

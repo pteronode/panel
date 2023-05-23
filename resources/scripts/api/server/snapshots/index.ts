@@ -1,7 +1,7 @@
 import http from '@/api/http';
 
-export const restoreServerBackup = async (uuid: string, backup: string, truncate?: boolean): Promise<void> => {
-    await http.post(`/api/client/servers/${uuid}/snapshots/${backup}/restore`, {
+export const restoreServerSnapshot = async (uuid: string, snapshot: string, truncate?: boolean): Promise<void> => {
+    await http.post(`/api/client/servers/${uuid}/snapshots/${snapshot}/restore`, {
         truncate,
     });
 };

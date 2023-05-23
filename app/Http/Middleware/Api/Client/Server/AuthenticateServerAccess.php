@@ -2,11 +2,10 @@
 
 namespace Kubectyl\Http\Middleware\Api\Client\Server;
 
-use Closure;
-use Illuminate\Http\Request;
 use Kubectyl\Models\Server;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Http\Request;
 use Kubectyl\Exceptions\Http\Server\ServerStateConflictException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AuthenticateServerAccess
 {
@@ -27,7 +26,7 @@ class AuthenticateServerAccess
     /**
      * Authenticate that this server exists and is not suspended or marked as installing.
      */
-    public function handle(Request $request, Closure $next): mixed
+    public function handle(Request $request, \Closure $next): mixed
     {
         /** @var \Kubectyl\Models\User $user */
         $user = $request->user();

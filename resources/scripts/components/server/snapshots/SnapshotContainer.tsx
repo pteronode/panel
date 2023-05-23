@@ -6,15 +6,15 @@ import CreateSnapshotButton from '@/components/server/snapshots/CreateSnapshotBu
 import FlashMessageRender from '@/components/FlashMessageRender';
 import SnapshotRow from '@/components/server/snapshots/SnapshotRow';
 import tw from 'twin.macro';
-import getServerBackups, { Context as ServerBackupContext } from '@/api/swr/getServerBackups';
+import getServerSnapshots, { Context as ServerSnapshotContext } from '@/api/swr/getServerSnapshots';
 import { ServerContext } from '@/state/server';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import Pagination from '@/components/elements/Pagination';
 
 const SnapshotContainer = () => {
-    const { page, setPage } = useContext(ServerBackupContext);
+    const { page, setPage } = useContext(ServerSnapshotContext);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { data: snapshots, error, isValidating } = getServerBackups();
+    const { data: snapshots, error, isValidating } = getServerSnapshots();
 
     const snapshotLimit = ServerContext.useStoreState((state) => state.server.data!.featureLimits.snapshots);
 
@@ -38,7 +38,7 @@ const SnapshotContainer = () => {
             <Pagination data={snapshots} onPageSelect={setPage}>
                 {({ items }) =>
                     !items.length ? (
-                        // Don't show any error messages if the server has no backups and the user cannot
+                        // Don't show any error messages if the server has no snapshots and the user cannot
                         // create additional ones for the server.
                         !snapshotLimit ? null : (
                             <p css={tw`text-center text-sm text-neutral-300`}>
@@ -82,8 +82,8 @@ const SnapshotContainer = () => {
 export default () => {
     const [page, setPage] = useState<number>(1);
     return (
-        <ServerBackupContext.Provider value={{ page, setPage }}>
+        <ServerSnapshotContext.Provider value={{ page, setPage }}>
             <SnapshotContainer />
-        </ServerBackupContext.Provider>
+        </ServerSnapshotContext.Provider>
     );
 };

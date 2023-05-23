@@ -2,14 +2,14 @@
 
 namespace Kubectyl\Http\Requests\Api\Application;
 
-use Webmozart\Assert\Assert;
 use Kubectyl\Models\ApiKey;
+use Webmozart\Assert\Assert;
 use Laravel\Sanctum\TransientToken;
 use Illuminate\Validation\Validator;
 use Illuminate\Database\Eloquent\Model;
 use Kubectyl\Services\Acl\Api\AdminAcl;
-use Illuminate\Foundation\Http\FormRequest;
 use Kubectyl\Exceptions\KubectylException;
+use Illuminate\Foundation\Http\FormRequest;
 
 abstract class ApplicationApiRequest extends FormRequest
 {

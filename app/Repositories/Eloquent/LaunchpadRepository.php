@@ -4,8 +4,8 @@ namespace Kubectyl\Repositories\Eloquent;
 
 use Kubectyl\Models\Launchpad;
 use Illuminate\Database\Eloquent\Collection;
-use Kubectyl\Contracts\Repository\LaunchpadRepositoryInterface;
 use Kubectyl\Exceptions\Repository\RecordNotFoundException;
+use Kubectyl\Contracts\Repository\LaunchpadRepositoryInterface;
 
 class LaunchpadRepository extends EloquentRepository implements LaunchpadRepositoryInterface
 {

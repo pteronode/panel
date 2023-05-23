@@ -120,13 +120,13 @@ Route::group([
     });
 
     Route::group(['prefix' => '/snapshots'], function () {
-        Route::get('/', [Client\Servers\BackupController::class, 'index']);
-        Route::post('/', [Client\Servers\BackupController::class, 'store']);
-        Route::get('/{snapshot}', [Client\Servers\BackupController::class, 'view']);
-        Route::get('/{snapshot}/download', [Client\Servers\BackupController::class, 'download']);
-        Route::post('/{snapshot}/lock', [Client\Servers\BackupController::class, 'toggleLock']);
-        Route::post('/{snapshot}/restore', [Client\Servers\BackupController::class, 'restore']);
-        Route::delete('/{snapshot}', [Client\Servers\BackupController::class, 'delete']);
+        Route::get('/', [Client\Servers\SnapshotController::class, 'index']);
+        Route::post('/', [Client\Servers\SnapshotController::class, 'store']);
+        Route::get('/{snapshot}', [Client\Servers\SnapshotController::class, 'view']);
+        // Route::get('/{snapshot}/download', [Client\Servers\SnapshotController::class, 'download']);
+        Route::post('/{snapshot}/lock', [Client\Servers\SnapshotController::class, 'toggleLock']);
+        Route::post('/{snapshot}/restore', [Client\Servers\SnapshotController::class, 'restore']);
+        Route::delete('/{snapshot}', [Client\Servers\SnapshotController::class, 'delete']);
     });
 
     Route::group(['prefix' => '/startup'], function () {

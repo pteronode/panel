@@ -3,12 +3,12 @@
 namespace Kubectyl\Http\Controllers\Api\Client\Servers;
 
 use Kubectyl\Models\Task;
-use Illuminate\Http\Response;
 use Kubectyl\Models\Server;
+use Illuminate\Http\Response;
 use Kubectyl\Models\Schedule;
-use Illuminate\Http\JsonResponse;
 use Kubectyl\Facades\Activity;
 use Kubectyl\Models\Permission;
+use Illuminate\Http\JsonResponse;
 use Kubectyl\Repositories\Eloquent\TaskRepository;
 use Kubectyl\Exceptions\Http\HttpForbiddenException;
 use Kubectyl\Transformers\Api\Client\TaskTransformer;
@@ -41,8 +41,8 @@ class ScheduleTaskController extends ClientApiController
             throw new ServiceLimitExceededException("Schedules may not have more than $limit tasks associated with them. Creating this task would put this schedule over the limit.");
         }
 
-        if ($server->snapshot_limit === 0 && $request->action === 'backup') {
-            throw new HttpForbiddenException("A backup task cannot be created when the server's backup limit is set to 0.");
+        if ($server->snapshot_limit === 0 && $request->action === 'snapshot') {
+            throw new HttpForbiddenException("A snapshot task cannot be created when the server's snapshot limit is set to 0.");
         }
 
         /** @var \Kubectyl\Models\Task|null $lastTask */
@@ -80,8 +80,8 @@ class ScheduleTaskController extends ClientApiController
             throw new NotFoundHttpException();
         }
 
-        if ($server->snapshot_limit === 0 && $request->action === 'backup') {
-            throw new HttpForbiddenException("A backup task cannot be created when the server's backup limit is set to 0.");
+        if ($server->snapshot_limit === 0 && $request->action === 'snapshot') {
+            throw new HttpForbiddenException("A snapshot task cannot be created when the server's snapshot limit is set to 0.");
         }
 
         $this->repository->update($task->id, [

@@ -4,9 +4,9 @@ namespace Kubectyl\Transformers\Api\Application;
 
 use Kubectyl\Models\Database;
 use Kubectyl\Models\DatabaseHost;
+use Kubectyl\Services\Acl\Api\AdminAcl;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
-use Kubectyl\Services\Acl\Api\AdminAcl;
 
 class DatabaseHostTransformer extends BaseTransformer
 {

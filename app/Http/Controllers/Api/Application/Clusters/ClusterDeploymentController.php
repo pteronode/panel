@@ -20,7 +20,7 @@ class ClusterDeploymentController extends ApplicationApiController
     /**
      * Finds any clusters that are available using the given deployment criteria. This works
      * similarly to the server creation process, but allows you to pass the deployment object
-     * to this endpoint and get back a list of all Nodes satisfying the requirements.
+     * to this endpoint and get back a list of all Clusters satisfying the requirements.
      *
      * @throws \Kubectyl\Exceptions\Service\Deployment\NoViableClusterException
      */

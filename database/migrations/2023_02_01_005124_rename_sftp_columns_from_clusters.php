@@ -1,11 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      *
@@ -13,9 +12,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('server_transfers', function (Blueprint $table) {
+        Schema::table('server_transfers', function (Blueprint $table) {
             $table->renameColumn('old_node', 'old_cluster');
-            $table->nenameColumn('new_node', 'new_cluster');
+            $table->renameColumn('new_node', 'new_cluster');
         });
 
         // Schema::table('allocations', function (Blueprint $table) {
@@ -97,7 +96,6 @@ return new class extends Migration
     public function down()
     {
         Schema::table('clusters', function (Blueprint $table) {
-            //
         });
     }
 };

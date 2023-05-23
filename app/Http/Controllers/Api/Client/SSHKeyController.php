@@ -2,8 +2,8 @@
 
 namespace Kubectyl\Http\Controllers\Api\Client;
 
-use Illuminate\Http\JsonResponse;
 use Kubectyl\Facades\Activity;
+use Illuminate\Http\JsonResponse;
 use Kubectyl\Http\Requests\Api\Client\ClientApiRequest;
 use Kubectyl\Transformers\Api\Client\UserSSHKeyTransformer;
 use Kubectyl\Http\Requests\Api\Client\Account\StoreSSHKeyRequest;

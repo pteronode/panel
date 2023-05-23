@@ -25,6 +25,7 @@ class StoreServerRequest extends ApplicationApiRequest
         return [
             'external_id' => $rules['external_id'],
             'name' => $rules['name'],
+            'cluster_id' => 'integer|min:1',
             'description' => array_merge(['nullable'], $rules['description']),
             'user' => $rules['owner_id'],
             'rocket' => $rules['rocket_id'],
@@ -32,6 +33,8 @@ class StoreServerRequest extends ApplicationApiRequest
             'startup' => $rules['startup'],
             'environment' => 'present|array',
             'skip_scripts' => 'sometimes|boolean',
+            'node_selectors' => 'array|nullable',
+            'node_selectors.*' => 'string',
 
             // Resource limitations
             'limits' => 'required|array',
@@ -48,6 +51,9 @@ class StoreServerRequest extends ApplicationApiRequest
             'feature_limits.snapshots' => $rules['snapshot_limit'],
 
             // Placeholders for rules added in withValidator() function.
+            'port.default' => '',
+            'port.additional.*' => '',
+
             'allocation.default' => '',
             'allocation.additional.*' => '',
 
@@ -73,9 +79,11 @@ class StoreServerRequest extends ApplicationApiRequest
         return [
             'external_id' => array_get($data, 'external_id'),
             'name' => array_get($data, 'name'),
+            'cluster_id' => array_get($data, 'cluster_id'),
             'description' => array_get($data, 'description'),
             'owner_id' => array_get($data, 'user'),
             'rocket_id' => array_get($data, 'rocket'),
+            'node_selectors' => array_get($data, 'node_selectors'),
             'image' => array_get($data, 'docker_image'),
             'startup' => array_get($data, 'startup'),
             'environment' => array_get($data, 'environment'),
@@ -85,6 +93,8 @@ class StoreServerRequest extends ApplicationApiRequest
             'cpu_request' => array_get($data, 'limits.cpu_request'),
             'cpu_limit' => array_get($data, 'limits.cpu_limit'),
             'skip_scripts' => array_get($data, 'skip_scripts', false),
+            'default_port' => array_get($data, 'port.default'),
+            'additional_ports' => array_get($data, 'port.additional'),
             'allocation_id' => array_get($data, 'allocation.default'),
             'allocation_additional' => array_get($data, 'allocation.additional'),
             'start_on_completion' => array_get($data, 'start_on_completion', false),
@@ -106,8 +116,8 @@ class StoreServerRequest extends ApplicationApiRequest
             Rule::exists('allocations', 'id')->where(function ($query) {
                 $query->whereNull('server_id');
             }),
-        ], function ($input) {
-            return !$input->deploy;
+        ], function ($input) use ($validator) {
+            return !$input->deploy && (!isset($validator->getData()['port']['default']));
         });
 
         $validator->sometimes('allocation.additional.*', [

@@ -3,10 +3,10 @@
 namespace Kubectyl\Http\Controllers\Api\Client\Servers;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Http\Response;
 use Kubectyl\Models\Server;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Kubectyl\Facades\Activity;
+use Illuminate\Http\JsonResponse;
 use Kubectyl\Services\Clusters\ClusterJWTService;
 use Kubectyl\Repositories\Kuber\DaemonFileRepository;
 use Kubectyl\Transformers\Api\Client\FileObjectTransformer;

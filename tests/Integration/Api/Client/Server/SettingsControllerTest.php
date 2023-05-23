@@ -2,9 +2,8 @@
 
 namespace Kubectyl\Tests\Integration\Api\Client\Server;
 
-use Mockery;
-use Illuminate\Http\Response;
 use Kubectyl\Models\Server;
+use Illuminate\Http\Response;
 use Kubectyl\Models\Permission;
 use Kubectyl\Repositories\Kuber\DaemonServerRepository;
 use Kubectyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
@@ -78,11 +77,11 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount($permissions);
         $this->assertTrue($server->isInstalled());
 
-        $service = Mockery::mock(DaemonServerRepository::class);
+        $service = \Mockery::mock(DaemonServerRepository::class);
         $this->app->instance(DaemonServerRepository::class, $service);
 
         $service->expects('setServer')
-            ->with(Mockery::on(function ($value) use ($server) {
+            ->with(\Mockery::on(function ($value) use ($server) {
                 return $value->uuid === $server->uuid;
             }))
             ->andReturnSelf()

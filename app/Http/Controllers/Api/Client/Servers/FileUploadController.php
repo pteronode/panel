@@ -2,8 +2,8 @@
 
 namespace Kubectyl\Http\Controllers\Api\Client\Servers;
 
-use Carbon\CarbonImmutable;
 use Kubectyl\Models\User;
+use Carbon\CarbonImmutable;
 use Kubectyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Kubectyl\Services\Clusters\ClusterJWTService;

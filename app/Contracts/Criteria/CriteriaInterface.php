@@ -2,8 +2,8 @@
 
 namespace Kubectyl\Contracts\Criteria;
 
-use Illuminate\Database\Eloquent\Model;
 use Kubectyl\Repositories\Repository;
+use Illuminate\Database\Eloquent\Model;
 
 interface CriteriaInterface
 {

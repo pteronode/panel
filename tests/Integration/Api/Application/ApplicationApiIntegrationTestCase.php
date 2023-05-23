@@ -2,10 +2,10 @@
 
 namespace Kubectyl\Tests\Integration\Api\Application;
 
-use Illuminate\Http\Request;
 use Kubectyl\Models\User;
-use PHPUnit\Framework\Assert;
 use Kubectyl\Models\ApiKey;
+use Illuminate\Http\Request;
+use PHPUnit\Framework\Assert;
 use Kubectyl\Services\Acl\Api\AdminAcl;
 use Kubectyl\Tests\Integration\IntegrationTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

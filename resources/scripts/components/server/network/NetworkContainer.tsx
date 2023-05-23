@@ -62,22 +62,35 @@ const NetworkContainer = () => {
         alias: '',
         notes: '',
         isDefault: true,
-        ip: server.service.ip,
+        ip: server.service.ip || 'not available',
         port: server.service.port,
     };
 
     return (
         <ServerContentBlock showFlashKey={'server:network'} title={'Network'}>
-            {!data || !additional_ports ? (
+            {!data || (!additional_ports && data.length === 0) ? (
                 <Spinner size={'large'} centered />
             ) : (
                 <>
                     {data.length === 0 ? (
-                        <AllocationRow
-                            key={`${server.service.ip}:${server.service.port}`}
-                            allocation={service}
-                            isAllocation={false}
-                        />
+                        <>
+                            {additional_ports?.map((port) => (
+                                <AllocationRow
+                                    key={`${server.service.ip}:${port}`}
+                                    allocation={{
+                                        id: 0,
+                                        ip: server.service.ip || 'not available',
+                                        port: parseInt(port),
+                                    }}
+                                    isAllocation={false}
+                                />
+                            ))}
+                            <AllocationRow
+                                key={`${server.service.ip}:${server.service.port}`}
+                                allocation={service}
+                                isAllocation={false}
+                            />
+                        </>
                     ) : (
                         <>
                             {data.map((allocation) => (

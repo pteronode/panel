@@ -2,9 +2,9 @@
 
 namespace Kubectyl\Tests\Integration\Api\Remote;
 
-use Kubectyl\Models\Cluster;
 use Kubectyl\Models\User;
 use Kubectyl\Models\Server;
+use Kubectyl\Models\Cluster;
 use Kubectyl\Models\Permission;
 use Kubectyl\Models\UserSSHKey;
 use phpseclib3\Crypt\EC\PrivateKey;

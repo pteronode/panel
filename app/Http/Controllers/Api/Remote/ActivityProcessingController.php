@@ -2,15 +2,13 @@
 
 namespace Kubectyl\Http\Controllers\Api\Remote;
 
-use Exception;
 use Carbon\Carbon;
-use DateTimeInterface;
-use Illuminate\Support\Str;
 use Kubectyl\Models\User;
-use Webmozart\Assert\Assert;
+use Illuminate\Support\Str;
 use Kubectyl\Models\Server;
-use Illuminate\Support\Facades\Log;
+use Webmozart\Assert\Assert;
 use Kubectyl\Models\ActivityLog;
+use Illuminate\Support\Facades\Log;
 use Kubectyl\Models\ActivityLogSubject;
 use Kubectyl\Http\Controllers\Controller;
 use Kubectyl\Http\Requests\Api\Remote\ActivityEventRequest;
@@ -37,11 +35,11 @@ class ActivityProcessingController extends Controller
 
             try {
                 $when = Carbon::createFromFormat(
-                    DateTimeInterface::RFC3339,
+                    \DateTimeInterface::RFC3339,
                     preg_replace('/(\.\d+)Z$/', 'Z', $datum['timestamp']),
                     'UTC'
                 );
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 Log::warning($exception, ['timestamp' => $datum['timestamp']]);
 
                 // If we cannot parse the value for some reason don't blow up this request, just go ahead

@@ -2,20 +2,19 @@
 
 namespace Kubectyl\Http\Controllers\Admin\Settings;
 
-use Exception;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Contracts\Console\Kernel;
 use Kubectyl\Notifications\MailTested;
-use Illuminate\View\Factory as ViewFactory;
-use Illuminate\Support\Facades\Notification;
+use Illuminate\Contracts\Console\Kernel;
 use Kubectyl\Exceptions\DisplayException;
 use Kubectyl\Http\Controllers\Controller;
+use Illuminate\View\Factory as ViewFactory;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Kubectyl\Providers\SettingsServiceProvider;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Kubectyl\Contracts\Repository\SettingsRepositoryInterface;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Kubectyl\Http\Requests\Admin\Settings\MailSettingsFormRequest;
 
 class MailController extends Controller
@@ -82,7 +81,7 @@ class MailController extends Controller
         try {
             Notification::route('mail', $request->user()->email)
                 ->notify(new MailTested($request->user()));
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             return response($exception->getMessage(), 500);
         }
 

@@ -4,8 +4,8 @@ namespace Kubectyl\Transformers\Api\Application;
 
 use League\Fractal\Resource\Item;
 use Kubectyl\Models\RocketVariable;
-use League\Fractal\Resource\NullResource;
 use Kubectyl\Services\Acl\Api\AdminAcl;
+use League\Fractal\Resource\NullResource;
 
 class ServerVariableTransformer extends BaseTransformer
 {

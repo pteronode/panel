@@ -3,9 +3,9 @@
 namespace Kubectyl\Http\Controllers\Api\Remote\Servers;
 
 use Carbon\CarbonImmutable;
+use Kubectyl\Models\Server;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Kubectyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Kubectyl\Http\Controllers\Controller;
 use Kubectyl\Repositories\Eloquent\ServerRepository;

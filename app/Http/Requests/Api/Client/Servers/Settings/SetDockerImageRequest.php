@@ -2,8 +2,8 @@
 
 namespace Kubectyl\Http\Requests\Api\Client\Servers\Settings;
 
-use Webmozart\Assert\Assert;
 use Kubectyl\Models\Server;
+use Webmozart\Assert\Assert;
 use Illuminate\Validation\Rule;
 use Kubectyl\Models\Permission;
 use Kubectyl\Contracts\Http\ClientPermissionsRequest;

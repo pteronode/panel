@@ -2,8 +2,8 @@
 
 namespace Kubectyl\Repositories\Kuber;
 
-use Webmozart\Assert\Assert;
 use Kubectyl\Models\Server;
+use Webmozart\Assert\Assert;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\TransferException;
 use Kubectyl\Exceptions\Http\Connection\DaemonConnectionException;

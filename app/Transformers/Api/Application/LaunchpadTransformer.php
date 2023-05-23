@@ -3,11 +3,11 @@
 namespace Kubectyl\Transformers\Api\Application;
 
 use Kubectyl\Models\Rocket;
-use Kubectyl\Models\Launchpad;
 use Kubectyl\Models\Server;
+use Kubectyl\Models\Launchpad;
+use Kubectyl\Services\Acl\Api\AdminAcl;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
-use Kubectyl\Services\Acl\Api\AdminAcl;
 
 class LaunchpadTransformer extends BaseTransformer
 {

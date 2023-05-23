@@ -5,9 +5,9 @@ namespace Kubectyl\Http\Controllers\Api\Application\Launchpads;
 use Kubectyl\Models\Rocket;
 use Kubectyl\Models\Launchpad;
 use Kubectyl\Transformers\Api\Application\RocketTransformer;
+use Kubectyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Kubectyl\Http\Requests\Api\Application\Launchpads\Rockets\GetRocketRequest;
 use Kubectyl\Http\Requests\Api\Application\Launchpads\Rockets\GetRocketsRequest;
-use Kubectyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class RocketController extends ApplicationApiController
 {

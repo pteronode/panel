@@ -1,6 +1,6 @@
 export type ServerStatus = 'installing' | 'install_failed' | 'suspended' | 'restoring_snapshot' | null;
 
-export interface ServerBackup {
+export interface ServerSnapshot {
     uuid: string;
     isSuccessful: boolean;
     isLocked: boolean;

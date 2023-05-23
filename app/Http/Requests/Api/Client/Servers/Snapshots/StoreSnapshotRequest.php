@@ -1,15 +1,15 @@
 <?php
 
-namespace Kubectyl\Http\Requests\Api\Client\Servers\Backups;
+namespace Kubectyl\Http\Requests\Api\Client\Servers\Snapshots;
 
 use Kubectyl\Models\Permission;
 use Kubectyl\Http\Requests\Api\Client\ClientApiRequest;
 
-class StoreBackupRequest extends ClientApiRequest
+class StoreSnapshotRequest extends ClientApiRequest
 {
     public function permission(): string
     {
-        return Permission::ACTION_BACKUP_CREATE;
+        return Permission::ACTION_SNAPSHOT_CREATE;
     }
 
     public function rules(): array

@@ -3,9 +3,9 @@
 namespace Kubectyl\Http\Controllers\Api\Client\Servers;
 
 use Kubectyl\Models\Server;
-use Illuminate\Http\JsonResponse;
 use Kubectyl\Facades\Activity;
 use Kubectyl\Models\Allocation;
+use Illuminate\Http\JsonResponse;
 use Kubectyl\Exceptions\DisplayException;
 use Kubectyl\Repositories\Eloquent\ServerRepository;
 use Kubectyl\Transformers\Api\Client\AllocationTransformer;

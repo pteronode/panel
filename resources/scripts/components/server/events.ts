@@ -10,8 +10,8 @@ export enum SocketEvent {
     JSON = 'json',
     TRANSFER_LOGS = 'transfer logs',
     TRANSFER_STATUS = 'transfer status',
-    BACKUP_COMPLETED = 'backup completed',
-    BACKUP_RESTORE_COMPLETED = 'backup restore completed',
+    SNAPSHOT_COMPLETED = 'snapshot completed',
+    SNAPSHOT_RESTORE_COMPLETED = 'snapshot restore completed',
 }
 
 export enum SocketRequest {

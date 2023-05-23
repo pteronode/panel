@@ -1,10 +1,10 @@
 <?php
 
+use Kubectyl\Models\Permission;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Kubectyl\Models\Permission;
-use Illuminate\Support\Facades\Schema;
 use Kubectyl\Models\Permission as P;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 

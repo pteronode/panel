@@ -4,10 +4,10 @@ namespace Kubectyl\Services\Schedules;
 
 use Exception;
 use Kubectyl\Models\Schedule;
-use Illuminate\Contracts\Bus\Dispatcher;
 use Kubectyl\Jobs\Schedule\RunTaskJob;
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Contracts\Bus\Dispatcher;
 use Kubectyl\Exceptions\DisplayException;
+use Illuminate\Database\ConnectionInterface;
 use Kubectyl\Repositories\Kuber\DaemonServerRepository;
 use Kubectyl\Exceptions\Http\Connection\DaemonConnectionException;
 
@@ -56,7 +56,7 @@ class ProcessScheduleService
 
                     return;
                 }
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 if (!$exception instanceof DaemonConnectionException) {
                     // If we encountered some exception during this process that wasn't just an
                     // issue connecting to Wings run the failed sequence for a job. Otherwise we
@@ -78,7 +78,7 @@ class ProcessScheduleService
             // @see https://github.com/pterodactyl/panel/issues/2550
             try {
                 $this->dispatcher->dispatchNow($job);
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 $job->failed($exception);
 
                 throw $exception;

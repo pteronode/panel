@@ -3,9 +3,8 @@
 namespace Kubectyl\Console\Commands\Schedule;
 
 use Exception;
-use Throwable;
-use Illuminate\Console\Command;
 use Kubectyl\Models\Schedule;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder;
 use Kubectyl\Services\Schedules\ProcessScheduleService;
@@ -68,7 +67,7 @@ class ProcessRunnableCommand extends Command
                 'schedule' => $schedule->name,
                 'hash' => $schedule->hashid,
             ]));
-        } catch (Throwable|Exception $exception) {
+        } catch (\Throwable|\Exception $exception) {
             Log::error($exception, ['schedule_id' => $schedule->id]);
 
             $this->error("An error was encountered while processing Schedule #$schedule->id: " . $exception->getMessage());

@@ -2,7 +2,6 @@
 
 namespace Kubectyl\Tests\Integration\Api\Client\Server;
 
-use Mockery;
 use Kubectyl\Models\Permission;
 use Kubectyl\Repositories\Kuber\DaemonServerRepository;
 use Kubectyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
@@ -14,12 +13,12 @@ class ResourceUtilizationControllerTest extends ClientApiIntegrationTestCase
      */
     public function testServerResourceUtilizationIsReturned()
     {
-        $service = Mockery::mock(DaemonServerRepository::class);
+        $service = \Mockery::mock(DaemonServerRepository::class);
         $this->app->instance(DaemonServerRepository::class, $service);
 
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_WEBSOCKET_CONNECT]);
 
-        $service->expects('setServer')->with(Mockery::on(function ($value) use ($server) {
+        $service->expects('setServer')->with(\Mockery::on(function ($value) use ($server) {
             return $server->uuid === $value->uuid;
         }))->andReturnSelf()->getMock()->expects('getDetails')->andReturns([]);
 

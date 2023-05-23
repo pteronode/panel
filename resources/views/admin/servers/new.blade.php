@@ -146,7 +146,7 @@
                         <div>
                             <input type="text" id="pSnapshotLimit" name="snapshot_limit" class="form-control" value="{{ old('snapshot_limit', 0) }}"/>
                         </div>
-                        <p class="text-muted small">The total number of backups that can be created for this server.</p>
+                        <p class="text-muted small">The total number of snapshots that can be created for this server.</p>
                     </div>
                     <div class="form-group col-xs-6">
                         <label for="pAllocationLimit" class="control-label">Allocation Limit</label>

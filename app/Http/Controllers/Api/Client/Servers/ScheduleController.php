@@ -2,15 +2,14 @@
 
 namespace Kubectyl\Http\Controllers\Api\Client\Servers;
 
-use Exception;
 use Carbon\Carbon;
+use Kubectyl\Models\Server;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Kubectyl\Models\Server;
 use Kubectyl\Models\Schedule;
-use Illuminate\Http\JsonResponse;
 use Kubectyl\Facades\Activity;
 use Kubectyl\Helpers\Utilities;
+use Illuminate\Http\JsonResponse;
 use Kubectyl\Exceptions\DisplayException;
 use Kubectyl\Repositories\Eloquent\ScheduleRepository;
 use Kubectyl\Services\Schedules\ProcessScheduleService;
@@ -178,7 +177,7 @@ class ScheduleController extends ClientApiController
                 $request->input('month'),
                 $request->input('day_of_week')
             );
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             throw new DisplayException('The cron data provided does not evaluate to a valid expression.');
         }
     }

@@ -33,9 +33,9 @@ interface Values {
 }
 
 const schema = object().shape({
-    action: string().required().oneOf(['command', 'power', 'backup']),
+    action: string().required().oneOf(['command', 'power', 'snapshot']),
     payload: string().when('action', {
-        is: (v) => v !== 'backup',
+        is: (v) => v !== 'snapshot',
         then: string().required('A task payload must be provided.'),
         otherwise: string(),
     }),
@@ -162,19 +162,7 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                                     </FormikField>
                                 </FormikFieldWrapper>
                             </div>
-                        ) : (
-                            <div>
-                                <Label>Ignored Files</Label>
-                                <FormikFieldWrapper
-                                    name={'payload'}
-                                    description={
-                                        'Optional. Include the files and folders to be excluded in this backup. By default, the contents of your .pteroignore file will be used. If you have reached your backup limit, the oldest backup will be rotated.'
-                                    }
-                                >
-                                    <FormikField as={Textarea} name={'payload'} rows={6} />
-                                </FormikFieldWrapper>
-                            </div>
-                        )}
+                        ) : null}
                     </div>
                     <div css={tw`mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded`}>
                         <FormikSwitch

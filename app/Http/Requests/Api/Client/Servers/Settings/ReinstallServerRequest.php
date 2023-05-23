@@ -11,4 +11,14 @@ class ReinstallServerRequest extends ClientApiRequest
     {
         return Permission::ACTION_SETTINGS_REINSTALL;
     }
+
+    /**
+     * The rules to apply when validating this request.
+     */
+    public function rules(): array
+    {
+        return [
+            'delete_files' => 'required|boolean',
+        ];
+    }
 }
