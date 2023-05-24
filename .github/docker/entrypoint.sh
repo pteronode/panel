@@ -33,18 +33,18 @@ echo "Checking if https is required."
 if [ -f /etc/nginx/http.d/panel.conf ]; then
     echo "Using nginx config already in place."
     if [ $LE_EMAIL ]; then
-        echo "Checking for cert update"
-        certbot certonly -d $(echo $APP_URL | sed 's~http[s]*://~~g') --standalone -m $LE_EMAIL --agree-tos -n
+        if [[ ! -f "/etc/nginx/certs/tls.key" && ! -f "/etc/nginx/certs/tls.crt" ]]; then
+            echo "Checking for cert update"
+            certbot certonly -d $(echo $APP_URL | sed 's~http[s]*://~~g') --standalone -m $LE_EMAIL --agree-tos -n
+        fi
     else
         echo "No letsencrypt email is set"
     fi
 else
     echo "Checking if letsencrypt email is set."
     if [ -z $LE_EMAIL ]; then
-        if [[ ! -f "/etc/nginx/certs/tls.key" && ! -f "/etc/nginx/certs/tls.crt" ]]; then
-            echo "No letsencrypt email is set using http config."
-            cp .github/docker/default.conf /etc/nginx/http.d/panel.conf
-        fi
+        echo "No letsencrypt email is set using http config."
+        cp .github/docker/default.conf /etc/nginx/http.d/panel.conf
     else
         echo "writing ssl config"
         cp .github/docker/default_ssl.conf /etc/nginx/http.d/panel.conf
@@ -154,7 +154,7 @@ if [[ -f "/var/run/secrets/kubernetes.io/serviceaccount/token" ]]; then
                 --storage_class=local-path \
                 --namespace=$NAMESPACE \
                 --metrics=metrics_api \
-                --snapshot_class=test \
+                --snapshot_class=csi-rbdplugin-snapclass \
                 --external_traffic_policy=cluster)
             echo $output
             cluster_id=$(echo $output | grep -oE "id of [0-9]+" | awk '{print $3}')
