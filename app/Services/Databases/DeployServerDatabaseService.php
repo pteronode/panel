@@ -2,8 +2,8 @@
 
 namespace Kubectyl\Services\Databases;
 
-use Webmozart\Assert\Assert;
 use Kubectyl\Models\Server;
+use Webmozart\Assert\Assert;
 use Kubectyl\Models\Database;
 use Kubectyl\Models\DatabaseHost;
 use Kubectyl\Exceptions\Service\Database\NoSuitableDatabaseHostException;

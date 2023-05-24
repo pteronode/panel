@@ -10,8 +10,8 @@ use Kubectyl\Repositories\Eloquent\SettingsRepository;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Kubectyl\Services\Telemetry\TelemetryCollectionService;
 use Kubectyl\Console\Commands\Schedule\ProcessRunnableCommand;
-use Kubectyl\Console\Commands\Maintenance\PruneOrphanedBackupsCommand;
-use Kubectyl\Console\Commands\Maintenance\CleanServiceBackupFilesCommand;
+use Kubectyl\Console\Commands\Maintenance\PruneOrphanedSnapshotsCommand;
+use Kubectyl\Console\Commands\Maintenance\CleanServiceSnapshotFilesCommand;
 
 class Kernel extends ConsoleKernel
 {
@@ -30,11 +30,11 @@ class Kernel extends ConsoleKernel
     {
         // Execute scheduled commands for servers every minute, as if there was a normal cron running.
         $schedule->command(ProcessRunnableCommand::class)->everyMinute()->withoutOverlapping();
-        $schedule->command(CleanServiceBackupFilesCommand::class)->daily();
+        $schedule->command(CleanServiceSnapshotFilesCommand::class)->daily();
 
         if (config('snapshots.prune_age')) {
-            // Every 30 minutes, run the backup pruning command so that any abandoned snapshots can be deleted.
-            $schedule->command(PruneOrphanedBackupsCommand::class)->everyThirtyMinutes();
+            // Every 30 minutes, run the snapshot pruning command so that any abandoned snapshots can be deleted.
+            $schedule->command(PruneOrphanedSnapshotsCommand::class)->everyThirtyMinutes();
         }
 
         if (config('activity.prune_days')) {

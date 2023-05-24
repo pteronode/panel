@@ -195,7 +195,7 @@ return [
         Kubectyl\Providers\ActivityLogServiceProvider::class,
         Kubectyl\Providers\AppServiceProvider::class,
         Kubectyl\Providers\AuthServiceProvider::class,
-        Kubectyl\Providers\BackupsServiceProvider::class,
+        Kubectyl\Providers\SnapshotsServiceProvider::class,
         Kubectyl\Providers\BladeServiceProvider::class,
         Kubectyl\Providers\EventServiceProvider::class,
         Kubectyl\Providers\HashidsServiceProvider::class,

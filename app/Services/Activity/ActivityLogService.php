@@ -4,9 +4,9 @@ namespace Kubectyl\Services\Activity;
 
 use Illuminate\Support\Arr;
 use Webmozart\Assert\Assert;
+use Kubectyl\Models\ActivityLog;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Kubectyl\Models\ActivityLog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Request;
 use Kubectyl\Models\ActivityLogSubject;

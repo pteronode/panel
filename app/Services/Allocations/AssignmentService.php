@@ -2,11 +2,10 @@
 
 namespace Kubectyl\Services\Allocations;
 
-use Exception;
 use IPTools\Network;
 use Kubectyl\Models\Cluster;
-use Illuminate\Database\ConnectionInterface;
 use Kubectyl\Exceptions\DisplayException;
+use Illuminate\Database\ConnectionInterface;
 use Kubectyl\Contracts\Repository\AllocationRepositoryInterface;
 use Kubectyl\Exceptions\Service\Allocation\CidrOutOfRangeException;
 use Kubectyl\Exceptions\Service\Allocation\PortOutOfRangeException;
@@ -54,7 +53,7 @@ class AssignmentService
             // IP to use, not multiple.
             $underlying = gethostbyname($data['allocation_ip']);
             $parsed = Network::parse($underlying);
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             /* @noinspection PhpUndefinedVariableInspection */
             throw new DisplayException("Could not parse provided allocation IP address ({$underlying}): {$exception->getMessage()}", $exception);
         }

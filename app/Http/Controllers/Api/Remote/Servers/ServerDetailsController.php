@@ -2,14 +2,14 @@
 
 namespace Kubectyl\Http\Controllers\Api\Remote\Servers;
 
-use Illuminate\Http\Request;
 use Kubectyl\Models\Server;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Kubectyl\Facades\Activity;
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Http\JsonResponse;
 use Kubectyl\Http\Controllers\Controller;
-use Kubectyl\Services\Rockets\RocketConfigurationService;
+use Illuminate\Database\ConnectionInterface;
 use Kubectyl\Repositories\Eloquent\ServerRepository;
+use Kubectyl\Services\Rockets\RocketConfigurationService;
 use Kubectyl\Http\Resources\Kuber\ServerConfigurationCollection;
 use Kubectyl\Services\Servers\ServerConfigurationStructureService;
 
@@ -64,7 +64,7 @@ class ServerDetailsController extends Controller
     /**
      * Resets the state of all servers on the cluster to be normal. This is triggered
      * when Wings restarts and is useful for ensuring that any servers on the cluster
-     * do not get incorrectly stuck in installing/restoring from backup states since
+     * do not get incorrectly stuck in installing/restoring from snapshot states since
      * a Wings reboot would completely stop those processes.
      *
      * @throws \Throwable
@@ -73,8 +73,8 @@ class ServerDetailsController extends Controller
     {
         $cluster = $request->attributes->get('cluster');
 
-        // Get all the servers that are currently marked as restoring from a backup
-        // on this cluster that do not have a failed backup tracked in the audit logs table
+        // Get all the servers that are currently marked as restoring from a snapshot
+        // on this cluster that do not have a failed snapshot tracked in the audit logs table
         // as well.
         //
         // For each of those servers we'll track a new audit log entry to mark them as
@@ -82,7 +82,7 @@ class ServerDetailsController extends Controller
         $servers = Server::query()
             ->with([
                 'activity' => fn ($builder) => $builder
-                    ->where('activity_logs.event', 'server:backup.restore-started')
+                    ->where('activity_logs.event', 'server:snapshot.restore-started')
                     ->latest('timestamp'),
             ])
             ->where('cluster_id', $cluster->id)

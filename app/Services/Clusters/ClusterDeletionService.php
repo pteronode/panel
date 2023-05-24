@@ -4,9 +4,9 @@ namespace Kubectyl\Services\Clusters;
 
 use Kubectyl\Models\Cluster;
 use Illuminate\Contracts\Translation\Translator;
-use Kubectyl\Contracts\Repository\ClusterRepositoryInterface;
 use Kubectyl\Exceptions\Service\HasActiveServersException;
 use Kubectyl\Contracts\Repository\ServerRepositoryInterface;
+use Kubectyl\Contracts\Repository\ClusterRepositoryInterface;
 
 class ClusterDeletionService
 {

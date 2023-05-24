@@ -2,9 +2,9 @@
 
 namespace Kubectyl\Services\Launchpads;
 
-use Kubectyl\Contracts\Repository\LaunchpadRepositoryInterface;
 use Kubectyl\Exceptions\Service\HasActiveServersException;
 use Kubectyl\Contracts\Repository\ServerRepositoryInterface;
+use Kubectyl\Contracts\Repository\LaunchpadRepositoryInterface;
 
 class LaunchpadDeletionService
 {

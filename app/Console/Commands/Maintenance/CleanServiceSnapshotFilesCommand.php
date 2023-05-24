@@ -2,24 +2,23 @@
 
 namespace Kubectyl\Console\Commands\Maintenance;
 
-use SplFileInfo;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 
-class CleanServiceBackupFilesCommand extends Command
+class CleanServiceSnapshotFilesCommand extends Command
 {
-    public const BACKUP_THRESHOLD_MINUTES = 5;
+    public const SNAPSHOT_THRESHOLD_MINUTES = 5;
 
     protected $description = 'Clean orphaned .bak files created when modifying services.';
 
-    protected $signature = 'p:maintenance:clean-service-backups';
+    protected $signature = 'p:maintenance:clean-service-snapshots';
 
     protected Filesystem $disk;
 
     /**
-     * CleanServiceBackupFilesCommand constructor.
+     * CleanServiceSnapshotFilesCommand constructor.
      */
     public function __construct(FilesystemFactory $filesystem)
     {
@@ -35,11 +34,11 @@ class CleanServiceBackupFilesCommand extends Command
     {
         $files = $this->disk->files('services/.bak');
 
-        collect($files)->each(function (SplFileInfo $file) {
+        collect($files)->each(function (\SplFileInfo $file) {
             $lastModified = Carbon::createFromTimestamp($this->disk->lastModified($file->getPath()));
-            if ($lastModified->diffInMinutes(Carbon::now()) > self::BACKUP_THRESHOLD_MINUTES) {
+            if ($lastModified->diffInMinutes(Carbon::now()) > self::SNAPSHOT_THRESHOLD_MINUTES) {
                 $this->disk->delete($file->getPath());
-                $this->info(trans('command/messages.maintenance.deleting_service_backup', ['file' => $file->getFilename()]));
+                $this->info(trans('command/messages.maintenance.deleting_service_snapshot', ['file' => $file->getFilename()]));
             }
         });
     }

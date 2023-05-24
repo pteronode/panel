@@ -11,7 +11,7 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import Button from '@/components/elements/Button';
 import tw from 'twin.macro';
 // import { Textarea } from '@/components/elements/Input';
-import getServerBackups from '@/api/swr/getServerBackups';
+import getServerSnapshots from '@/api/swr/getServerSnapshots';
 import { ServerContext } from '@/state/server';
 import FormikSwitch from '@/components/elements/FormikSwitch';
 import Can from '@/components/elements/Can';
@@ -72,7 +72,7 @@ export default () => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [visible, setVisible] = useState(false);
-    const { mutate } = getServerBackups();
+    const { mutate } = getServerSnapshots();
 
     useEffect(() => {
         clearFlashes('snapshots:create');

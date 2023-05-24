@@ -3,14 +3,14 @@
 namespace Kubectyl\Http\Controllers\Admin;
 
 use Illuminate\View\View;
+use Kubectyl\Models\ApiKey;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Kubectyl\Models\ApiKey;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Kubectyl\Services\Acl\Api\AdminAcl;
-use Illuminate\View\Factory as ViewFactory;
 use Kubectyl\Http\Controllers\Controller;
+use Illuminate\View\Factory as ViewFactory;
 use Kubectyl\Services\Api\KeyCreationService;
 use Kubectyl\Contracts\Repository\ApiKeyRepositoryInterface;
 use Kubectyl\Http\Requests\Admin\Api\StoreApplicationApiKeyRequest;

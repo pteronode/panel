@@ -3,9 +3,9 @@
 namespace Kubectyl\Repositories\Kuber;
 
 use GuzzleHttp\Client;
+use Kubectyl\Models\Server;
 use Kubectyl\Models\Cluster;
 use Webmozart\Assert\Assert;
-use Kubectyl\Models\Server;
 use Illuminate\Contracts\Foundation\Application;
 
 abstract class DaemonRepository

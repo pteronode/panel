@@ -3,10 +3,10 @@
 namespace Kubectyl\Tests\Traits\Integration;
 
 use Ramsey\Uuid\Uuid;
-use Kubectyl\Models\Rocket;
-use Kubectyl\Models\Cluster;
 use Kubectyl\Models\User;
+use Kubectyl\Models\Rocket;
 use Kubectyl\Models\Server;
+use Kubectyl\Models\Cluster;
 use Kubectyl\Models\Subuser;
 use Kubectyl\Models\Location;
 use Kubectyl\Models\Allocation;

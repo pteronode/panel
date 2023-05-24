@@ -5,15 +5,15 @@ namespace Kubectyl\Transformers\Api\Client;
 use Kubectyl\Models\Rocket;
 use Kubectyl\Models\Server;
 use Kubectyl\Models\Subuser;
-use League\Fractal\Resource\Item;
 use Kubectyl\Models\Allocation;
 use Kubectyl\Models\Permission;
+use League\Fractal\Resource\Item;
 use Illuminate\Container\Container;
 use Kubectyl\Models\RocketVariable;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
-use Kubectyl\Services\Servers\StartupCommandService;
 use Kubectyl\Services\Allocations\AssignmentService;
+use Kubectyl\Services\Servers\StartupCommandService;
 use Kubectyl\Repositories\Kuber\DaemonServerRepository;
 
 class ServerTransformer extends BaseClientTransformer
@@ -70,16 +70,19 @@ class ServerTransformer extends BaseClientTransformer
     }
 
     /**
-     * Implementation that works on multidimensional arrays
-     * 
+     * Implementation that works on multidimensional arrays.
+     *
      * Taken from https://github.com/NinoSkopac/array_column_recursive
      */
-    function array_column_recursive(array $haystack, $needle) {
+    public function array_column_recursive(array $haystack, $needle)
+    {
         $found = [];
-        array_walk_recursive($haystack, function($value, $key) use (&$found, $needle) {
-            if ($key == $needle)
+        array_walk_recursive($haystack, function ($value, $key) use (&$found, $needle) {
+            if ($key == $needle) {
                 $found[] = $value;
+            }
         });
+
         return $found;
     }
 
@@ -98,15 +101,14 @@ class ServerTransformer extends BaseClientTransformer
         // Don't return any error because the servers will disappear from the list.
         try {
             $pod = $this->daemonRepository->setServer($server)->getDetails();
-        } catch(\Exception $error) {
+        } catch (\Exception $error) {
             // do nothing
         }
 
+        $services = [];
         // Check if services array exists
         if (is_array($pod) && array_key_exists('services', $pod)) {
             $services = $pod['services'];
-        } else {
-            $services = [];
         }
 
         return [

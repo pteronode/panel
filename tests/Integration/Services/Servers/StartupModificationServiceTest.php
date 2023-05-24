@@ -3,9 +3,9 @@
 namespace Kubectyl\Tests\Integration\Services\Servers;
 
 use Exception;
-use Kubectyl\Models\Launchpad;
 use Kubectyl\Models\User;
 use Kubectyl\Models\Server;
+use Kubectyl\Models\Launchpad;
 use Kubectyl\Models\ServerVariable;
 use Illuminate\Validation\ValidationException;
 use Kubectyl\Tests\Integration\IntegrationTestCase;
@@ -34,7 +34,7 @@ class StartupModificationServiceTest extends IntegrationTestCase
             ]);
 
             $this->fail('This assertion should not be called.');
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             $this->assertInstanceOf(ValidationException::class, $exception);
 
             /** @var \Illuminate\Validation\ValidationException $exception */

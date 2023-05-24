@@ -2,12 +2,12 @@
 
 namespace Kubectyl\Transformers\Api\Application;
 
-use Kubectyl\Models\Cluster;
 use Kubectyl\Models\Server;
-use League\Fractal\Resource\Item;
+use Kubectyl\Models\Cluster;
 use Kubectyl\Models\Allocation;
-use League\Fractal\Resource\NullResource;
+use League\Fractal\Resource\Item;
 use Kubectyl\Services\Acl\Api\AdminAcl;
+use League\Fractal\Resource\NullResource;
 
 class AllocationTransformer extends BaseTransformer
 {

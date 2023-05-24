@@ -10,11 +10,11 @@ use Kubectyl\Services\Clusters\ClusterCreationService;
 use Kubectyl\Services\Clusters\ClusterDeletionService;
 use Kubectyl\Transformers\Api\Application\ClusterTransformer;
 use Kubectyl\Http\Requests\Api\Application\Clusters\GetClusterRequest;
+use Kubectyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Kubectyl\Http\Requests\Api\Application\Clusters\GetClustersRequest;
 use Kubectyl\Http\Requests\Api\Application\Clusters\StoreClusterRequest;
 use Kubectyl\Http\Requests\Api\Application\Clusters\DeleteClusterRequest;
 use Kubectyl\Http\Requests\Api\Application\Clusters\UpdateClusterRequest;
-use Kubectyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class ClusterController extends ApplicationApiController
 {
@@ -36,7 +36,7 @@ class ClusterController extends ApplicationApiController
     {
         $clusters = QueryBuilder::for(Cluster::query())
             ->allowedFilters(['uuid', 'name', 'fqdn', 'daemon_token_id'])
-            ->allowedSorts(['id', 'uuid', 'memory', 'disk'])
+            ->allowedSorts(['id', 'uuid'])
             ->paginate($request->query('per_page') ?? 50);
 
         return $this->fractal->collection($clusters)

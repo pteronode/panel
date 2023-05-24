@@ -2,11 +2,11 @@
 
 namespace Kubectyl\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Http\Request;
 use Kubectyl\Models\Server;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Kubectyl\Facades\Activity;
 use Kubectyl\Models\Permission;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Kubectyl\Repositories\Eloquent\SubuserRepository;
 use Kubectyl\Services\Subusers\SubuserCreationService;

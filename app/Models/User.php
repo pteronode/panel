@@ -17,9 +17,8 @@ use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Kubectyl\Notifications\SendPasswordReset as ResetPasswordNotification;
-use Vizir\KeycloakWebGuard\Models\KeycloakUser;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 /**
  * Kubectyl\Models\User.
@@ -154,7 +153,7 @@ class User extends Model implements
         'use_totp' => false,
         'totp_secret' => null,
     ];
-    
+
     /**
      * Rules verifying that the data being stored matches the expectations of the database.
      */

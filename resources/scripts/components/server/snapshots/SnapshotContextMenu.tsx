@@ -12,19 +12,19 @@ import DropdownMenu, { DropdownButtonRow } from '@/components/elements/DropdownM
 // import getSnapshotDownloadUrl from '@/api/server/snapshots/getSnapshotDownloadUrl';
 import useFlash from '@/plugins/useFlash';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import deleteBackup from '@/api/server/snapshots/deleteSnapshot';
+import deleteSnapshot from '@/api/server/snapshots/deleteSnapshot';
 import Can from '@/components/elements/Can';
 import tw from 'twin.macro';
-import getServerBackups from '@/api/swr/getServerBackups';
-import { ServerBackup } from '@/api/server/types';
+import getServerSnapshots from '@/api/swr/getServerSnapshots';
+import { ServerSnapshot } from '@/api/server/types';
 import { ServerContext } from '@/state/server';
 // import Input from '@/components/elements/Input';
-import { restoreServerBackup } from '@/api/server/snapshots';
+import { restoreServerSnapshot } from '@/api/server/snapshots';
 import http, { httpErrorToHuman } from '@/api/http';
 import { Dialog } from '@/components/elements/dialog';
 
 interface Props {
-    snapshot: ServerBackup;
+    snapshot: ServerSnapshot;
 }
 
 export default ({ snapshot }: Props) => {
@@ -37,12 +37,12 @@ export default ({ snapshot }: Props) => {
     const [truncate] = useState(false);
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { mutate } = getServerBackups();
+    const { mutate } = getServerSnapshots();
 
     // const doDownload = () => {
     //     setLoading(true);
     //     clearFlashes('snapshots');
-    //     getSnapshotDownloadUrl(uuid, backup.uuid)
+    //     getSnapshotDownloadUrl(uuid, snapshot.uuid)
     //         .then((url) => {
     //             // @ts-expect-error this is valid
     //             window.location = url;
@@ -57,7 +57,7 @@ export default ({ snapshot }: Props) => {
     const doDeletion = () => {
         setLoading(true);
         clearFlashes('snapshots');
-        deleteBackup(uuid, snapshot.uuid)
+        deleteSnapshot(uuid, snapshot.uuid)
             .then(() =>
                 mutate(
                     (data) => ({
@@ -79,7 +79,7 @@ export default ({ snapshot }: Props) => {
     const doRestorationAction = () => {
         setLoading(true);
         clearFlashes('snapshots');
-        restoreServerBackup(uuid, snapshot.uuid, truncate)
+        restoreServerSnapshot(uuid, snapshot.uuid, truncate)
             .then(() =>
                 setServerFromState((s) => ({
                     ...s,
@@ -128,7 +128,7 @@ export default ({ snapshot }: Props) => {
                 title={`Unlock "${snapshot.name}"`}
                 onConfirmed={onLockToggle}
             >
-                This backup will no longer be protected from automated or accidental deletions.
+                This snapshot will no longer be protected from automated or accidental deletions.
             </Dialog.Confirm>
             <Dialog.Confirm
                 open={modal === 'restore'}
@@ -151,7 +151,7 @@ export default ({ snapshot }: Props) => {
                             checked={truncate}
                             onChange={() => setTruncate((s) => !s)}
                         />
-                        Delete all files before restoring backup.
+                        Delete all files before restoring snapshot.
                     </label>
                 </p> */}
             </Dialog.Confirm>
@@ -177,13 +177,13 @@ export default ({ snapshot }: Props) => {
                     )}
                 >
                     <div css={tw`text-sm`}>
-                        {/* <Can action={'backup.download'}>
+                        {/* <Can action={'snapshot.download'}>
                             <DropdownButtonRow onClick={doDownload}>
                                 <FontAwesomeIcon fixedWidth icon={faCloudDownloadAlt} css={tw`text-xs`} />
                                 <span css={tw`ml-2`}>Download</span>
                             </DropdownButtonRow>
                         </Can> */}
-                        <Can action={'backup.restore'}>
+                        <Can action={'snapshot.restore'}>
                             <DropdownButtonRow onClick={() => setModal('restore')}>
                                 <FontAwesomeIcon fixedWidth icon={faBoxOpen} css={tw`text-xs`} />
                                 <span css={tw`ml-2`}>Restore</span>

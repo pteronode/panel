@@ -2,8 +2,8 @@
 
 namespace Kubectyl\Http\Controllers\Api\Application\Servers;
 
-use Illuminate\Http\Response;
 use Kubectyl\Models\Server;
+use Illuminate\Http\Response;
 use Kubectyl\Services\Servers\SuspensionService;
 use Kubectyl\Services\Servers\ReinstallServerService;
 use Kubectyl\Http\Requests\Api\Application\Servers\ServerWriteRequest;
@@ -52,9 +52,9 @@ class ServerManagementController extends ApplicationApiController
      * @throws \Kubectyl\Exceptions\Model\DataValidationException
      * @throws \Kubectyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function reinstall(ServerWriteRequest $request, Server $server): Response
+    public function reinstall(ServerWriteRequest $request, Server $server, bool $deleteFiles): Response
     {
-        $this->reinstallServerService->handle($server);
+        $this->reinstallServerService->handle($server, $deleteFiles);
 
         return $this->returnNoContent();
     }

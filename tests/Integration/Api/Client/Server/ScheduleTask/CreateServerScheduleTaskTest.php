@@ -88,9 +88,9 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
     }
 
     /**
-     * Test that backups can not be tasked when the backup limit is 0.
+     * Test that snapshots can not be tasked when the snapshot limit is 0.
      */
-    public function testBackupsCanNotBeTaskedIfLimit0()
+    public function testSnapshotsCanNotBeTaskedIfLimit0()
     {
         [$user, $server] = $this->generateTestAccount();
 
@@ -98,19 +98,19 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
         $schedule = Schedule::factory()->create(['server_id' => $server->id]);
 
         $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), [
-            'action' => 'backup',
+            'action' => 'snapshot',
             'time_offset' => 0,
         ])
             ->assertStatus(Response::HTTP_FORBIDDEN)
-            ->assertJsonPath('errors.0.detail', 'A backup task cannot be created when the server\'s backup limit is set to 0.');
+            ->assertJsonPath('errors.0.detail', 'A snapshot task cannot be created when the server\'s snapshot limit is set to 0.');
 
         $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), [
-            'action' => 'backup',
+            'action' => 'snapshot',
             'payload' => "file.txt\nfile2.log",
             'time_offset' => 0,
         ])
             ->assertStatus(Response::HTTP_FORBIDDEN)
-            ->assertJsonPath('errors.0.detail', 'A backup task cannot be created when the server\'s backup limit is set to 0.');
+            ->assertJsonPath('errors.0.detail', 'A snapshot task cannot be created when the server\'s snapshot limit is set to 0.');
     }
 
     /**

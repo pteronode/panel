@@ -3,8 +3,8 @@
 namespace Kubectyl\Http\Controllers\Api\Client;
 
 use Kubectyl\Models\ApiKey;
-use Illuminate\Http\JsonResponse;
 use Kubectyl\Facades\Activity;
+use Illuminate\Http\JsonResponse;
 use Kubectyl\Exceptions\DisplayException;
 use Kubectyl\Http\Requests\Api\Client\ClientApiRequest;
 use Kubectyl\Transformers\Api\Client\ApiKeyTransformer;

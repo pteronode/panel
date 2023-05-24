@@ -2,7 +2,6 @@
 
 namespace Kubectyl\Http\Middleware;
 
-use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Routing\ResponseFactory;
 
@@ -18,7 +17,7 @@ class MaintenanceMiddleware
     /**
      * Handle an incoming request.
      */
-    public function handle(Request $request, Closure $next): mixed
+    public function handle(Request $request, \Closure $next): mixed
     {
         /** @var \Kubectyl\Models\Server $server */
         $server = $request->attributes->get('server');

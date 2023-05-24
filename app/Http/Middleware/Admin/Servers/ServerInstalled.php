@@ -2,10 +2,9 @@
 
 namespace Kubectyl\Http\Middleware\Admin\Servers;
 
-use Closure;
+use Kubectyl\Models\Server;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Kubectyl\Models\Server;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -14,7 +13,7 @@ class ServerInstalled
     /**
      * Checks that the server is installed before allowing access through the route.
      */
-    public function handle(Request $request, Closure $next): mixed
+    public function handle(Request $request, \Closure $next): mixed
     {
         /** @var \Kubectyl\Models\Server|null $server */
         $server = $request->route()->parameter('server');

@@ -3,8 +3,8 @@
 namespace Kubectyl\Http\Controllers\Admin\Servers;
 
 use Illuminate\View\View;
-use Illuminate\Http\Request;
 use Kubectyl\Models\Server;
+use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Kubectyl\Http\Controllers\Controller;

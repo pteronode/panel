@@ -4,8 +4,8 @@ namespace Kubectyl\Services\Launchpads;
 
 use Ramsey\Uuid\Uuid;
 use Kubectyl\Models\Launchpad;
-use Kubectyl\Contracts\Repository\LaunchpadRepositoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Kubectyl\Contracts\Repository\LaunchpadRepositoryInterface;
 
 class LaunchpadCreationService
 {

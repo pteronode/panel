@@ -3,8 +3,8 @@
 namespace Kubectyl\Http\Controllers\Admin;
 
 use Illuminate\View\View;
-use Illuminate\View\Factory as ViewFactory;
 use Kubectyl\Http\Controllers\Controller;
+use Illuminate\View\Factory as ViewFactory;
 use Kubectyl\Services\Helpers\SoftwareVersionService;
 
 class BaseController extends Controller

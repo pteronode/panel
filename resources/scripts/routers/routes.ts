@@ -112,7 +112,7 @@ export default {
         },
         {
             path: '/snapshots',
-            permission: 'backup.*',
+            permission: 'snapshot.*',
             name: 'Snapshots',
             component: SnapshotContainer,
         },

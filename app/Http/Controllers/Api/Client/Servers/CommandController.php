@@ -2,13 +2,13 @@
 
 namespace Kubectyl\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Http\Response;
 use Kubectyl\Models\Server;
+use Illuminate\Http\Response;
 use Kubectyl\Facades\Activity;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\BadResponseException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Kubectyl\Repositories\Kuber\DaemonCommandRepository;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Kubectyl\Http\Controllers\Api\Client\ClientApiController;
 use Kubectyl\Http\Requests\Api\Client\Servers\SendCommandRequest;
 use Kubectyl\Exceptions\Http\Connection\DaemonConnectionException;

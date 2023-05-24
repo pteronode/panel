@@ -3,9 +3,9 @@
 namespace Kubectyl\Transformers\Api\Application;
 
 use Kubectyl\Models\User;
+use Kubectyl\Services\Acl\Api\AdminAcl;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
-use Kubectyl\Services\Acl\Api\AdminAcl;
 
 class UserTransformer extends BaseTransformer
 {

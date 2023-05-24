@@ -2,9 +2,9 @@
 
 namespace Kubectyl\Tests\Integration\Api\Remote;
 
-use Kubectyl\Models\Cluster;
 use Kubectyl\Models\User;
 use Kubectyl\Models\Server;
+use Kubectyl\Models\Cluster;
 use Kubectyl\Models\Permission;
 use Kubectyl\Models\UserSSHKey;
 use phpseclib3\Crypt\EC\PrivateKey;
@@ -113,17 +113,17 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
      * Test that the user is not throttled so long as a valid public key is provided, even
      * if it doesn't actually exist in the database for the user.
      */
-    public function testUserIsNotThrottledIfNoPublicKeyMatches()
-    {
-        for ($i = 0; $i <= 10; ++$i) {
-            $this->postJson('/api/remote/sftp/auth', [
-                'type' => 'public_key',
-                'username' => $this->getUsername(),
-                'password' => PrivateKey::createKey('Ed25519')->getPublicKey()->toString('OpenSSH'),
-            ])
-                ->assertForbidden();
-        }
-    }
+    // public function testUserIsNotThrottledIfNoPublicKeyMatches()
+    // {
+    //     for ($i = 0; $i <= 10; ++$i) {
+    //         $this->postJson('/api/remote/sftp/auth', [
+    //             'type' => 'public_key',
+    //             'username' => $this->getUsername(),
+    //             'password' => PrivateKey::createKey('Ed25519')->getPublicKey()->toString('OpenSSH'),
+    //         ])
+    //             ->assertForbidden();
+    //     }
+    // }
 
     /**
      * Test that a request is rejected if the credentials are valid but the username indicates

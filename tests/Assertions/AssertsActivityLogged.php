@@ -3,8 +3,8 @@
 namespace Kubectyl\Tests\Assertions;
 
 use PHPUnit\Framework\Assert;
-use Illuminate\Support\Facades\Event;
 use Kubectyl\Events\ActivityLogged;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Database\Eloquent\Model;
 use Kubectyl\Models\ActivityLogSubject;
 

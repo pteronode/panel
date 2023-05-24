@@ -6,13 +6,11 @@ use Illuminate\Http\Request;
 use Kubectyl\Models\Database;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Support\Facades\RateLimiter;
 use Kubectyl\Http\Middleware\TrimStrings;
+use Illuminate\Support\Facades\RateLimiter;
 use Kubectyl\Http\Middleware\AdminAuthenticate;
 use Kubectyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
-use Kubectyl\Http\Controllers\Auth;
-use Vizir\KeycloakWebGuard\Facades\KeycloakWeb;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -34,7 +32,7 @@ class RouteServiceProvider extends ServiceProvider
         // This is needed to make use of the "resolveRouteBinding" functionality in the
         // model. Without it you'll never trigger that logic flow thus resulting in a 404
         // error because we request databases with a HashID, and not with a normal ID.
-        // Route::model('database', Database::class);
+        Route::model('database', Database::class);
 
         $this->routes(function () {
             Route::middleware('web')->group(function () {
@@ -44,7 +42,7 @@ class RouteServiceProvider extends ServiceProvider
                 Route::middleware(['auth.session', RequireTwoFactorAuthentication::class, AdminAuthenticate::class])
                     ->prefix('/admin')
                     ->group(base_path('routes/admin.php'));
-                
+
                 // Route::middleware(['keycloak-web', RequireTwoFactorAuthentication::class])
                 //     ->group(base_path('routes/base.php'));
 

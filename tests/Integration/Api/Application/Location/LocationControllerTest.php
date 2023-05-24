@@ -5,8 +5,8 @@ namespace Kubectyl\Tests\Integration\Api\Application\Location;
 use Kubectyl\Models\Cluster;
 use Illuminate\Http\Response;
 use Kubectyl\Models\Location;
-use Kubectyl\Transformers\Api\Application\ClusterTransformer;
 use Kubectyl\Transformers\Api\Application\ServerTransformer;
+use Kubectyl\Transformers\Api\Application\ClusterTransformer;
 use Kubectyl\Transformers\Api\Application\LocationTransformer;
 use Kubectyl\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
 

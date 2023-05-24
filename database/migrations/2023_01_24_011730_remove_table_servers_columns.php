@@ -1,11 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      *
@@ -13,8 +12,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::rename("nodes", "clusters");
-        Schema::rename("mount_node", "mount_cluster");
+        Schema::rename('nodes', 'clusters');
+        Schema::rename('mount_node', 'mount_cluster');
 
         Schema::table('servers', function (Blueprint $table) {
             $table->dropColumn('swap');

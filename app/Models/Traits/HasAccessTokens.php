@@ -3,8 +3,8 @@
 namespace Kubectyl\Models\Traits;
 
 use Illuminate\Support\Str;
-use Laravel\Sanctum\Sanctum;
 use Kubectyl\Models\ApiKey;
+use Laravel\Sanctum\Sanctum;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Kubectyl\Extensions\Laravel\Sanctum\NewAccessToken;

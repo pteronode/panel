@@ -4,9 +4,9 @@ namespace Kubectyl\Http\Controllers\Api\Client;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Kubectyl\Facades\Activity;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
-use Kubectyl\Facades\Activity;
 use Kubectyl\Services\Users\UserUpdateService;
 use Kubectyl\Transformers\Api\Client\AccountTransformer;
 use Kubectyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;

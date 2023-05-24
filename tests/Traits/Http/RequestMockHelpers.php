@@ -4,9 +4,8 @@ namespace Kubectyl\Tests\Traits\Http;
 
 use Mockery as m;
 use Mockery\Mock;
-use Illuminate\Http\Request;
 use Kubectyl\Models\User;
-use InvalidArgumentException;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 trait RequestMockHelpers
@@ -68,7 +67,7 @@ trait RequestMockHelpers
     {
         $this->request = m::mock($this->requestMockClass);
         if (!$this->request instanceof Request) {
-            throw new InvalidArgumentException('Request mock class must be an instance of ' . Request::class . ' when mocked.');
+            throw new \InvalidArgumentException('Request mock class must be an instance of ' . Request::class . ' when mocked.');
         }
 
         $this->request->attributes = new ParameterBag();

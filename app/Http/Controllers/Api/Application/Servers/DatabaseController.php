@@ -2,8 +2,8 @@
 
 namespace Kubectyl\Http\Controllers\Api\Application\Servers;
 
-use Illuminate\Http\Response;
 use Kubectyl\Models\Server;
+use Illuminate\Http\Response;
 use Kubectyl\Models\Database;
 use Illuminate\Http\JsonResponse;
 use Kubectyl\Services\Databases\DatabasePasswordService;

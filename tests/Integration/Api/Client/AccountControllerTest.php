@@ -2,8 +2,8 @@
 
 namespace Kubectyl\Tests\Integration\Api\Client;
 
-use Illuminate\Support\Str;
 use Kubectyl\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 

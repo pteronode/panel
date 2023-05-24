@@ -4,8 +4,8 @@ namespace Kubectyl\Transformers\Api\Application;
 
 use Kubectyl\Models\Subuser;
 use League\Fractal\Resource\Item;
-use League\Fractal\Resource\NullResource;
 use Kubectyl\Services\Acl\Api\AdminAcl;
+use League\Fractal\Resource\NullResource;
 
 class SubuserTransformer extends BaseTransformer
 {

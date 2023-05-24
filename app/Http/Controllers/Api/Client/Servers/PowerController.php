@@ -2,8 +2,8 @@
 
 namespace Kubectyl\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Http\Response;
 use Kubectyl\Models\Server;
+use Illuminate\Http\Response;
 use Kubectyl\Facades\Activity;
 use Kubectyl\Repositories\Kuber\DaemonPowerRepository;
 use Kubectyl\Http\Controllers\Api\Client\ClientApiController;

@@ -5,9 +5,9 @@ namespace Kubectyl\Services\Users;
 use Ramsey\Uuid\Uuid;
 use Kubectyl\Models\User;
 use Illuminate\Contracts\Hashing\Hasher;
+use Kubectyl\Notifications\AccountCreated;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Auth\PasswordBroker;
-use Kubectyl\Notifications\AccountCreated;
 use Kubectyl\Contracts\Repository\UserRepositoryInterface;
 
 class UserCreationService

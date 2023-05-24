@@ -2,7 +2,6 @@
 
 namespace Kubectyl\Repositories\Eloquent;
 
-use Exception;
 use Kubectyl\Contracts\Repository\PermissionRepositoryInterface;
 
 class PermissionRepository extends EloquentRepository implements PermissionRepositoryInterface
@@ -14,6 +13,6 @@ class PermissionRepository extends EloquentRepository implements PermissionRepos
      */
     public function model(): string
     {
-        throw new Exception('This functionality is not implemented.');
+        throw new \Exception('This functionality is not implemented.');
     }
 }

@@ -3,12 +3,12 @@
 namespace Kubectyl\Http\Controllers\Api\Remote\Servers;
 
 use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
 use Kubectyl\Models\Allocation;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Kubectyl\Models\ServerTransfer;
-use Illuminate\Database\ConnectionInterface;
 use Kubectyl\Http\Controllers\Controller;
+use Illuminate\Database\ConnectionInterface;
 use Kubectyl\Repositories\Eloquent\ServerRepository;
 use Kubectyl\Repositories\Kuber\DaemonServerRepository;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;

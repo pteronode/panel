@@ -49,7 +49,7 @@ use Kubectyl\Exceptions\Http\Server\ServerStateConflictException;
  * @property \Illuminate\Database\Eloquent\Collection|\Kubectyl\Models\Allocation[] $allocations
  * @property int|null $allocations_count
  * @property \Illuminate\Database\Eloquent\Collection|\Kubectyl\Models\Snapshot[] $snapshots
- * @property int|null $backups_count
+ * @property int|null $snapshots_count
  * @property \Illuminate\Database\Eloquent\Collection|\Kubectyl\Models\Database[] $databases
  * @property int|null $databases_count
  * @property \Kubectyl\Models\Rocket|null $rocket
@@ -74,7 +74,7 @@ use Kubectyl\Exceptions\Http\Server\ServerStateConflictException;
  * @method static \Illuminate\Database\Eloquent\Builder|Server query()
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereAllocationId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereAllocationLimit($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Server whereBackupLimit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereSnapshotLimit($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereCpu($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereDatabaseLimit($value)

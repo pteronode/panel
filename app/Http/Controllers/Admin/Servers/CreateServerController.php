@@ -2,19 +2,18 @@
 
 namespace Kubectyl\Http\Controllers\Admin\Servers;
 
-use JavaScript;
 use Illuminate\View\View;
 use Kubectyl\Models\Cluster;
 use Kubectyl\Models\Location;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Illuminate\View\Factory as ViewFactory;
 use Kubectyl\Http\Controllers\Controller;
-use Kubectyl\Repositories\Eloquent\LaunchpadRepository;
-use Kubectyl\Repositories\Eloquent\ServerRepository;
-use Kubectyl\Repositories\Eloquent\ClusterRepository;
+use Illuminate\View\Factory as ViewFactory;
 use Kubectyl\Http\Requests\Admin\ServerFormRequest;
+use Kubectyl\Repositories\Eloquent\ServerRepository;
 use Kubectyl\Services\Servers\ServerCreationService;
+use Kubectyl\Repositories\Eloquent\ClusterRepository;
+use Kubectyl\Repositories\Eloquent\LaunchpadRepository;
 
 class CreateServerController extends Controller
 {
@@ -47,7 +46,7 @@ class CreateServerController extends Controller
 
         $launchpads = $this->launchpadRepository->getWithRockets();
 
-        JavaScript::put([
+        \JavaScript::put([
             'clusterData' => $this->clusterRepository->getClustersForServerCreation(),
             'launchpads' => $launchpads->map(function ($item) {
                 return array_merge($item->toArray(), [
@@ -80,7 +79,7 @@ class CreateServerController extends Controller
         }
 
         $data['node_selectors'] = $data['node_selectors'] ? $this->normalizeNodeSelectors($data['node_selectors']) : null;
-        
+
         $server = $this->creationService->handle($data);
 
         $this->alert->success(trans('admin/server.alerts.server_created'))->flash();

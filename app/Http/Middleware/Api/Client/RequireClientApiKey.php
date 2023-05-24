@@ -2,8 +2,8 @@
 
 namespace Kubectyl\Http\Middleware\Api\Client;
 
-use Illuminate\Http\Request;
 use Kubectyl\Models\ApiKey;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class RequireClientApiKey

@@ -3,8 +3,8 @@
 namespace Kubectyl\Transformers\Api\Client;
 
 use Kubectyl\Models\User;
-use Webmozart\Assert\Assert;
 use Kubectyl\Models\Server;
+use Webmozart\Assert\Assert;
 use Kubectyl\Transformers\Api\Application\BaseTransformer as BaseApplicationTransformer;
 
 abstract class BaseClientTransformer extends BaseApplicationTransformer

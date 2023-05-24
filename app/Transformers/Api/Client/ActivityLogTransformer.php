@@ -2,8 +2,8 @@
 
 namespace Kubectyl\Transformers\Api\Client;
 
-use Illuminate\Support\Str;
 use Kubectyl\Models\User;
+use Illuminate\Support\Str;
 use Kubectyl\Models\ActivityLog;
 use Illuminate\Database\Eloquent\Model;
 

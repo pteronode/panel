@@ -1,22 +1,22 @@
 <?php
 
-namespace Kubectyl\Services\Backups;
+namespace Kubectyl\Services\Snapshots;
 
 use Illuminate\Http\Response;
 use Kubectyl\Models\Snapshot;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Database\ConnectionInterface;
-use Kubectyl\Extensions\Backups\BackupManager;
-use Kubectyl\Repositories\Kuber\DaemonBackupRepository;
-use Kubectyl\Exceptions\Service\Backup\BackupLockedException;
+use Kubectyl\Extensions\Snapshots\SnapshotManager;
+use Kubectyl\Repositories\Kuber\DaemonSnapshotRepository;
+use Kubectyl\Exceptions\Service\Snapshot\SnapshotLockedException;
 use Kubectyl\Exceptions\Http\Connection\DaemonConnectionException;
 
-class DeleteBackupService
+class DeleteSnapshotService
 {
     public function __construct(
         private ConnectionInterface $connection,
-        private BackupManager $manager,
-        private DaemonBackupRepository $daemonBackupRepository
+        private SnapshotManager $manager,
+        private DaemonSnapshotRepository $daemonSnapshotRepository
     ) {
     }
 
@@ -35,7 +35,7 @@ class DeleteBackupService
         // around. The logic that updates the snapshot to the failed state will also remove
         // the lock, so this condition should really never happen.
         if ($snapshot->is_locked && ($snapshot->is_successful && !is_null($snapshot->completed_at))) {
-            throw new BackupLockedException();
+            throw new SnapshotLockedException();
         }
 
         if ($snapshot->disk === Snapshot::ADAPTER_AWS_S3) {
@@ -46,7 +46,7 @@ class DeleteBackupService
 
         $this->connection->transaction(function () use ($snapshot) {
             try {
-                $this->daemonBackupRepository->setServer($snapshot->server)->delete($snapshot);
+                $this->daemonSnapshotRepository->setServer($snapshot->server)->delete($snapshot);
             } catch (DaemonConnectionException $exception) {
                 $previous = $exception->getPrevious();
                 // Don't fail the request if the Daemon responds with a 404, just assume the snapshot

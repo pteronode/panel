@@ -2,21 +2,20 @@
 
 namespace Kubectyl\Http\Controllers\Admin\Servers;
 
-use JavaScript;
 use Illuminate\View\View;
+use Kubectyl\Models\Server;
 use Illuminate\Http\Request;
 use Kubectyl\Models\Launchpad;
-use Kubectyl\Models\Server;
 use Kubectyl\Exceptions\DisplayException;
 use Kubectyl\Http\Controllers\Controller;
 use Kubectyl\Services\Servers\EnvironmentService;
-use Illuminate\Contracts\View\Factory as ViewFactory;
-use Kubectyl\Repositories\Eloquent\LaunchpadRepository;
-use Kubectyl\Repositories\Eloquent\ClusterRepository;
 use Kubectyl\Repositories\Eloquent\MountRepository;
 use Kubectyl\Repositories\Eloquent\ServerRepository;
 use Kubectyl\Traits\Controllers\JavascriptInjection;
+use Illuminate\Contracts\View\Factory as ViewFactory;
+use Kubectyl\Repositories\Eloquent\ClusterRepository;
 use Kubectyl\Repositories\Eloquent\LocationRepository;
+use Kubectyl\Repositories\Eloquent\LaunchpadRepository;
 use Kubectyl\Repositories\Eloquent\DatabaseHostRepository;
 
 class ServerViewController extends Controller
@@ -140,7 +139,7 @@ class ServerViewController extends Controller
             $canTransfer = true;
         }
 
-        JavaScript::put([
+        \JavaScript::put([
             'clusterData' => $this->clusterRepository->getClustersForServerCreation(),
         ]);
 

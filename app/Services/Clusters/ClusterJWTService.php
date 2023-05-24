@@ -2,11 +2,10 @@
 
 namespace Kubectyl\Services\Clusters;
 
-use DateTimeImmutable;
+use Kubectyl\Models\User;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 use Kubectyl\Models\Cluster;
-use Kubectyl\Models\User;
 use Lcobucci\JWT\Token\Plain;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
@@ -19,7 +18,7 @@ class ClusterJWTService
 
     private ?User $user = null;
 
-    private ?DateTimeImmutable $expiresAt;
+    private ?\DateTimeImmutable $expiresAt;
 
     private ?string $subject = null;
 
@@ -44,7 +43,7 @@ class ClusterJWTService
         return $this;
     }
 
-    public function setExpiresAt(DateTimeImmutable $date): self
+    public function setExpiresAt(\DateTimeImmutable $date): self
     {
         $this->expiresAt = $date;
 

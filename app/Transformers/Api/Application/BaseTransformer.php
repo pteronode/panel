@@ -4,13 +4,13 @@ namespace Kubectyl\Transformers\Api\Application;
 
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
+use Kubectyl\Models\ApiKey;
 use Illuminate\Http\Request;
 use Webmozart\Assert\Assert;
-use Kubectyl\Models\ApiKey;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
-use League\Fractal\TransformerAbstract;
 use Kubectyl\Services\Acl\Api\AdminAcl;
+use League\Fractal\TransformerAbstract;
 
 /**
  * @method array transform(Model $model)

@@ -2,14 +2,13 @@
 
 namespace Kubectyl\Tests\Integration\Services\Servers;
 
-use Mockery;
 use Mockery\MockInterface;
+use Kubectyl\Models\Server;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Kubectyl\Models\Server;
 use Kubectyl\Models\Allocation;
-use GuzzleHttp\Exception\RequestException;
 use Kubectyl\Exceptions\DisplayException;
+use GuzzleHttp\Exception\RequestException;
 use Kubectyl\Tests\Integration\IntegrationTestCase;
 use Kubectyl\Repositories\Kuber\DaemonServerRepository;
 use Kubectyl\Services\Servers\BuildModificationService;
@@ -108,7 +107,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
 
-        $this->daemonServerRepository->expects('setServer')->with(Mockery::on(function (Server $s) use ($server) {
+        $this->daemonServerRepository->expects('setServer')->with(\Mockery::on(function (Server $s) use ($server) {
             return $s->id === $server->id;
         }))->andReturnSelf();
 

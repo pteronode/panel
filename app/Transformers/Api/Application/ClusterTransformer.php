@@ -4,9 +4,9 @@ namespace Kubectyl\Transformers\Api\Application;
 
 use Kubectyl\Models\Cluster;
 use League\Fractal\Resource\Item;
+use Kubectyl\Services\Acl\Api\AdminAcl;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
-use Kubectyl\Services\Acl\Api\AdminAcl;
 
 class ClusterTransformer extends BaseTransformer
 {
@@ -39,13 +39,6 @@ class ClusterTransformer extends BaseTransformer
 
         $response[$cluster->getUpdatedAtColumn()] = $this->formatTimestamp($cluster->updated_at);
         $response[$cluster->getCreatedAtColumn()] = $this->formatTimestamp($cluster->created_at);
-
-        $resources = $cluster->servers()->select(['memory', 'disk'])->get();
-
-        $response['allocated_resources'] = [
-            'memory' => $resources->sum('memory'),
-            'disk' => $resources->sum('disk'),
-        ];
 
         return $response;
     }

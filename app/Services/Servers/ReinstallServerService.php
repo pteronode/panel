@@ -22,12 +22,14 @@ class ReinstallServerService
      *
      * @throws \Throwable
      */
-    public function handle(Server $server): Server
+    public function handle(Server $server, array $options = []): Server
     {
-        return $this->connection->transaction(function () use ($server) {
+        $deleteFiles = $options['deleteFiles'] ?? false;
+
+        return $this->connection->transaction(function () use ($server, $deleteFiles) {
             $server->fill(['status' => Server::STATUS_INSTALLING])->save();
 
-            $this->daemonServerRepository->setServer($server)->reinstall();
+            $this->daemonServerRepository->setServer($server)->reinstall($deleteFiles);
 
             return $server->refresh();
         });

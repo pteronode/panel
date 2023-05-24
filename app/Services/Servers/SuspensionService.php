@@ -2,8 +2,8 @@
 
 namespace Kubectyl\Services\Servers;
 
-use Webmozart\Assert\Assert;
 use Kubectyl\Models\Server;
+use Webmozart\Assert\Assert;
 use Kubectyl\Repositories\Kuber\DaemonServerRepository;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 

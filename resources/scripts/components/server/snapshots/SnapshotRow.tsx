@@ -9,19 +9,19 @@ import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import SnapshotContextMenu from '@/components/server/snapshots/SnapshotContextMenu';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
-import getServerBackups from '@/api/swr/getServerBackups';
-import { ServerBackup } from '@/api/server/types';
+import getServerSnapshots from '@/api/swr/getServerSnapshots';
+import { ServerSnapshot } from '@/api/server/types';
 import { SocketEvent } from '@/components/server/events';
 
 interface Props {
-    snapshot: ServerBackup;
+    snapshot: ServerSnapshot;
     className?: string;
 }
 
 export default ({ snapshot, className }: Props) => {
-    const { mutate } = getServerBackups();
+    const { mutate } = getServerSnapshots();
 
-    useWebsocketEvent(`${SocketEvent.BACKUP_COMPLETED}:${snapshot.uuid}` as SocketEvent, (data) => {
+    useWebsocketEvent(`${SocketEvent.SNAPSHOT_COMPLETED}:${snapshot.uuid}` as SocketEvent, (data) => {
         try {
             const parsed = JSON.parse(data);
 

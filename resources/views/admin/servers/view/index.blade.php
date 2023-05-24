@@ -55,20 +55,20 @@
                             <tr>
                                 <td>CPU Limit</td>
                                 <td>
-                                    @if($server->cpu === 0)
+                                    @if($server->cpu_limit === 0)
                                         <code>Unlimited</code>
                                     @else
-                                        <code>{{ $server->cpu }}%</code>
+                                        <code>{{ $server->cpu_limit }}%</code>
                                     @endif
                                 </td>
                             </tr>
                             <tr>
                                 <td>Memory</td>
                                 <td>
-                                    @if($server->memory === 0)
+                                    @if($server->memory_limit === 0)
                                         <code>Unlimited</code>
                                     @else
-                                        <code>{{ $server->memory }}MiB</code>
+                                        <code>{{ $server->memory_limit }}MiB</code>
                                     @endif
                                 </td>
                             </tr>

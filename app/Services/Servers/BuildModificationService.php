@@ -6,10 +6,10 @@ use Illuminate\Support\Arr;
 use Kubectyl\Models\Server;
 use Kubectyl\Models\Allocation;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Database\ConnectionInterface;
 use Kubectyl\Exceptions\DisplayException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\ConnectionInterface;
 use Kubectyl\Repositories\Kuber\DaemonServerRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Kubectyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class BuildModificationService

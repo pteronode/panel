@@ -2,20 +2,19 @@
 
 namespace Kubectyl\Services\Telemetry;
 
-use PDO;
 use Exception;
 use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Arr;
-use Kubectyl\Models\Rocket;
-use Kubectyl\Models\Launchpad;
-use Kubectyl\Models\Cluster;
 use Kubectyl\Models\User;
 use Kubectyl\Models\Mount;
-use Kubectyl\Models\Snapshot;
+use Illuminate\Support\Arr;
+use Kubectyl\Models\Rocket;
 use Kubectyl\Models\Server;
+use Kubectyl\Models\Cluster;
 use Kubectyl\Models\Location;
-use Illuminate\Support\Facades\DB;
+use Kubectyl\Models\Snapshot;
+use Kubectyl\Models\Launchpad;
 use Kubectyl\Models\Allocation;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Kubectyl\Repositories\Eloquent\SettingsRepository;
 use Kubectyl\Repositories\Kuber\DaemonConfigurationRepository;
@@ -123,7 +122,7 @@ class TelemetryCollectionService
 
                     'database' => [
                         'type' => config('database.default'),
-                        'version' => DB::getPdo()->getAttribute(PDO::ATTR_SERVER_VERSION),
+                        'version' => DB::getPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION),
                     ],
                 ],
             ],

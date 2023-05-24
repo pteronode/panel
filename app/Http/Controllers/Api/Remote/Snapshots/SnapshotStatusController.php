@@ -1,25 +1,25 @@
 <?php
 
-namespace Kubectyl\Http\Controllers\Api\Remote\Backups;
+namespace Kubectyl\Http\Controllers\Api\Remote\Snapshots;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Kubectyl\Models\Snapshot;
-use Illuminate\Http\JsonResponse;
 use Kubectyl\Facades\Activity;
+use Illuminate\Http\JsonResponse;
 use Kubectyl\Exceptions\DisplayException;
 use Kubectyl\Http\Controllers\Controller;
-use Kubectyl\Extensions\Backups\BackupManager;
 use Kubectyl\Extensions\Filesystem\S3Filesystem;
+use Kubectyl\Extensions\Snapshots\SnapshotManager;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Kubectyl\Http\Requests\Api\Remote\ReportBackupCompleteRequest;
+use Kubectyl\Http\Requests\Api\Remote\ReportSnapshotCompleteRequest;
 
-class BackupStatusController extends Controller
+class SnapshotStatusController extends Controller
 {
     /**
-     * BackupStatusController constructor.
+     * SnapshotStatusController constructor.
      */
-    public function __construct(private BackupManager $backupManager)
+    public function __construct(private SnapshotManager $snapshotManager)
     {
     }
 
@@ -28,7 +28,7 @@ class BackupStatusController extends Controller
      *
      * @throws \Throwable
      */
-    public function index(ReportBackupCompleteRequest $request, string $snapshot): JsonResponse
+    public function index(ReportSnapshotCompleteRequest $request, string $snapshot): JsonResponse
     {
         /** @var \Kubectyl\Models\Snapshot $model */
         $model = Snapshot::query()->where('uuid', $snapshot)->firstOrFail();
@@ -56,7 +56,7 @@ class BackupStatusController extends Controller
 
             // Check if we are using the s3 snapshot adapter. If so, make sure we mark the snapshot as
             // being completed in S3 correctly.
-            $adapter = $this->backupManager->adapter();
+            $adapter = $this->snapshotManager->adapter();
             if ($adapter instanceof S3Filesystem) {
                 $this->completeMultipartUpload($model, $adapter, $successful, $request->input('parts'));
             }
@@ -97,7 +97,7 @@ class BackupStatusController extends Controller
      * @throws \Exception
      * @throws \Kubectyl\Exceptions\DisplayException
      */
-    protected function completeMultipartUpload(Backup $snapshot, S3Filesystem $adapter, bool $successful, ?array $parts): void
+    protected function completeMultipartUpload(Snapshot $snapshot, S3Filesystem $adapter, bool $successful, ?array $parts): void
     {
         // This should never really happen, but if it does don't let us fall victim to Amazon's
         // wildly fun error messaging. Just stop the process right here.

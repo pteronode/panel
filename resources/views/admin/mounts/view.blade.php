@@ -133,7 +133,7 @@
                     <h3 class="box-title">Clusters</h3>
 
                     <div class="box-tools">
-                        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addNodesModal">Add Clusters</button>
+                        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addClustersModal">Add Clusters</button>
                     </div>
                 </div>
 
@@ -206,7 +206,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="addNodesModal" tabindex="-1" role="dialog">
+    <div class="modal fade" id="addClustersModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form action="{{ route('admin.mounts.clusters', $mount->id) }}" method="POST">

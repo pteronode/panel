@@ -2,11 +2,11 @@
 
 namespace Kubectyl\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use Kubectyl\Models\User;
-use Illuminate\Http\Response;
 use Kubectyl\Models\Mount;
 use Kubectyl\Models\Server;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Kubectyl\Models\Database;
 use Kubectyl\Models\MountServer;
 use Illuminate\Http\RedirectResponse;
@@ -24,12 +24,12 @@ use Kubectyl\Services\Servers\BuildModificationService;
 use Kubectyl\Services\Databases\DatabasePasswordService;
 use Kubectyl\Services\Servers\DetailsModificationService;
 use Kubectyl\Services\Servers\StartupModificationService;
-use Kubectyl\Contracts\Repository\LaunchpadRepositoryInterface;
 use Kubectyl\Repositories\Eloquent\DatabaseHostRepository;
 use Kubectyl\Services\Databases\DatabaseManagementService;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Kubectyl\Contracts\Repository\ServerRepositoryInterface;
 use Kubectyl\Contracts\Repository\DatabaseRepositoryInterface;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Kubectyl\Contracts\Repository\LaunchpadRepositoryInterface;
 use Kubectyl\Contracts\Repository\AllocationRepositoryInterface;
 use Kubectyl\Services\Servers\ServerConfigurationStructureService;
 use Kubectyl\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest;

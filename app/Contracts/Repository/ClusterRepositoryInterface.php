@@ -11,16 +11,6 @@ interface ClusterRepositoryInterface extends RepositoryInterface
     public const THRESHOLD_PERCENTAGE_MEDIUM = 90;
 
     /**
-     * Return the usage stats for a single cluster.
-     */
-    public function getUsageStats(Cluster $cluster): array;
-
-    /**
-     * Return the usage stats for a single cluster.
-     */
-    public function getUsageStatsRaw(Cluster $cluster): array;
-
-    /**
      * Return a single cluster with location and server information.
      */
     public function loadLocationAndServerCount(Cluster $cluster, bool $refresh = false): Cluster;

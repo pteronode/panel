@@ -2,7 +2,6 @@
 
 namespace Kubectyl\Http\Middleware;
 
-use Closure;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
@@ -34,7 +33,7 @@ class RequireTwoFactorAuthentication
      *
      * @throws \Kubectyl\Exceptions\Http\TwoFactorAuthRequiredException
      */
-    public function handle(Request $request, Closure $next): mixed
+    public function handle(Request $request, \Closure $next): mixed
     {
         /** @var \Kubectyl\Models\User $user */
         $user = $request->user();

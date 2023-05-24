@@ -29,7 +29,7 @@
                             <th>ID</th>
                             <th>Short Code</th>
                             <th>Description</th>
-                            <th class="text-center">Nodes</th>
+                            <th class="text-center">Clusters</th>
                             <th class="text-center">Servers</th>
                         </tr>
                         @foreach ($locations as $location)

@@ -2,8 +2,8 @@
 
 namespace Kubectyl\Services\Allocations;
 
-use Webmozart\Assert\Assert;
 use Kubectyl\Models\Server;
+use Webmozart\Assert\Assert;
 use Kubectyl\Models\Allocation;
 use Kubectyl\Exceptions\Service\Allocation\AutoAllocationNotEnabledException;
 use Kubectyl\Exceptions\Service\Allocation\NoAutoAllocationSpaceAvailableException;

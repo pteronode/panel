@@ -3,8 +3,8 @@
 namespace Kubectyl\Models;
 
 use Illuminate\Container\Container;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Kubectyl\Contracts\Extensions\HashidsInterface;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id

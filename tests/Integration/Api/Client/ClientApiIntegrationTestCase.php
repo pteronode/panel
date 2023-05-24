@@ -2,20 +2,18 @@
 
 namespace Kubectyl\Tests\Integration\Api\Client;
 
-use ReflectionClass;
-use Kubectyl\Models\Cluster;
 use Kubectyl\Models\Task;
 use Kubectyl\Models\User;
-use InvalidArgumentException;
 use Kubectyl\Models\Model;
-use Kubectyl\Models\Snapshot;
 use Kubectyl\Models\Server;
+use Kubectyl\Models\Cluster;
 use Kubectyl\Models\Database;
 use Kubectyl\Models\Location;
 use Kubectyl\Models\Schedule;
-use Illuminate\Support\Collection;
+use Kubectyl\Models\Snapshot;
 use Kubectyl\Models\Allocation;
 use Kubectyl\Models\DatabaseHost;
+use Illuminate\Support\Collection;
 use Kubectyl\Tests\Integration\TestResponse;
 use Kubectyl\Tests\Integration\IntegrationTestCase;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
@@ -75,10 +73,8 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
                 $link = "/api/client/servers/{$model->server->uuid}/snapshots/$model->uuid";
                 break;
             default:
-                throw new InvalidArgumentException(sprintf('Cannot create link for Model of type %s', class_basename($model)));
+                throw new \InvalidArgumentException(sprintf('Cannot create link for Model of type %s', class_basename($model)));
         }
-
-        print_r($link . ($append ? '/' . ltrim($append, '/') : ''));
 
         return $link . ($append ? '/' . ltrim($append, '/') : '');
     }
@@ -89,7 +85,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      */
     protected function assertJsonTransformedWith(array $data, Model|EloquentModel $model)
     {
-        $reflect = new ReflectionClass($model);
+        $reflect = new \ReflectionClass($model);
         $transformer = sprintf('\\Kubectyl\\Transformers\\Api\\Client\\%sTransformer', $reflect->getShortName());
 
         $transformer = new $transformer();

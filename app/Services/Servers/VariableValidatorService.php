@@ -5,8 +5,8 @@ namespace Kubectyl\Services\Servers;
 use Kubectyl\Models\User;
 use Illuminate\Support\Collection;
 use Kubectyl\Models\RocketVariable;
-use Illuminate\Validation\ValidationException;
 use Kubectyl\Traits\Services\HasUserLevels;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 
 class VariableValidatorService

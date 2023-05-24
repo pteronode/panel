@@ -2,9 +2,8 @@
 
 namespace Kubectyl\Console\Commands;
 
-use Closure;
-use Illuminate\Console\Command;
 use Kubectyl\Console\Kernel;
+use Illuminate\Console\Command;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Console\Helper\ProgressBar;
 
@@ -177,7 +176,7 @@ class UpgradeCommand extends Command
         $this->info('Panel has been successfully upgraded. Please ensure you also update any Kuber instances: https://kubectyl.org/kuber/1.0/upgrading.html');
     }
 
-    protected function withProgress(ProgressBar $bar, Closure $callback)
+    protected function withProgress(ProgressBar $bar, \Closure $callback)
     {
         $bar->clear();
         $callback();

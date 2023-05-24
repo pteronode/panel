@@ -2,16 +2,16 @@
 
 namespace Kubectyl\Http\Controllers\Auth;
 
+use Kubectyl\Models\User;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
-use Kubectyl\Models\User;
 use Illuminate\Http\JsonResponse;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Kubectyl\Events\Auth\ProvidedAuthenticationToken;
 use Kubectyl\Http\Requests\Auth\LoginCheckpointRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 
 class LoginCheckpointController extends AbstractLoginController
