@@ -48,6 +48,8 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
             'feature_limits.databases' => $rules['database_limit'],
             'feature_limits.allocations' => $rules['allocation_limit'],
             'feature_limits.snapshots' => $rules['snapshot_limit'],
+
+            'storage_class' => $rules['storage_class'],
         ];
     }
 

@@ -35,6 +35,7 @@ class StoreServerRequest extends ApplicationApiRequest
             'skip_scripts' => 'sometimes|boolean',
             'node_selectors' => 'array|nullable',
             'node_selectors.*' => 'string',
+            'storage_class' => 'string|nullable',
 
             // Resource limitations
             'limits' => 'required|array',

@@ -46,7 +46,7 @@ class BuildModificationService
 
             // If any of these values are passed through in the data array go ahead and set
             // them correctly on the server model.
-            $merge = Arr::only($data, ['memory_request', 'memory_limit', 'cpu_request', 'cpu_limit', 'disk', 'allocation_id']);
+            $merge = Arr::only($data, ['memory_request', 'memory_limit', 'cpu_request', 'cpu_limit', 'disk', 'storage_class', 'allocation_id']);
 
             if (isset($data['node_selectors'])) {
                 $data['node_selectors'] = $data['node_selectors'] ? $this->normalizeNodeSelectors($data['node_selectors']) : null;

@@ -169,17 +169,6 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="form-group col-xs-6">
-                            <label for="pCPURequest">CPU Request</label>
-
-                            <div class="input-group">
-                                <input type="text" id="pCPURequest" name="cpu_request" class="form-control" value="{{ old('cpu_request', 0) }}" />
-                                <span class="input-group-addon">%</span>
-                            </div>
-
-                            <p class="text-muted small">Specifies the minimum amount of CPU resources that the pod requires. The value cannot be greater than the CPU limit or <code>0</code> if limit is specified.<p>
-                        </div>
-                    
-                        <div class="form-group col-xs-6">
                             <label for="pCPULimit">CPU Limit</label>
 
                             <div class="input-group">
@@ -189,20 +178,20 @@
 
                             <p class="text-muted small">If you do not want to limit CPU usage, set the value to <code>0</code>. To determine a value, take the number of threads and multiply it by 100. For example, on a quad core system without hyperthreading <code>(4 * 100 = 400)</code> there is <code>400%</code> available. To limit a server to using half of a single thread, you would set the value to <code>50</code>. To allow a server to use up to two threads, set the value to <code>200</code>.<p>
                         </div>
+
+                        <div class="form-group col-xs-6">
+                            <label for="pCPURequest">CPU Request</label>
+
+                            <div class="input-group">
+                                <input type="text" id="pCPURequest" name="cpu_request" class="form-control" value="{{ old('cpu_request', 0) }}" />
+                                <span class="input-group-addon">%</span>
+                            </div>
+
+                            <p class="text-muted small">Specifies the minimum amount of CPU resources that the pod requires. The value cannot be greater than the CPU limit or <code>0</code> if limit is specified.<p>
+                        </div>
                     </div>
 
                     <div class="row">
-                        <div class="form-group col-xs-6">
-                            <label for="pMemoryRequest">Memory Request</label>
-
-                            <div class="input-group">
-                                <input type="text" id="pMemoryRequest" name="memory_request" class="form-control" value="{{ old('memory_request', 64) }}" />
-                                <span class="input-group-addon">MiB</span>
-                            </div>
-
-                            <p class="text-muted small">The minimum amount of memory resources that the pod requires. The value cannot be greater than the Memory limit or <code>0</code> if limit is specified.</p>
-                        </div>
-
                         <div class="form-group col-xs-6">
                             <label for="pMemoryLimit">Memory Limit</label>
 
@@ -212,6 +201,17 @@
                             </div>
 
                             <p class="text-muted small">The maximum amount of memory resources that the pod can use. Minimum value is <code>128</code>.</p>
+                        </div>
+
+                        <div class="form-group col-xs-6">
+                            <label for="pMemoryRequest">Memory Request</label>
+
+                            <div class="input-group">
+                                <input type="text" id="pMemoryRequest" name="memory_request" class="form-control" value="{{ old('memory_request', 64) }}" />
+                                <span class="input-group-addon">MiB</span>
+                            </div>
+
+                            <p class="text-muted small">The minimum amount of memory resources that the pod requires. The value cannot be greater than the Memory limit or <code>0</code> if limit is specified.</p>
                         </div>
                     </div>
                 </div>
@@ -226,6 +226,14 @@
                         </div>
 
                         <p class="text-muted small">This server will not be allowed to boot if it is using more than this amount of space. If a server goes over this limit while running it will be safely stopped and locked until enough space is available. Minimum value is <code>128</code>.</p>
+                    </div>
+
+                    <div class="form-group col-xs-6">
+                        <label for="pStorageClass">Override Storage Class</label>
+                        <div>
+                            <input type="text" id="pStorageClass" name="storage_class" class="form-control" placeholder="rook-ceph-block" value="{{ old('storage_class') }}" />
+                        </div>
+                        <p class="text-muted small">Specify a storage class name to override the default storage class. If left blank, the default storage class defined in Cluster settings will be used.</p>
                     </div>
                 </div>
             </div>

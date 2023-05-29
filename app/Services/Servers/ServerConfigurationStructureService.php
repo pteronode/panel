@@ -38,7 +38,7 @@ class ServerConfigurationStructureService
     }
 
     /**
-     * Returns the new data format used for the Wings daemon.
+     * Returns the new data format used for the Kuber daemon.
      */
     protected function returnCurrentFormat(Server $server): array
     {
@@ -59,6 +59,7 @@ class ServerConfigurationStructureService
                 'cpu_limit' => $server->cpu_limit,
                 'disk_space' => $server->disk,
             ],
+            'storage_class' => $server->storage_class,
             'container' => [
                 'image' => $server->image,
                 'requires_rebuild' => false,

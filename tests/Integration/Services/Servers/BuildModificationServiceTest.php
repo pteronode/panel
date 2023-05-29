@@ -119,6 +119,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
             'cpu_request' => 13,
             'cpu_limit' => 100,
             'disk' => 1024,
+            'storage_class' => null,
             'snapshot_limit' => null,
             'database_limit' => 10,
             'node_selectors' => null,

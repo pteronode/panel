@@ -146,7 +146,7 @@ class ServersController extends Controller
                 'allocation_id', 'add_ports', 'remove_ports',
                 'add_allocations', 'remove_allocations', 'memory_request',
                 'memory_limit', 'cpu_request', 'cpu_limit',
-                'disk', 'database_limit', 'allocation_limit',
+                'disk', 'storage_class', 'database_limit', 'allocation_limit',
                 'snapshot_limit', 'node_selectors',
             ]));
         } catch (DataValidationException $exception) {
