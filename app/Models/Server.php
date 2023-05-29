@@ -161,6 +161,7 @@ class Server extends Model
         'cpu_request' => 'required|numeric|min:0',
         'cpu_limit' => 'required|numeric|min:0',
         'disk' => 'required|numeric|min:0',
+        'storage_class' => 'nullable|string',
         'allocation_id' => 'required_without:default_port|nullable|bail|unique:servers|exists:allocations,id',
         'default_port' => 'required_without:allocation_id|nullable|numeric|between:1,65535',
         'additional_ports' => 'nullable|array',

@@ -64,6 +64,13 @@
                         </div>
                         <p class="text-muted small">This server will not be allowed to boot if it is using more than this amount of space. If a server goes over this limit while running it will be safely stopped and locked until enough space is available. Minimum value is <code>128</code>.</p>
                     </div>
+                    <div class="form-group">
+                        <label for="pStorageClass">Override Storage Class</label>
+                        <div>
+                            <input type="text" id="pStorageClass" name="storage_class" class="form-control" placeholder="rook-ceph-block" value="{{ old('storage_class', $server->storage_class) }}" />
+                        </div>
+                        <p class="text-muted small">Specify a storage class name to override the default storage class. If left blank, the default storage class defined in Cluster settings will be used.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -110,7 +117,7 @@
                             <div class="row">
                                 <div class="form-group col-xs-12">
                                     <label for="pNodeSelector" class="control-label">Node Selector</label>
-                                    <div> 
+                                    <div>
                                         <textarea id="pNodeSelector" name="node_selectors" class="form-control" rows="4">{{ implode(PHP_EOL, $selectors) }}</textarea>
                                         <p class="small text-muted no-margin">
                                             You can constrain a <b>Pod</b> so that it is <em>restricted</em> to run on particular node(s), or to prefer to run on particular nodes.
@@ -130,7 +137,7 @@
                                         <label for="pAdditionalPorts" class="control-label">Assign Additional Ports</label>
                                         <div>
                                             <select name="add_ports[]" class="form-control" multiple id="pAdditionalPorts">
-                                       
+
                                             </select>
                                         </div>
                                         <p class="text-muted small">Please note that due to software limitations you cannot assign identical ports on different IPs to the same server.</p>

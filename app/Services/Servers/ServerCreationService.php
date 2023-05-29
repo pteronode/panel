@@ -149,6 +149,7 @@ class ServerCreationService
             'memory_request' => Arr::get($data, 'memory_request'),
             'memory_limit' => Arr::get($data, 'memory_limit'),
             'disk' => Arr::get($data, 'disk'),
+            'storage_class' => Arr::get($data, 'storage_class'),
             'cpu_request' => Arr::get($data, 'cpu_request'),
             'cpu_limit' => Arr::get($data, 'cpu_limit'),
             'allocation_id' => Arr::get($data, 'allocation_id'),
