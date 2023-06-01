@@ -39,7 +39,6 @@ class DaemonSnapshotRepository extends DaemonRepository
                     'json' => [
                         'adapter' => $this->adapter ?? config('snapshots.default'),
                         'uuid' => $snapshot->uuid,
-                        'ignore' => implode("\n", $snapshot->ignored_files),
                     ],
                 ]
             );
