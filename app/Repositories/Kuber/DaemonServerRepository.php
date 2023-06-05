@@ -88,7 +88,7 @@ class DaemonServerRepository extends DaemonRepository
      *
      * @throws \Kubectyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function reinstall(bool $deleteFiles = false): void
+    public function reinstall(bool $deleteFiles = true): void
     {
         Assert::isInstanceOf($this->server, Server::class);
 
@@ -97,10 +97,6 @@ class DaemonServerRepository extends DaemonRepository
                 sprintf('/api/servers/%s/reinstall', $this->server->uuid),
                 ['json' => ['delete_files' => $deleteFiles]]
             );
-            // $this->getHttpClient()->post(sprintf(
-            //     '/api/servers/%s/reinstall',
-            //     $this->server->uuid
-            // ));
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);
         }
