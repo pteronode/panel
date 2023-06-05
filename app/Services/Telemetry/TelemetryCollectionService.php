@@ -31,7 +31,7 @@ class TelemetryCollectionService
     }
 
     /**
-     * Collects telemetry data and sends it to the Pterodactyl Telemetry Service.
+     * Collects telemetry data and sends it to the Kubectyl Telemetry Service.
      */
     public function __invoke(): void
     {
@@ -41,7 +41,7 @@ class TelemetryCollectionService
             return;
         }
 
-        Http::post('https://telemetry.pterodactyl.io', $data);
+        Http::post('https://telemetry.kubectyl.org', $data);
     }
 
     /**
@@ -68,29 +68,10 @@ class TelemetryCollectionService
                 'id' => $cluster->uuid,
                 'version' => Arr::get($info, 'version', ''),
 
-                'docker' => [
-                    'version' => Arr::get($info, 'docker.version', ''),
-
-                    'cgroups' => [
-                        'driver' => Arr::get($info, 'docker.cgroups.driver', ''),
-                        'version' => Arr::get($info, 'docker.cgroups.version', ''),
-                    ],
-
-                    'containers' => [
-                        'total' => Arr::get($info, 'docker.containers.total', -1),
-                        'running' => Arr::get($info, 'docker.containers.running', -1),
-                        'paused' => Arr::get($info, 'docker.containers.paused', -1),
-                        'stopped' => Arr::get($info, 'docker.containers.stopped', -1),
-                    ],
-
-                    'storage' => [
-                        'driver' => Arr::get($info, 'docker.storage.driver', ''),
-                        'filesystem' => Arr::get($info, 'docker.storage.filesystem', ''),
-                    ],
-
-                    'runc' => [
-                        'version' => Arr::get($info, 'docker.runc.version', ''),
-                    ],
+                'kubernetes' => [
+                    'version' => Arr::get($info, 'kubernetes.version', ''),
+                    'nodes' => Arr::get($info, 'kubernetes.nodes', ''),
+                    'pod_status' => Arr::get($info, 'kubernetes.pod_status', ''),
                 ],
 
                 'system' => [
@@ -112,10 +93,6 @@ class TelemetryCollectionService
                 'phpVersion' => phpversion(),
 
                 'drivers' => [
-                    'snapshot' => [
-                        'type' => config('snapshots.default'),
-                    ],
-
                     'cache' => [
                         'type' => config('cache.default'),
                     ],
