@@ -12,9 +12,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property bool $is_successful
  * @property bool $is_locked
  * @property string $name
- * @property string[] $ignored_files
  * @property string $disk
- * @property string|null $checksum
+ * @property string|null $snapcontent
  * @property int $bytes
  * @property string|null $upload_id
  * @property \Carbon\CarbonImmutable|null $completed_at
@@ -41,7 +40,6 @@ class Snapshot extends Model
         'id' => 'int',
         'is_successful' => 'bool',
         'is_locked' => 'bool',
-        'ignored_files' => 'array',
         'bytes' => 'int',
     ];
 
@@ -52,7 +50,7 @@ class Snapshot extends Model
     protected $attributes = [
         'is_successful' => false,
         'is_locked' => false,
-        'checksum' => null,
+        'snapcontent' => null,
         'bytes' => 0,
         'upload_id' => null,
     ];
@@ -65,9 +63,8 @@ class Snapshot extends Model
         'is_successful' => 'boolean',
         'is_locked' => 'boolean',
         'name' => 'required|string',
-        'ignored_files' => 'array',
         'disk' => 'required|string',
-        'checksum' => 'nullable|string',
+        'snapcontent' => 'nullable|string',
         'bytes' => 'numeric',
         'upload_id' => 'nullable|string',
     ];

@@ -24,7 +24,7 @@ class ReinstallServerService
      */
     public function handle(Server $server, array $options = []): Server
     {
-        $deleteFiles = $options['deleteFiles'] ?? false;
+        $deleteFiles = $options['deleteFiles'] ?? true;
 
         return $this->connection->transaction(function () use ($server, $deleteFiles) {
             $server->fill(['status' => Server::STATUS_INSTALLING])->save();
