@@ -22,8 +22,6 @@ class AuthServiceProvider extends ServiceProvider
     {
         Sanctum::usePersonalAccessTokenModel(ApiKey::class);
 
-        $this->registerPolicies();
-
         Gate::define('edit-post', function ($user, $post) {
             return $user->can('edit-post', $post);
         });
