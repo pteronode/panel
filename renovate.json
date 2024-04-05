@@ -5,17 +5,20 @@
     ],
     "packageRules": [
         {
-            "groupName": "js-front-end",
+            "groupName": "frontend dependencies",
+            "groupSlug": "frontend-minor-patch",
             "matchManagers": ["npm"],
             "matchUpdateTypes": ["minor", "patch"]
         },
         {
-            "groupName": "php-back-end",
+            "groupName": "backend dependencies",
+            "groupSlug": "backend-minor-patch",
             "matchManagers": ["composer"],
             "matchUpdateTypes": ["minor", "patch"]
         },
         {
-            "groupName": "docker-components",
+            "groupName": "docker dependencies",
+            "groupSlug": "docker-minor-patch",
             "matchManagers": ["dockerfile", "docker-compose"],
             "matchUpdateTypes": ["minor", "patch"]
         }
