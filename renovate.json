@@ -3,18 +3,24 @@
     "extends": [
         "config:recommended"
     ],
-    "separateMinorPatch": false,
     "packageRules": [
         {
-            "groupName": "all non-major dependencies",
-            "groupSlug": "all-minor-patch",
-            "matchPackagePatterns": [
-                "*"
-            ],
-            "matchUpdateTypes": [
-                "minor",
-                "patch"
-            ]
+            "groupName": "frontend dependencies",
+            "groupSlug": "frontend-minor-patch",
+            "matchManagers": ["npm"],
+            "matchUpdateTypes": ["minor", "patch"]
+        },
+        {
+            "groupName": "backend dependencies",
+            "groupSlug": "backend-minor-patch",
+            "matchManagers": ["composer"],
+            "matchUpdateTypes": ["minor", "patch"]
+        },
+        {
+            "groupName": "docker dependencies",
+            "groupSlug": "docker-minor-patch",
+            "matchManagers": ["dockerfile", "docker-compose"],
+            "matchUpdateTypes": ["minor", "patch"]
         }
     ]
 }
