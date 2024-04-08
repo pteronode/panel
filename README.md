@@ -1,39 +1,32 @@
-# Kubectyl Panel [![Discord](https://img.shields.io/discord/1037366848737525790?label=Discord&logo=Discord&logoColor=white&style=flat-square)](https://dsc.gg/kubectyl) [![Discourse](https://img.shields.io/website?down_message=Offline&label=Discourse&logo=Discourse&style=flat-square&up_message=Online&url=https%3A%2F%2Fdiscourse.kubectyl.org)](https://discourse.kubectyl.org/) [![Last commit](https://img.shields.io/github/last-commit/kubectyl/panel?style=flat-square)](https://github.com/kubectyl/panel/commits/develop) [![Contributors](https://img.shields.io/github/contributors/kubectyl/panel?style=flat-square)](https://github.com/kubectyl/panel/graphs/contributors) [![Issues](https://img.shields.io/github/issues/kubectyl/panel?style=flat-square)](https://github.com/kubectyl/panel/issues)
-Modified version of the Pterodactyl Panel for compatibility with *Kuber*, the special controller for Kubernetes.
+# PteroNode Panel [![Discord](https://img.shields.io/discord/698794604731826216?label=Discord&logo=Discord&logoColor=white&style=flat-square)](https://discord.com/invite/gameverse) [![Last commit](https://img.shields.io/github/last-commit/GameVerse-App/panel?style=flat-square)](https://github.com/GameVerse-App/panel/commits/develop) [![Contributors](https://img.shields.io/github/contributors/GameVerse-App/panel?style=flat-square)](https://github.com/GameVerse-App/panel/graphs/contributors) [![Issues](https://img.shields.io/github/issues/GameVerse-App/panel?style=flat-square)](https://github.com/GameVerse-App/panel/issues)
+A GameVerse project, PteroNode Panel is a continuation and adaptation of both the Pterodactyl Panel and Kubectyl, modified for enhanced compatibility with Kubernetes environments. 
 
-## Please note that this is pre-release software; it may contain bugs or corrupt data – it should not be used on a production site.
+## Disclaimer
+Please note that PteroNode is pre-release software and may contain bugs or potentially corrupt data. It should not be used in a production environment without thorough testing. **Use at your own risk!** Be sure to back up all files and database content before using.
 
-> Please be sure to back up all files and database content prior to using this pre-release software. <b>Use at your own risk!</b>
+## Objective of the Project
+PteroNode aims to integrate the robust game server management capabilities of Pterodactyl with the scalable and resilient infrastructure of Kubernetes, offering:
+- Faster and more efficient workload management with fewer skill requirements.
+- Support for Kubernetes multi-cluster environments.
+
+This initiative continues the work started with Kubectyl, advancing it within the Kubernetes ecosystem to provide an optimized and flexible server management solution.
 
 ## Installation
 
-* [Introduction](https://docs.kubectyl.org)
-* [Migrate from Pterodactyl](https://docs.kubectyl.org/installation/migrate-existing.html)
-* [Quick installation using Helm Chart](https://docs.kubectyl.org/installation/helm-chart.html)
-* [Start from Scratch](https://docs.kubectyl.org/installation/start-from-scratch.html)
-* Or, get additional help [via Discord](https://dsc.gg/kubectyl)
+* Get additional help [via Discord](https://discord.com/invite/gameverse)
 
 ## Sponsors
 
-Thank you so very much for your support and contributions to our organization. We are so fortunate to have such generous donors and we can never thank you enough for all the support you've shown us. :sparkling_heart:
+We are grateful for the support and contributions from our community and sponsors, helping us to grow and improve.
 
-[Interested in becoming a sponsor?](https://www.buymeacoffee.com/andrei0465/membership)
-
-| Company | About |
-| ------------- | ------------- |
-| [**MC Server Hosting LLC**](https://mcserverhosting.net/) | We were the first to create a gaming community that took advantage of Kubernetes, a modern open-source base for us to build our platform on. In addition to our contributions to the Minecraft community, we provide one of the most optimal platforms tailed to gaming while applying our knowledge towards continuous performance improvements. |
-
-## Goals of the project
-
-- Work done faster and more efficiently, with less skill requirements;
-- Kubernetes multi-cluster environments;
+[Interested in becoming a sponsor?](https://www.buymeacoffee.com/gameverse)
 
 ## How can I help the project?
 
-Report problems you faced. Merge requests are also welcome :)
+Report any issues encountered or contribute by submitting merge requests.
 
 ## License
 
-Pterodactyl® Copyright © 2015 - 2022 Dane Everitt and contributors.
+PteroNode is a continuation of both Pterodactyl® and Kubectyl, with copyrights originally held by Dane Everitt and the respective contributors from 2015 to 2022.
 
-Code released under the [MIT License](https://github.com/kubectyl/kuber/blob/develop/LICENSE).
+Code released under the [MIT License](https://github.com/GameVerse-App/panel/blob/develop/LICENSE).
