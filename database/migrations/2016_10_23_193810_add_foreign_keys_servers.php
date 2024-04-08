@@ -11,15 +11,13 @@ class AddForeignKeysServers extends Migration
      */
     public function up()
     {
-        DB::statement('ALTER TABLE servers
-            MODIFY COLUMN node INT(10) UNSIGNED NOT NULL,
-            MODIFY COLUMN owner INT(10) UNSIGNED NOT NULL,
-            MODIFY COLUMN allocation INT(10) UNSIGNED NOT NULL,
-            MODIFY COLUMN service INT(10) UNSIGNED NOT NULL,
-            MODIFY COLUMN `option` INT(10) UNSIGNED NOT NULL
-        ');
-
         Schema::table('servers', function (Blueprint $table) {
+            $table->unsignedInteger('node')->change();
+            $table->unsignedInteger('owner')->change();
+            $table->unsignedInteger('allocation')->change();
+            $table->unsignedInteger('service')->change();
+            $table->unsignedInteger('option')->change();
+
             $table->foreign('node')->references('id')->on('nodes');
             $table->foreign('owner')->references('id')->on('users');
             $table->foreign('allocation')->references('id')->on('allocations');
@@ -48,14 +46,12 @@ class AddForeignKeysServers extends Migration
             $table->dropIndex('servers_option_foreign');
 
             $table->dropColumn('deleted_at');
-        });
 
-        DB::statement('ALTER TABLE servers
-            MODIFY COLUMN node MEDIUMINT(8) UNSIGNED NOT NULL,
-            MODIFY COLUMN owner MEDIUMINT(8) UNSIGNED NOT NULL,
-            MODIFY COLUMN allocation MEDIUMINT(8) UNSIGNED NOT NULL,
-            MODIFY COLUMN service MEDIUMINT(8) UNSIGNED NOT NULL,
-            MODIFY COLUMN `option` MEDIUMINT(8) UNSIGNED NOT NULL
-        ');
+            $table->mediumInteger('node')->change();
+            $table->mediumInteger('owner')->change();
+            $table->mediumInteger('allocation')->change();
+            $table->mediumInteger('service')->change();
+            $table->mediumInteger('option')->change();
+        });
     }
 }
