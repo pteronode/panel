@@ -2,7 +2,7 @@
 A GameVerse project, PteroNode Panel is a continuation and adaptation of both the Pterodactyl Panel and Kubectyl, modified for enhanced compatibility with Kubernetes environments. 
 
 ## Disclaimer
-Please note that PteroNode is pre-release software and may contain bugs or potentially corrupt data. It should not be used in a production environment without thorough testing. **Use at your own risk!** Be sure to back up all files and database content before using.
+> Please note that PteroNode is pre-release software and may contain bugs or potentially corrupt data. It should not be used in a production environment without thorough testing. **Use at your own risk!** Be sure to back up all files and database content before using.
 
 ## Objective of the Project
 PteroNode aims to integrate the robust game server management capabilities of Pterodactyl with the scalable and resilient infrastructure of Kubernetes, offering:
