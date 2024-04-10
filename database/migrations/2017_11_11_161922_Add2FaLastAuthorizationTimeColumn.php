@@ -1,6 +1,8 @@
 <?php
 
-use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -17,10 +19,17 @@ class Add2FaLastAuthorizationTimeColumn extends Migration
             $table->timestampTz('totp_authenticated_at')->after('totp_secret')->nullable();
         });
 
-        // Using Eloquent to interact with the data
-        User::whereNotNull('totp_secret')->get()->each(function ($user) {
-            $user->totp_secret = encrypt($user->totp_secret);
-            $user->save();
+        DB::transaction(function () {
+            DB::table('users')->get()->each(function ($user) {
+                if (is_null($user->totp_secret)) {
+                    return;
+                }
+
+                DB::table('users')->where('id', $user->id)->update([
+                    'totp_secret' => Crypt::encrypt($user->totp_secret),
+                    'updated_at' => Carbon::now()->toAtomString(),
+                ]);
+            });
         });
     }
 
@@ -29,14 +38,22 @@ class Add2FaLastAuthorizationTimeColumn extends Migration
      */
     public function down()
     {
-        // Using Eloquent to interact with the data
-        User::whereNotNull('totp_secret')->get()->each(function ($user) {
-            $user->totp_secret = decrypt($user->totp_secret);
-            $user->save();
+        DB::transaction(function () {
+            DB::table('users')->get()->each(function ($user) {
+                if (is_null($user->totp_secret)) {
+                    return;
+                }
+
+                DB::table('users')->where('id', $user->id)->update([
+                    'totp_secret' => Crypt::decrypt($user->totp_secret),
+                    'updated_at' => Carbon::now()->toAtomString(),
+                ]);
+            });
         });
 
+        DB::statement('ALTER TABLE users MODIFY totp_secret CHAR(16) DEFAULT NULL');
+
         Schema::table('users', function (Blueprint $table) {
-            $table->char('totp_secret', 16)->nullable(false)->change();
             $table->dropColumn('totp_authenticated_at');
         });
     }
