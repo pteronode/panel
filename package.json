@@ -70,7 +70,7 @@
         "@babel/runtime": "^7.12.1",
         "@testing-library/dom": "^8.14.0",
         "@testing-library/jest-dom": "^5.16.4",
-        "@testing-library/react": "12.1.5",
+        "@testing-library/react": "15.0.2",
         "@testing-library/user-event": "^14.2.1",
         "@types/codemirror": "^0.0.98",
         "@types/debounce": "^1.2.0",
